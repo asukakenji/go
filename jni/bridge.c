@@ -45,6 +45,100 @@ jobject _GoJniToReflectedField(JNIEnv *env, jclass cls, jfieldID fieldID, jboole
 	return (*env)->ToReflectedField(env, cls, fieldID, isStatic);
 }
 
+jint _GoJniThrow(JNIEnv *env, jthrowable obj)
+{
+	return (*env)->Throw(env, obj);
+}
+
+jint _GoJniThrowNew(JNIEnv *env, jclass clazz, const char *msg)
+{
+	return (*env)->ThrowNew(env, clazz, msg);
+}
+
+jthrowable _GoJniExceptionOccurred(JNIEnv *env)
+{
+	return (*env)->ExceptionOccurred(env);
+}
+
+void _GoJniExceptionDescribe(JNIEnv *env)
+{
+	return (*env)->ExceptionDescribe(env);
+}
+
+void _GoJniExceptionClear(JNIEnv *env)
+{
+	return (*env)->ExceptionClear(env);
+}
+
+void _GoJniFatalError(JNIEnv *env, const char *msg)
+{
+	return (*env)->FatalError(env, msg);
+}
+
+jint _GoJniPushLocalFrame(JNIEnv *env, jint capacity)
+{
+	return (*env)->PushLocalFrame(env, capacity);
+}
+
+jobject _GoJniPopLocalFrame(JNIEnv *env, jobject result)
+{
+	return (*env)->PopLocalFrame(env, result);
+}
+
+jobject _GoJniNewGlobalRef(JNIEnv *env, jobject lobj)
+{
+	return (*env)->NewGlobalRef(env, lobj);
+}
+
+void _GoJniDeleteGlobalRef(JNIEnv *env, jobject gref)
+{
+	return (*env)->DeleteGlobalRef(env, gref);
+}
+
+void _GoJniDeleteLocalRef(JNIEnv *env, jobject obj)
+{
+	return (*env)->DeleteLocalRef(env, obj);
+}
+
+jboolean _GoJniIsSameObject(JNIEnv *env, jobject obj1, jobject obj2)
+{
+	return (*env)->IsSameObject(env, obj1, obj2);
+}
+
+jobject _GoJniNewLocalRef(JNIEnv *env, jobject ref)
+{
+	return (*env)->NewLocalRef(env, ref);
+}
+
+jint _GoJniEnsureLocalCapacity(JNIEnv *env, jint capacity)
+{
+	return (*env)->EnsureLocalCapacity(env, capacity);
+}
+
+jobject _GoJniAllocObject(JNIEnv *env, jclass clazz)
+{
+	return (*env)->AllocObject(env, clazz);
+}
+
+jobject _GoJniNewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args)
+{
+	return (*env)->NewObjectA(env, clazz, methodID, args);
+}
+
+jclass _GoJniGetObjectClass(JNIEnv *env, jobject obj)
+{
+	return (*env)->GetObjectClass(env, obj);
+}
+
+jboolean _GoJniIsInstanceOf(JNIEnv *env, jobject obj, jclass clazz)
+{
+	return (*env)->IsInstanceOf(env, obj, clazz);
+}
+
+
+
+
+
 jmethodID _GoJniGetStaticMethodID(JNIEnv *env, jclass class, const char *name, const char *sig)
 {
 	return (*env)->GetStaticMethodID(env, class, name, sig);

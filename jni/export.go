@@ -292,6 +292,121 @@ func ToReflectedField(env *C.JNIEnv, cls C.jclass, fieldID C.jfieldID, isStatic 
 
 
 
+
+
+
+// jni.h:
+//     jint (JNICALL *Throw)(JNIEnv *env, jthrowable obj);
+func Throw(env *C.JNIEnv, obj C.jthrowable) C.jint {
+	return C._GoJniThrow(env, obj)
+}
+
+// jni.h:
+//     jint (JNICALL *ThrowNew)(JNIEnv *env, jclass clazz, const char *msg);
+func ThrowNew(env *C.JNIEnv, clazz C.jclass, msg *C.char) C.jint {
+	return C._GoJniThrowNew(env, clazz, msg)
+}
+
+// jni.h:
+//     jthrowable (JNICALL *ExceptionOccurred)(JNIEnv *env);
+func ExceptionOccurred(env *C.JNIEnv) C.jthrowable {
+	return C._GoJniExceptionOccurred(env)
+}
+
+// jni.h:
+//     void (JNICALL *ExceptionDescribe)(JNIEnv *env);
+func ExceptionDescribe(env *C.JNIEnv) {
+	C._GoJniExceptionDescribe(env)
+}
+
+// jni.h:
+//     void (JNICALL *ExceptionClear)(JNIEnv *env);
+func ExceptionClear(env *C.JNIEnv) {
+	C._GoJniExceptionClear(env)
+}
+
+// jni.h:
+//     void (JNICALL *FatalError)(JNIEnv *env, const char *msg);
+func FatalError(env *C.JNIEnv, msg *C.char) {
+	C._GoJniFatalError(env, msg)
+}
+
+// jni.h:
+//     jint (JNICALL *PushLocalFrame)(JNIEnv *env, jint capacity);
+func PushLocalFrame(env *C.JNIEnv, capacity C.jint) C.jint {
+	return C._GoJniPushLocalFrame(env, capacity)
+}
+
+// jni.h:
+//     jobject (JNICALL *PopLocalFrame)(JNIEnv *env, jobject result);
+func PopLocalFrame(env *C.JNIEnv, result C.jobject) C.jobject {
+	return C._GoJniPopLocalFrame(env, result)
+}
+
+// jni.h:
+//     jobject (JNICALL *NewGlobalRef)(JNIEnv *env, jobject lobj);
+func NewGlobalRef(env *C.JNIEnv, lobj C.jobject) C.jobject {
+	return C._GoJniNewGlobalRef(env, lobj)
+}
+
+// jni.h:
+//     void (JNICALL *DeleteGlobalRef)(JNIEnv *env, jobject gref);
+func DeleteGlobalRef(env *C.JNIEnv, gref C.jobject) {
+	C._GoJniDeleteGlobalRef(env, gref)
+}
+
+// jni.h:
+//     void (JNICALL *DeleteLocalRef)(JNIEnv *env, jobject obj);
+func DeleteLocalRef(env *C.JNIEnv, obj C.jobject) {
+	C._GoJniDeleteLocalRef(env, obj)
+}
+
+// jni.h:
+//     jboolean (JNICALL *IsSameObject)(JNIEnv *env, jobject obj1, jobject obj2);
+func IsSameObject(env *C.JNIEnv, obj1, obj2 C.jobject) C.jboolean {
+	return C._GoJniIsSameObject(env, obj1, obj2)
+}
+
+// jni.h:
+//     jobject (JNICALL *NewLocalRef)(JNIEnv *env, jobject ref);
+func NewLocalRef(env *C.JNIEnv, ref C.jobject) C.jobject {
+	return C._GoJniNewLocalRef(env, ref)
+}
+
+// jni.h:
+//     jint (JNICALL *EnsureLocalCapacity)(JNIEnv *env, jint capacity);
+func EnsureLocalCapacity(env *C.JNIEnv, capacity C.jint) C.jint {
+	return C._GoJniEnsureLocalCapacity(env, capacity)
+}
+
+// jni.h:
+//     jobject (JNICALL *AllocObject)(JNIEnv *env, jclass clazz);
+func AllocObject(env *C.JNIEnv, clazz C.jclass) C.jobject {
+	return C._GoJniAllocObject(env, clazz)
+}
+
+// jni.h:
+//     jobject (JNICALL *NewObject)(JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+//     jobject (JNICALL *NewObjectV)(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+//     jobject (JNICALL *NewObjectA)(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+func NewObjectA(env *C.JNIEnv, clazz C.jclass, methodID C.jmethodID, args *C.jvalue) C.jobject {
+	return C._GoJniNewObjectA(env, clazz, methodID, args)
+}
+
+// jni.h:
+//     jclass (JNICALL *GetObjectClass)(JNIEnv *env, jobject obj);
+func GetObjectClass(env *C.JNIEnv, obj C.jobject) C.jclass {
+	return C._GoJniGetObjectClass(env, obj)
+}
+
+// jni.h:
+//     jboolean (JNICALL *IsInstanceOf)(JNIEnv *env, jobject obj, jclass clazz);
+func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
+	return C._GoJniIsInstanceOf(env, obj, clazz)
+}
+
+
+
 type Env struct {
 	peer *C.JNIEnv
 }
