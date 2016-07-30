@@ -35,7 +35,6 @@ func (s RangeIntStream) Filter(predicate func(int) bool) IntStream {
 		out := make(chan int)
 		go func() {
 			defer close(out)
-		outer:
 			var cmp func(int, int) bool
 			if s.step >= 0 {
 				cmp = func(a, b int) bool {
@@ -46,6 +45,7 @@ func (s RangeIntStream) Filter(predicate func(int) bool) IntStream {
 					return a > b
 				}
 			}
+		outer:
 			for e := s.begin; cmp(e, s.end); e += s.step {
 				if !predicate(e) {
 					continue
@@ -69,7 +69,6 @@ func (s RangeIntStream)	Map(mapper func(int) interface{}) Stream {
 		out := make(chan interface{})
 		go func() {
 			defer close(out)
-		outer:
 			var cmp func(int, int) bool
 			if s.step >= 0 {
 				cmp = func(a, b int) bool {
@@ -80,6 +79,7 @@ func (s RangeIntStream)	Map(mapper func(int) interface{}) Stream {
 					return a > b
 				}
 			}
+		outer:
 			for e := s.begin; cmp(e, s.end); e += s.step {
 				select {
 				case out <- mapper(e):
