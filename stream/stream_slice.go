@@ -21,7 +21,7 @@ func (s SliceStream) Get(index int) interface{} {
 }
 
 func (s SliceStream) Filter(predicate func(interface{}) bool) Stream {
-	return NewBasicStream(func (downstreamSignal <-chan struct{}) <-chan interface{} {
+	return NewBasicStream(func(downstreamSignal <-chan struct{}) <-chan interface{} {
 		out := make(chan interface{})
 		go func() {
 			defer close(out)
@@ -45,7 +45,7 @@ func (s SliceStream) Filter(predicate func(interface{}) bool) Stream {
 }
 
 func (s SliceStream) Map(mapper func(interface{}) interface{}) Stream {
-	return NewBasicStream(func (downstreamSignal <-chan struct{}) <-chan interface{} {
+	return NewBasicStream(func(downstreamSignal <-chan struct{}) <-chan interface{} {
 		out := make(chan interface{})
 		go func() {
 			defer close(out)

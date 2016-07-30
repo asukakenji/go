@@ -20,8 +20,8 @@ func (s SliceIntStream) Get(index int) int {
 	return s.slice[index]
 }
 
-func (s SliceIntStream) Filter(predicate func(int) bool) IntStream {
-	return NewBasicIntStream(func (downstreamSignal <-chan struct{}) <-chan int {
+func (s SliceIntStream) FilterInt(predicate func(int) bool) IntStream {
+	return NewBasicIntStream(func(downstreamSignal <-chan struct{}) <-chan int {
 		out := make(chan int)
 		go func() {
 			defer close(out)
@@ -44,8 +44,8 @@ func (s SliceIntStream) Filter(predicate func(int) bool) IntStream {
 	})
 }
 
-func (s SliceIntStream) Map(mapper func(int) interface{}) Stream {
-	return NewBasicStream(func (downstreamSignal <-chan struct{}) <-chan interface{} {
+func (s SliceIntStream) MapInt(mapper func(int) interface{}) Stream {
+	return NewBasicStream(func(downstreamSignal <-chan struct{}) <-chan interface{} {
 		out := make(chan interface{})
 		go func() {
 			defer close(out)
@@ -65,8 +65,28 @@ func (s SliceIntStream) Map(mapper func(int) interface{}) Stream {
 	})
 }
 
-func (s SliceIntStream) ForEach(consumer func(int)) {
+func (s SliceIntStream) ForEachInt(consumer func(int)) {
 	for _, e := range s.slice {
 		consumer(e)
 	}
+}
+
+// Adapter Methods
+
+func (s SliceIntStream) Filter(predicate func(interface{}) bool) Stream {
+	return s.FilterInt(func(x int) bool {
+		return predicate(x)
+	})
+}
+
+func (s SliceIntStream) Map(mapper func(interface{}) interface{}) Stream {
+	return s.MapInt(func(x int) interface{} {
+		return mapper(x)
+	})
+}
+
+func (s SliceIntStream) ForEach(consumer func(interface{})) {
+	s.ForEachInt(func(x int) {
+		consumer(x)
+	})
 }

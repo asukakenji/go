@@ -1,7 +1,8 @@
 package stream
 
 type IntStream interface {
-	Filter(predicate func(int) bool) IntStream
-	Map(mapper func(int) interface{}) Stream
-	ForEach(consumer func(int))
+	Stream
+	FilterInt(predicate func(int) bool) IntStream
+	MapInt(mapper func(int) interface{}) Stream
+	ForEachInt(consumer func(int))
 }

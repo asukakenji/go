@@ -8,16 +8,13 @@ func NewBasicIntStream(openUpstreamFunc func(<-chan struct{}) <-chan int) BasicI
 	return BasicIntStream{openUpstreamFunc}
 }
 
-func (s BasicIntStream) Filter(predicate func(int) bool) IntStream {
-	return NewBasicIntStream(func (downstreamSignal <-chan struct{}) <-chan int {
-		signal := make(chan struct{})
-		in := s.openUpstreamFunc(signal)
-		in2 := in
-		out := (chan int)(nil)
-		out2 := make(chan int)
+func (s BasicIntStream) FilterInt(predicate func(int) bool) IntStream {
+	return NewBasicIntStream(func(downstreamSignal <-chan struct{}) <-chan int {
+		signal, in, inBackup := s.prepareInChannels()
+		out, outBackup, outForReturn := prepareIntOutChannels()
 		go func() {
 			defer close(signal)
-			defer close(out2)
+			defer close(outBackup)
 			var e int
 		outer:
 			for {
@@ -30,9 +27,9 @@ func (s BasicIntStream) Filter(predicate func(int) bool) IntStream {
 						continue
 					}
 					e = v
-					in, out = nil, out2
+					in, out = nil, outBackup
 				case out <- e:
-					in, out = in2, nil
+					in, out = inBackup, nil
 				case _, ok := <-downstreamSignal:
 					if !ok {
 						break outer
@@ -40,20 +37,17 @@ func (s BasicIntStream) Filter(predicate func(int) bool) IntStream {
 				}
 			}
 		}()
-		return out2
+		return outForReturn
 	})
 }
 
-func (s BasicIntStream) Map(mapper func(int) interface{}) Stream {
-	return NewBasicStream(func (downstreamSignal <-chan struct{}) <-chan interface{} {
-		signal := make(chan struct{})
-		in := s.openUpstreamFunc(signal)
-		in2 := in
-		out := (chan interface{})(nil)
-		out2 := make(chan interface{})
+func (s BasicIntStream) MapInt(mapper func(int) interface{}) Stream {
+	return NewBasicStream(func(downstreamSignal <-chan struct{}) <-chan interface{} {
+		signal, in, inBackup := s.prepareInChannels()
+		out, outBackup, outForReturn := prepareOutChannels()
 		go func() {
 			defer close(signal)
-			defer close(out2)
+			defer close(outBackup)
 			var e interface{}
 		outer:
 			for {
@@ -63,9 +57,9 @@ func (s BasicIntStream) Map(mapper func(int) interface{}) Stream {
 						break outer
 					}
 					e = mapper(v)
-					in, out = nil, out2
+					in, out = nil, outBackup
 				case out <- e:
-					in, out = in2, nil
+					in, out = inBackup, nil
 				case _, ok := <-downstreamSignal:
 					if !ok {
 						break outer
@@ -73,15 +67,42 @@ func (s BasicIntStream) Map(mapper func(int) interface{}) Stream {
 				}
 			}
 		}()
-		return out2
+		return outForReturn
 	})
 }
 
-func (s BasicIntStream) ForEach(consumer func(int)) {
-	signal := make(chan struct{})
-	in := s.openUpstreamFunc(signal)
+func (s BasicIntStream) ForEachInt(consumer func(int)) {
+	signal, in, _ := s.prepareInChannels()
 	defer close(signal)
 	for v := range in {
 		consumer(v)
 	}
+}
+
+// Adapter Methods
+
+func (s BasicIntStream) Filter(predicate func(interface{}) bool) Stream {
+	return s.FilterInt(func(x int) bool {
+		return predicate(x)
+	})
+}
+
+func (s BasicIntStream) Map(mapper func(interface{}) interface{}) Stream {
+	return s.MapInt(func(x int) interface{} {
+		return mapper(x)
+	})
+}
+
+func (s BasicIntStream) ForEach(consumer func(interface{})) {
+	s.ForEachInt(func(x int) {
+		consumer(x)
+	})
+}
+
+// Helper Methods
+
+func (s BasicIntStream) prepareInChannels() (signal chan<- struct{}, in, inBackup <-chan int) {
+	signalBackup := make(chan struct{})
+	inCommon := s.openUpstreamFunc(signalBackup)
+	return signalBackup, inCommon, inCommon
 }
