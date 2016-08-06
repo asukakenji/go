@@ -33,10 +33,10 @@ END {
 	name = ""
 	family = ""
 	declaration = ""
-	j = 0
-	for (i in declarations) {
-		declaration = declarations[j]
-		next_declaration = declarations[j+1]
+	j = length(declarations)
+	for (i = 0; i < j; ++i) {
+		declaration = declarations[i]
+		next_declaration = declarations[i+1]
 		name = get_name(declaration)
 		next_name = get_name(next_declaration)
 		if (next_name == name "V") {
@@ -60,7 +60,6 @@ END {
 			print declaration
 			print ""
 		}
-		j++
 	}
 
 	# Ending Stub
