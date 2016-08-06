@@ -2,7 +2,8 @@ package main
 
 // #include "Main.h"
 //
-// #include "bridge.h"
+// #include "jnienv.h"
+// #include "jvalue.h"
 //
 // // JNIEnv, jclass
 // #include <jni.h>
@@ -27,7 +28,7 @@ func test2(env *C.JNIEnv, clazz C.jclass) {
 	WithCString("test2", func(c_name *C.char) {
 		WithCString("()V", func(c_sig *C.char) {
 			if mid := C._GoJniGetStaticMethodID(env, clazz, c_name, c_sig); mid != nil {
-				C._GoJniCallStaticVoidMethod(env, clazz, mid)
+				C._GoJniCallStaticVoidMethodA(env, clazz, mid, nil)
 			}
 		})
 	})
@@ -152,7 +153,89 @@ func (ref JWeak) Peer() C.jweak {
 //         jdouble  d;
 //         jobject  l;
 //     } jvalue;
-/* Not Implemented */
+type JValue struct {
+	peer C.jvalue
+}
+
+func NewJValue(peer C.jvalue) JValue {
+	return JValue{peer}
+}
+
+func (value JValue) Peer() C.jvalue {
+	return value.peer
+}
+
+func (value JValue) JBoolean() C.jboolean {
+	return C._GoJniJValueGetJBoolean(value.peer)
+}
+
+func (value JValue) JByte() C.jbyte {
+	return C._GoJniJValueGetJByte(value.peer)
+}
+
+func (value JValue) JChar() C.jchar {
+	return C._GoJniJValueGetJChar(value.peer)
+}
+
+func (value JValue) JShort() C.jshort {
+	return C._GoJniJValueGetJShort(value.peer)
+}
+
+func (value JValue) JInt() C.jint {
+	return C._GoJniJValueGetJInt(value.peer)
+}
+
+func (value JValue) JLong() C.jlong {
+	return C._GoJniJValueGetJLong(value.peer)
+}
+
+func (value JValue) JFloat() C.jfloat {
+	return C._GoJniJValueGetJFloat(value.peer)
+}
+
+func (value JValue) JDouble() C.jdouble {
+	return C._GoJniJValueGetJDouble(value.peer)
+}
+
+func (value JValue) JObject() C.jobject {
+	return C._GoJniJValueGetJObject(value.peer)
+}
+
+func JValueFromJBoolean(z C.jboolean) JValue {
+	return JValue{C._GoJniJValueFromJBoolean(z)}
+}
+
+func JValueFromJByte(b C.jbyte) JValue {
+	return JValue{C._GoJniJValueFromJByte(b)}
+}
+
+func JValueFromJChar(c C.jchar) JValue {
+	return JValue{C._GoJniJValueFromJChar(c)}
+}
+
+func JValueFromJShort(s C.jshort) JValue {
+	return JValue{C._GoJniJValueFromJShort(s)}
+}
+
+func JValueFromJInt(i C.jint) JValue {
+	return JValue{C._GoJniJValueFromJInt(i)}
+}
+
+func JValueFromJLong(j C.jlong) JValue {
+	return JValue{C._GoJniJValueFromJLong(j)}
+}
+
+func JValueFromJFloat(f C.jfloat) JValue {
+	return JValue{C._GoJniJValueFromJFloat(f)}
+}
+
+func JValueFromJDouble(d C.jdouble) JValue {
+	return JValue{C._GoJniJValueFromJDouble(d)}
+}
+
+func JValueFromJObject(l C.jobject) JValue {
+	return JValue{C._GoJniJValueFromJObject(l)}
+}
 
 // jni.h:
 //     struct _jfieldID;
