@@ -38,8 +38,8 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # 		Build the listed main packages and everything they import into
 # 		executables. Packages not named main are ignored.
 
-javac -sourcepath "${DIR}" -d "${DIR}" Main.java
-javah -classpath "${DIR}" -d "${DIR}" Main
+javac -sourcepath "${DIR}" -d "${DIR}" "${DIR}/Main.java"
+javah -classpath "${DIR}" -d "${DIR}/.." Main
 
 # This does NOT work because *.c files have to be built.
 # C sources cannot be built via listing as arguments.
