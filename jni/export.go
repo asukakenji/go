@@ -165,76 +165,148 @@ func (value JValue) Peer() C.jvalue {
 	return value.peer
 }
 
-func (value JValue) JBoolean() C.jboolean {
-	return C._GoJniJValueGetJBoolean(value.peer)
+func JValueToJBoolean(v C.jvalue) C.jboolean {
+	return C._GoJniJValueToJBoolean(v)
 }
 
-func (value JValue) JByte() C.jbyte {
-	return C._GoJniJValueGetJByte(value.peer)
+func JValueToJByte(v C.jvalue) C.jbyte {
+	return C._GoJniJValueToJByte(v)
 }
 
-func (value JValue) JChar() C.jchar {
-	return C._GoJniJValueGetJChar(value.peer)
+func JValueToJChar(v C.jvalue) C.jchar {
+	return C._GoJniJValueToJChar(v)
 }
 
-func (value JValue) JShort() C.jshort {
-	return C._GoJniJValueGetJShort(value.peer)
+func JValueToJShort(v C.jvalue) C.jshort {
+	return C._GoJniJValueToJShort(v)
 }
 
-func (value JValue) JInt() C.jint {
-	return C._GoJniJValueGetJInt(value.peer)
+func JValueToJInt(v C.jvalue) C.jint {
+	return C._GoJniJValueToJInt(v)
 }
 
-func (value JValue) JLong() C.jlong {
-	return C._GoJniJValueGetJLong(value.peer)
+func JValueToJLong(v C.jvalue) C.jlong {
+	return C._GoJniJValueToJLong(v)
 }
 
-func (value JValue) JFloat() C.jfloat {
-	return C._GoJniJValueGetJFloat(value.peer)
+func JValueToJFloat(v C.jvalue) C.jfloat {
+	return C._GoJniJValueToJFloat(v)
 }
 
-func (value JValue) JDouble() C.jdouble {
-	return C._GoJniJValueGetJDouble(value.peer)
+func JValueToJDouble(v C.jvalue) C.jdouble {
+	return C._GoJniJValueToJDouble(v)
 }
 
-func (value JValue) JObject() C.jobject {
-	return C._GoJniJValueGetJObject(value.peer)
+func JValueToJObject(v C.jvalue) C.jobject {
+	return C._GoJniJValueToJObject(v)
 }
 
-func JValueFromJBoolean(z C.jboolean) JValue {
-	return JValue{C._GoJniJValueFromJBoolean(z)}
+func JBooleanToJValue(z C.jboolean) C.jvalue {
+	return C._GoJniJBooleanToJValue(z)
 }
 
-func JValueFromJByte(b C.jbyte) JValue {
-	return JValue{C._GoJniJValueFromJByte(b)}
+func JByteToJValue(b C.jbyte) C.jvalue {
+	return C._GoJniJByteToJValue(b)
 }
 
-func JValueFromJChar(c C.jchar) JValue {
-	return JValue{C._GoJniJValueFromJChar(c)}
+func JCharToJValue(c C.jchar) C.jvalue {
+	return C._GoJniJCharToJValue(c)
 }
 
-func JValueFromJShort(s C.jshort) JValue {
-	return JValue{C._GoJniJValueFromJShort(s)}
+func JShortToJValue(s C.jshort) C.jvalue {
+	return C._GoJniJShortToJValue(s)
 }
 
-func JValueFromJInt(i C.jint) JValue {
-	return JValue{C._GoJniJValueFromJInt(i)}
+func JIntToJValue(i C.jint) C.jvalue {
+	return C._GoJniJIntToJValue(i)
 }
 
-func JValueFromJLong(j C.jlong) JValue {
-	return JValue{C._GoJniJValueFromJLong(j)}
+func JLongToJValue(j C.jlong) C.jvalue {
+	return C._GoJniJLongToJValue(j)
 }
 
-func JValueFromJFloat(f C.jfloat) JValue {
-	return JValue{C._GoJniJValueFromJFloat(f)}
+func JFloatToJValue(f C.jfloat) C.jvalue {
+	return C._GoJniJFloatToJValue(f)
 }
 
-func JValueFromJDouble(d C.jdouble) JValue {
-	return JValue{C._GoJniJValueFromJDouble(d)}
+func JDoubleToJValue(d C.jdouble) C.jvalue {
+	return C._GoJniJDoubleToJValue(d)
 }
 
-func JValueFromJObject(l C.jobject) JValue {
-	return JValue{C._GoJniJValueFromJObject(l)}
+func JObjectToJValue(l C.jobject) C.jvalue {
+	return C._GoJniJObjectToJValue(l)
+}
+
+func (value JValue) Bool() bool {
+	return GoBool(JValueToJBoolean(value.peer))
+}
+
+func (value JValue) Int8() int8 {
+	return GoInt8(JValueToJByte(value.peer))
+}
+
+func (value JValue) UInt16() uint16 {
+	return GoUInt16(JValueToJChar(value.peer))
+}
+
+func (value JValue) Int16() int16 {
+	return GoInt16(JValueToJShort(value.peer))
+}
+
+func (value JValue) Int32() int32 {
+	return GoInt32(JValueToJInt(value.peer))
+}
+
+func (value JValue) Int64() int64 {
+	return GoInt64(JValueToJLong(value.peer))
+}
+
+func (value JValue) Float32() float32 {
+	return GoFloat32(JValueToJFloat(value.peer))
+}
+
+func (value JValue) Float64() float64 {
+	return GoFloat64(JValueToJDouble(value.peer))
+}
+
+func (value JValue) JObject() JObject {
+	return NewJObject(JValueToJObject(value.peer))
+}
+
+func JValueFromBool(z bool) JValue {
+	return JValue{JBooleanToJValue(JavaBoolean(z))}
+}
+
+func JValueFromInt8(b int8) JValue {
+	return JValue{JByteToJValue(JavaByte(b))}
+}
+
+func JValueFromUInt16(c uint16) JValue {
+	return JValue{JCharToJValue(JavaChar(c))}
+}
+
+func JValueFromInt16(s int16) JValue {
+	return JValue{JShortToJValue(JavaShort(s))}
+}
+
+func JValueFromInt32(i int32) JValue {
+	return JValue{JIntToJValue(JavaInt(i))}
+}
+
+func JValueFromInt64(j int64) JValue {
+	return JValue{JLongToJValue(JavaLong(j))}
+}
+
+func JValueFromFloat32(f float32) JValue {
+	return JValue{JFloatToJValue(JavaFloat(f))}
+}
+
+func JValueFromFloat64(d float64) JValue {
+	return JValue{JDoubleToJValue(JavaDouble(d))}
+}
+
+func JValueFromJObject(l JObject) JValue {
+	return JValue{JObjectToJValue(l.Peer())}
 }
 
 // jni.h:
@@ -386,7 +458,7 @@ func GetVersion(env *C.JNIEnv) C.jint {
 }
 
 func (env JNIEnv) GetVersion() int32 {
-	return int32(GetVersion(env.Peer()))
+	return GoInt32(GetVersion(env.Peer()))
 }
 
 // jni.h:
@@ -481,7 +553,7 @@ func Throw(env *C.JNIEnv, obj C.jthrowable) C.jint {
 }
 
 func (env JNIEnv) Throw(obj JThrowable) int32 {
-	return int32(Throw(env.Peer(), obj.Peer()))
+	return GoInt32(Throw(env.Peer(), obj.Peer()))
 }
 
 // jni.h:
@@ -495,7 +567,7 @@ func (env JNIEnv) ThrowNew(clazz JClass, msg string) int32 {
 	WithCString(msg, func(c_msg *C.char) {
 		result = ThrowNew(env.Peer(), clazz.Peer(), c_msg)
 	})
-	return int32(result)
+	return GoInt32(result)
 }
 
 // jni.h:
@@ -547,7 +619,7 @@ func PushLocalFrame(env *C.JNIEnv, capacity C.jint) C.jint {
 }
 
 func (env JNIEnv) PushLocalFrame(capacity int32) int32 {
-	return int32(PushLocalFrame(env.Peer(), C.jint(capacity)))
+	return GoInt32(PushLocalFrame(env.Peer(), C.jint(capacity)))
 }
 
 // jni.h:
@@ -617,7 +689,7 @@ func EnsureLocalCapacity(env *C.JNIEnv, capacity C.jint) C.jint {
 }
 
 func (env JNIEnv) EnsureLocalCapacity(capacity int32) int32 {
-	return int32(EnsureLocalCapacity(env.Peer(), C.jint(capacity)))
+	return GoInt32(EnsureLocalCapacity(env.Peer(), C.jint(capacity)))
 }
 
 // jni.h:
@@ -1128,18 +1200,76 @@ const (
 	JNI_VERSION_1_8 = C.JNI_VERSION_1_8
 )
 
-/* Support Functions */
+/* Support Functions - Primitive Conversion */
 
-func JavaBoolean(b bool) C.jboolean {
-	if b {
+func JavaBoolean(z bool) C.jboolean {
+	if z {
 		return JNI_TRUE
 	}
 	return JNI_FALSE
 }
 
+func JavaByte(b int8) C.jbyte {
+	return C.jbyte(b)
+}
+
+func JavaChar(c uint16) C.jchar {
+	return C.jchar(c)
+}
+
+func JavaShort(s int16) C.jshort {
+	return C.jshort(s)
+}
+
+func JavaInt(i int32) C.jint {
+	return C.jint(i)
+}
+
+func JavaLong(j int64) C.jlong {
+	return C.jlong(j)
+}
+
+func JavaFloat(f float32) C.jfloat {
+	return C.jfloat(f)
+}
+
+func JavaDouble(d float64) C.jdouble {
+	return C.jdouble(d)
+}
+
 func GoBool(z C.jboolean) bool {
 	return z != JNI_FALSE
 }
+
+func GoInt8(b C.jbyte) int8 {
+	return int8(b)
+}
+
+func GoUInt16(c C.jchar) uint16 {
+	return uint16(c)
+}
+
+func GoInt16(s C.jshort) int16 {
+	return int16(s)
+}
+
+func GoInt32(i C.jint) int32 {
+	return int32(i)
+}
+
+func GoInt64(j C.jlong) int64 {
+	return int64(j)
+}
+
+func GoFloat32(f C.jfloat) float32 {
+	return float32(f)
+}
+
+func GoFloat64(d C.jdouble) float64 {
+	return float64(d)
+}
+
+/* Support Functions - String Conversion */
 
 // For example, see:
 //     src/net/cgo_unix.go

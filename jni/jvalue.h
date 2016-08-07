@@ -3,7 +3,7 @@
 
 #include <jni.h>
 
-// jni.h
+// jni.h:
 // typedef union jvalue {
 //     jboolean z;
 //     jbyte    b;
@@ -16,24 +16,24 @@
 //     jobject  l;
 // } jvalue;
 
-jboolean _GoJniJValueGetJBoolean(jvalue v);
-jbyte _GoJniJValueGetJByte(jvalue v);
-jchar _GoJniJValueGetJChar(jvalue v);
-jshort _GoJniJValueGetJShort(jvalue v);
-jint _GoJniJValueGetJInt(jvalue v);
-jlong _GoJniJValueGetJLong(jvalue v);
-jfloat _GoJniJValueGetJFloat(jvalue v);
-jdouble _GoJniJValueGetJDouble(jvalue v);
-jobject _GoJniJValueGetJObject(jvalue v);
+jboolean _GoJniJValueToJBoolean(jvalue v);
+jbyte _GoJniJValueToJByte(jvalue v);
+jchar _GoJniJValueToJChar(jvalue v);
+jshort _GoJniJValueToJShort(jvalue v);
+jint _GoJniJValueToJInt(jvalue v);
+jlong _GoJniJValueToJLong(jvalue v);
+jfloat _GoJniJValueToJFloat(jvalue v);
+jdouble _GoJniJValueToJDouble(jvalue v);
+jobject _GoJniJValueToJObject(jvalue v);
 
-jvalue _GoJniJValueFromJBoolean(jboolean z);
-jvalue _GoJniJValueFromJByte(jbyte b);
-jvalue _GoJniJValueFromJChar(jchar c);
-jvalue _GoJniJValueFromJShort(jshort s);
-jvalue _GoJniJValueFromJInt(jint i);
-jvalue _GoJniJValueFromJLong(jlong j);
-jvalue _GoJniJValueFromJFloat(jfloat f);
-jvalue _GoJniJValueFromJDouble(jdouble d);
-jvalue _GoJniJValueFromJObject(jobject l);
+jvalue _GoJniJBooleanToJValue(jboolean z);
+jvalue _GoJniJByteToJValue(jbyte b);
+jvalue _GoJniJCharToJValue(jchar c);
+jvalue _GoJniJShortToJValue(jshort s);
+jvalue _GoJniJIntToJValue(jint i);
+jvalue _GoJniJLongToJValue(jlong j);
+jvalue _GoJniJFloatToJValue(jfloat f);
+jvalue _GoJniJDoubleToJValue(jdouble d);
+jvalue _GoJniJObjectToJValue(jobject l);
 
 #endif // #ifndef _GO_JNI_JVALUE_H_
