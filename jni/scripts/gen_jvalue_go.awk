@@ -58,26 +58,26 @@ END {
 
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print "func JValueTo" capitalize(types[i], 2) "(v C.jvalue) C." types[i] " {"
-		print "\treturn C._GoJniJValueTo" capitalize(types[i], 2) "(v)"
-		print "}"
-	}
-	for (i = 1; i <= length(types); i++) {
-		print ""
 		print "func " capitalize(types[i], 2) "ToJValue(" names[i] " C." types[i] ") C.jvalue {"
 		print "\treturn C._GoJni" capitalize(types[i], 2) "ToJValue(" names[i] ")"
 		print "}"
 	}
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print "func (value JValue) " capitalize(j_to_g_map[types[i]], 1) "() " j_to_g_map[types[i]] " {"
-		print "\treturn " wrap(types[i], "JValueTo" capitalize(types[i], 2) "(value.peer)")
+		print "func JValueTo" capitalize(types[i], 2) "(v C.jvalue) C." types[i] " {"
+		print "\treturn C._GoJniJValueTo" capitalize(types[i], 2) "(v)"
 		print "}"
 	}
 	for (i = 1; i <= length(types); i++) {
 		print ""
 		print "func JValueFrom" capitalize(j_to_g_map[types[i]], 1) "(" names[i] " " j_to_g_map[types[i]] ") JValue {"
 		print "\treturn JValue{" capitalize(types[i], 2) "ToJValue(" unwrap(types[i], names[i]) ")}"
+		print "}"
+	}
+	for (i = 1; i <= length(types); i++) {
+		print ""
+		print "func (value JValue) " capitalize(j_to_g_map[types[i]], 1) "() " j_to_g_map[types[i]] " {"
+		print "\treturn " wrap(types[i], "JValueTo" capitalize(types[i], 2) "(value.peer)")
 		print "}"
 	}
 }

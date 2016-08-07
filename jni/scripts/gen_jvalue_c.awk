@@ -25,17 +25,17 @@ END {
 
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print types[i] " _GoJniJValueTo" capitalize(types[i], 2) "(jvalue v)"
-		print "{"
-		print "\treturn v." names[i] ";"
-		print "}"
-	}
-	for (i = 1; i <= length(types); i++) {
-		print ""
 		print "jvalue _GoJni" capitalize(types[i], 2) "ToJValue(" types[i] " " names[i] ")"
 		print "{"
 		print "\tjvalue v = {." names[i] " = " names[i] "};"
 		print "\treturn v;"
+		print "}"
+	}
+	for (i = 1; i <= length(types); i++) {
+		print ""
+		print types[i] " _GoJniJValueTo" capitalize(types[i], 2) "(jvalue v)"
+		print "{"
+		print "\treturn v." names[i] ";"
 		print "}"
 	}
 }

@@ -3,42 +3,6 @@ package main
 // #include "jvalue.h"
 import "C"
 
-func JValueToJBoolean(v C.jvalue) C.jboolean {
-	return C._GoJniJValueToJBoolean(v)
-}
-
-func JValueToJByte(v C.jvalue) C.jbyte {
-	return C._GoJniJValueToJByte(v)
-}
-
-func JValueToJChar(v C.jvalue) C.jchar {
-	return C._GoJniJValueToJChar(v)
-}
-
-func JValueToJShort(v C.jvalue) C.jshort {
-	return C._GoJniJValueToJShort(v)
-}
-
-func JValueToJInt(v C.jvalue) C.jint {
-	return C._GoJniJValueToJInt(v)
-}
-
-func JValueToJLong(v C.jvalue) C.jlong {
-	return C._GoJniJValueToJLong(v)
-}
-
-func JValueToJFloat(v C.jvalue) C.jfloat {
-	return C._GoJniJValueToJFloat(v)
-}
-
-func JValueToJDouble(v C.jvalue) C.jdouble {
-	return C._GoJniJValueToJDouble(v)
-}
-
-func JValueToJObject(v C.jvalue) C.jobject {
-	return C._GoJniJValueToJObject(v)
-}
-
 func JBooleanToJValue(z C.jboolean) C.jvalue {
 	return C._GoJniJBooleanToJValue(z)
 }
@@ -75,40 +39,40 @@ func JObjectToJValue(l C.jobject) C.jvalue {
 	return C._GoJniJObjectToJValue(l)
 }
 
-func (value JValue) Bool() bool {
-	return GoBool(JValueToJBoolean(value.peer))
+func JValueToJBoolean(v C.jvalue) C.jboolean {
+	return C._GoJniJValueToJBoolean(v)
 }
 
-func (value JValue) Int8() int8 {
-	return GoInt8(JValueToJByte(value.peer))
+func JValueToJByte(v C.jvalue) C.jbyte {
+	return C._GoJniJValueToJByte(v)
 }
 
-func (value JValue) Uint16() uint16 {
-	return GoUint16(JValueToJChar(value.peer))
+func JValueToJChar(v C.jvalue) C.jchar {
+	return C._GoJniJValueToJChar(v)
 }
 
-func (value JValue) Int16() int16 {
-	return GoInt16(JValueToJShort(value.peer))
+func JValueToJShort(v C.jvalue) C.jshort {
+	return C._GoJniJValueToJShort(v)
 }
 
-func (value JValue) Int32() int32 {
-	return GoInt32(JValueToJInt(value.peer))
+func JValueToJInt(v C.jvalue) C.jint {
+	return C._GoJniJValueToJInt(v)
 }
 
-func (value JValue) Int64() int64 {
-	return GoInt64(JValueToJLong(value.peer))
+func JValueToJLong(v C.jvalue) C.jlong {
+	return C._GoJniJValueToJLong(v)
 }
 
-func (value JValue) Float32() float32 {
-	return GoFloat32(JValueToJFloat(value.peer))
+func JValueToJFloat(v C.jvalue) C.jfloat {
+	return C._GoJniJValueToJFloat(v)
 }
 
-func (value JValue) Float64() float64 {
-	return GoFloat64(JValueToJDouble(value.peer))
+func JValueToJDouble(v C.jvalue) C.jdouble {
+	return C._GoJniJValueToJDouble(v)
 }
 
-func (value JValue) JObject() JObject {
-	return NewJObject(JValueToJObject(value.peer))
+func JValueToJObject(v C.jvalue) C.jobject {
+	return C._GoJniJValueToJObject(v)
 }
 
 func JValueFromBool(z bool) JValue {
@@ -145,4 +109,40 @@ func JValueFromFloat64(d float64) JValue {
 
 func JValueFromJObject(l JObject) JValue {
 	return JValue{JObjectToJValue(l.Peer())}
+}
+
+func (value JValue) Bool() bool {
+	return GoBool(JValueToJBoolean(value.peer))
+}
+
+func (value JValue) Int8() int8 {
+	return GoInt8(JValueToJByte(value.peer))
+}
+
+func (value JValue) Uint16() uint16 {
+	return GoUint16(JValueToJChar(value.peer))
+}
+
+func (value JValue) Int16() int16 {
+	return GoInt16(JValueToJShort(value.peer))
+}
+
+func (value JValue) Int32() int32 {
+	return GoInt32(JValueToJInt(value.peer))
+}
+
+func (value JValue) Int64() int64 {
+	return GoInt64(JValueToJLong(value.peer))
+}
+
+func (value JValue) Float32() float32 {
+	return GoFloat32(JValueToJFloat(value.peer))
+}
+
+func (value JValue) Float64() float64 {
+	return GoFloat64(JValueToJDouble(value.peer))
+}
+
+func (value JValue) JObject() JObject {
+	return NewJObject(JValueToJObject(value.peer))
 }

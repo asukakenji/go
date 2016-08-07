@@ -34,11 +34,11 @@ END {
 	}
 	print ""
 	for (i = 1; i <= length(types); i++) {
-		print types[i] " _GoJniJValueTo" capitalize(types[i], 2) "(jvalue v);"
+		print "jvalue _GoJni" capitalize(types[i], 2) "ToJValue(" types[i] " " names[i] ");"
 	}
 	print ""
 	for (i = 1; i <= length(types); i++) {
-		print "jvalue _GoJni" capitalize(types[i], 2) "ToJValue(" types[i] " " names[i] ");"
+		print types[i] " _GoJniJValueTo" capitalize(types[i], 2) "(jvalue v);"
 	}
 	print ""
 
