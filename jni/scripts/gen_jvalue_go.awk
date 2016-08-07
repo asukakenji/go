@@ -14,11 +14,6 @@ BEGIN {
 	j_to_g_map["jfloat"] = "float32"
 	j_to_g_map["jdouble"] = "float64"
 	j_to_g_map["jobject"] = "JObject"
-
-	# Go to Java Map
-	for (k in j_to_g_map) {
-		g_to_k_map[j_to_g_map[k]] = k
-	}
 }
 
 function capitalize(s, count) {
