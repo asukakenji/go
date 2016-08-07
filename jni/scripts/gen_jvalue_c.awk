@@ -15,8 +15,8 @@ function get_name(line) {
 	return substr($0, RSTART, RLENGTH - 1)
 }
 
-function capitalize_type(type) {
-	return toupper(substr(types[i], 1, 2)) substr(types[i], 3)
+function capitalize(s, count) {
+	return toupper(substr(s, 1, count)) substr(s, count + 1)
 }
 
 END {
@@ -25,14 +25,14 @@ END {
 
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print types[i] " _GoJniJValueTo" capitalize_type(types[i]) "(jvalue v)"
+		print types[i] " _GoJniJValueTo" capitalize(types[i], 2) "(jvalue v)"
 		print "{"
 		print "\treturn v." names[i] ";"
 		print "}"
 	}
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print "jvalue _GoJni" capitalize_type(types[i]) "ToJValue(" types[i] " " names[i] ")"
+		print "jvalue _GoJni" capitalize(types[i], 2) "ToJValue(" types[i] " " names[i] ")"
 		print "{"
 		print "\tjvalue v = {." names[i] " = " names[i] "};"
 		print "\treturn v;"
