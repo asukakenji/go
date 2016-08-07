@@ -129,7 +129,7 @@ func (obj JThrowable) Peer() C.jthrowable {
 //     typedef jarray jobjectArray;
 // type JObjectArray JArray
 
-// jni.h
+// jni.h:
 //     typedef jobject jweak;
 type JWeak JObject
 
@@ -141,7 +141,7 @@ func (ref JWeak) Peer() C.jweak {
 	return C.jweak(ref.peer)
 }
 
-// jni.h
+// jni.h:
 //     typedef union jvalue {
 //         jboolean z;
 //         jbyte    b;
@@ -245,8 +245,8 @@ func (value JValue) Int8() int8 {
 	return GoInt8(JValueToJByte(value.peer))
 }
 
-func (value JValue) UInt16() uint16 {
-	return GoUInt16(JValueToJChar(value.peer))
+func (value JValue) Uint16() uint16 {
+	return GoUint16(JValueToJChar(value.peer))
 }
 
 func (value JValue) Int16() int16 {
@@ -281,7 +281,7 @@ func JValueFromInt8(b int8) JValue {
 	return JValue{JByteToJValue(JavaByte(b))}
 }
 
-func JValueFromUInt16(c uint16) JValue {
+func JValueFromUint16(c uint16) JValue {
 	return JValue{JCharToJValue(JavaChar(c))}
 }
 
@@ -1245,7 +1245,7 @@ func GoInt8(b C.jbyte) int8 {
 	return int8(b)
 }
 
-func GoUInt16(c C.jchar) uint16 {
+func GoUint16(c C.jchar) uint16 {
 	return uint16(c)
 }
 
