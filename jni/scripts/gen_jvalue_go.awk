@@ -1,6 +1,6 @@
 BEGIN {
 	types[1] = ""
-	names[1] = ""
+	fields[1] = ""
 	line_index = 1
 	decl_index = 1
 
@@ -21,32 +21,32 @@ BEGIN {
 	}
 }
 
+function capitalize(s, count) {
+	return toupper(substr(s, 1, count)) substr(s, count + 1)
+}
+
 function get_type(line) {
 	match($0, /^[a-z]+/)
 	return substr($0, RSTART, RLENGTH)
 }
 
-function get_name(line) {
+function get_field(line) {
 	match($0, /[a-z];$/)
 	return substr($0, RSTART, RLENGTH - 1)
 }
 
-function capitalize(s, count) {
-	return toupper(substr(s, 1, count)) substr(s, count + 1)
+function wrap(type, expr) {
+	if (type != "jobject") {
+		return "Go" capitalize(j_to_g_map[type], 1) "(" expr ")"
+	}
+	return "NewJObject(" expr ")"
 }
 
-function wrap(type, name) {
+function unwrap(type, expr) {
 	if (type != "jobject") {
-		return "Go" capitalize(j_to_g_map[type], 1) "(" name ")"
+		return "Java" capitalize(substr(type, 2), 1) "(" expr ")"
 	}
-	return "NewJObject(" name ")"
-}
-
-function unwrap(type, name) {
-	if (type != "jobject") {
-		return "Java" capitalize(substr(type, 2), 1) "(" name ")"
-	}
-	return name ".Peer()"
+	return expr ".Peer()"
 }
 
 END {
@@ -58,8 +58,8 @@ END {
 
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print "func " capitalize(types[i], 2) "ToJValue(" names[i] " C." types[i] ") C.jvalue {"
-		print "\treturn C._GoJni" capitalize(types[i], 2) "ToJValue(" names[i] ")"
+		print "func " capitalize(types[i], 2) "ToJValue(" fields[i] " C." types[i] ") C.jvalue {"
+		print "\treturn C._GoJni" capitalize(types[i], 2) "ToJValue(" fields[i] ")"
 		print "}"
 	}
 	for (i = 1; i <= length(types); i++) {
@@ -70,8 +70,8 @@ END {
 	}
 	for (i = 1; i <= length(types); i++) {
 		print ""
-		print "func JValueFrom" capitalize(j_to_g_map[types[i]], 1) "(" names[i] " " j_to_g_map[types[i]] ") JValue {"
-		print "\treturn JValue{" capitalize(types[i], 2) "ToJValue(" unwrap(types[i], names[i]) ")}"
+		print "func JValueFrom" capitalize(j_to_g_map[types[i]], 1) "(" fields[i] " " j_to_g_map[types[i]] ") JValue {"
+		print "\treturn JValue{" capitalize(types[i], 2) "ToJValue(" unwrap(types[i], fields[i]) ")}"
 		print "}"
 	}
 	for (i = 1; i <= length(types); i++) {
@@ -88,8 +88,8 @@ END {
 		next
 	}
 
-	# Type and Name
+	# Type and Field
 	types[decl_index] = get_type($0)
-	names[decl_index] = get_name($0)
+	fields[decl_index] = get_field($0)
 	++decl_index
 }

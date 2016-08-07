@@ -834,4 +834,3 @@ jobjectRefType _GoJniGetObjectRefType(JNIEnv* env, jobject obj)
 {
 	return (*env)->GetObjectRefType(env, obj);
 }
-

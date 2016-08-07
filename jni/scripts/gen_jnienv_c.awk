@@ -1,10 +1,17 @@
 BEGIN {
 	# Beginning Stub
 	print "#include \"jnienv.h\""
-	print ""
 }
 
-func get_name(declaration) {
+func join(array, separator) {
+	buffer = array[1]
+	for (i = 2; i <= length(array); i++) {
+		buffer = buffer separator array[i]
+	}
+	return buffer
+}
+
+func get_method(declaration) {
 	match(declaration, /_GoJni[^(]+/)
 	return substr(declaration, RSTART + 6, RLENGTH - 6)
 }
@@ -49,24 +56,15 @@ func get_parameter_names(parameter_list, pnames) {
 	}
 }
 
-func join(separator, array) {
-	buffer = array[1]
-	j = length(array)
-	for (i = 2; i <= j; ++i) {
-		buffer = buffer separator array[i]
-	}
-	return buffer
-}
-
 /^[^#\/]/ {
-	name = get_name($0)
+	method = get_method($0)
 	parameter_list = get_parameter_list($0)
 	get_parameter_names(parameter_list, pnames)
 
 	# Get rid of the final semi-colon
+	print ""
 	print substr($0, 1, length($0) - 1)
 	print "{"
-	print "\treturn (*env)->" name "(" join(", ", pnames) ");"
+	print "\treturn (*env)->" method "(" join(pnames, ", ") ");"
 	print "}"
-	print ""
 }

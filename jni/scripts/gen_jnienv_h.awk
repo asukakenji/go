@@ -1,68 +1,69 @@
 BEGIN {
 	# Constants
 	# This does not work:
-	#     RE_GET_NAME = /\(JNICALL \*[^)]+\)/
-	RE_GET_NAME = "\\(JNICALL \\*[^)]+\\)"
+	#     RE_GET_METHOD = /\(JNICALL \*[^)]+\)/
+	RE_GET_METHOD = "\\(JNICALL \\*[^)]+\\)"
 
 	# Variables
 	state = 0
 	pending = ""
-	declarations[0] = ""
-	decl_index = 0
+	declarations[1] = ""
+	decl_index = 1
 
 	# Beginning Stub
 	print "#ifndef _GO_JNI_JNIENV_H_"
 	print "#define _GO_JNI_JNIENV_H_"
 	print ""
 	print "#include <jni.h>"
-	print ""
 }
 
 function save(declaration) {
 	declarations[decl_index++] = declaration
 }
 
-function get_name(declaration) {
-	match(declaration, RE_GET_NAME)
+function get_method(declaration) {
+	match(declaration, RE_GET_METHOD)
 	return substr(declaration, RSTART + 10, RLENGTH - 11)
 }
 
 END {
 	# Notice: "index" is a built-in function.
-	# Notice: AWK arrays are associative, so j is needed.
-	name = ""
+	method = ""
 	family = ""
 	declaration = ""
+	# j MUST be declared here, since when declarations[i+1] is accessed,
+	# an entry will be added to the array
 	j = length(declarations)
-	for (i = 0; i < j; ++i) {
+	for (i = 1; i <= j; i++) {
 		declaration = declarations[i]
 		next_declaration = declarations[i+1]
-		name = get_name(declaration)
-		next_name = get_name(next_declaration)
-		if (next_name == name "V") {
+		method = get_method(declaration)
+		next_method = get_method(next_declaration)
+		if (next_method == method "V") {
+			print ""
 			print "// jni.h:"
 			print "//     " declaration
-			family = name
-		} else if (name == family "V") {
+			family = method
+		} else if (method == family "V") {
 			print "//     " declaration
-		} else if (name == family "A") {
+		} else if (method == family "A") {
 			print "//     " declaration
-			sub(RE_GET_NAME, "_GoJni" name, declaration)
+			sub(RE_GET_METHOD, "_GoJni" method, declaration)
 			gsub(/ *\* */, "* ", declaration)
 			print declaration
-			print ""
 			family = ""
 		} else {
+			print ""
 			print "// jni.h:"
 			print "//     " declaration
-			sub(RE_GET_NAME, "_GoJni" name, declaration)
+			sub(RE_GET_METHOD, "_GoJni" method, declaration)
 			gsub(/ *\* */, "* ", declaration)
 			print declaration
-			print ""
 		}
 	}
 
 	# Ending Stub
+	print ""
 	print "#endif // #ifndef _GO_JNI_JNIENV_H_"
 }
 
