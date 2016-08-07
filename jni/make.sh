@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 #go help buildmode
 #
 # The 'go build' and 'go install' commands take a -buildmode argument which
@@ -36,15 +38,20 @@
 # 		Build the listed main packages and everything they import into
 # 		executables. Packages not named main are ignored.
 
-javac Main.java
-javah Main
+javac -sourcepath "${DIR}" -d "${DIR}" Main.java
+javah -classpath "${DIR}" -d "${DIR}" Main
 
 # This does NOT work because *.c files have to be built.
 # C sources cannot be built via listing as arguments.
 # Therefore, a package is needed.
 #CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libtest.jnilib -buildmode=c-shared export.go
 
+# Normal:
+#go fmt github.com/asukakenji/go/jni
 CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libtest.jnilib -buildmode=c-shared github.com/asukakenji/go/jni
 
 # For Debugging Linker Errors:
 #CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -x -ldflags "-extldflags -v" -o libtest.jnilib -buildmode=c-shared github.com/asukakenji/go/jni
+
+# For Viewing Temporary Files:
+#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libtest.jnilib -work -buildmode=c-shared github.com/asukakenji/go/jni
