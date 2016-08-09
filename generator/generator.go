@@ -1,13 +1,13 @@
 package generator
 
-type Yield func(interface{}) bool
+type Yielder func(interface{}) bool
 
 type Generator struct {
-	impl func(Yield)
+	impl func(Yielder)
 	stop func()
 }
 
-func NewGenerator(impl func(Yield)) *Generator {
+func NewGenerator(impl func(Yielder)) *Generator {
 	return &Generator{
 		impl: impl,
 	}
@@ -21,7 +21,7 @@ func (g *Generator) Start() <-chan interface{} {
 	}
 	go func() {
 		defer close(chOut)
-		g.impl(Yield(func(msg interface{}) bool {
+		g.impl(Yielder(func(msg interface{}) bool {
 			select {
 			case chOut <- msg:
 				return true
