@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type IntYielder func(int) bool
@@ -28,6 +29,8 @@ func (g *IntGenerator) Start() <-chan int {
 		close(chStop)
 	}
 	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
 		defer close(chOut)
 		g.impl(IntYielder(func(msg int) bool {
 			select {
@@ -65,4 +68,5 @@ func main() {
 		fmt.Println(x)
 	}
 	g.Stop()
+	time.Sleep(1 * time.Second)
 }

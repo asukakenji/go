@@ -6,12 +6,15 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func xrange(begin, end int) (<-chan int, chan<- struct{}) {
 	chOut := make(chan int)
 	chStop := make(chan struct{})
 	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
 		defer close(chOut)
 		for i := begin; i < end; i++ {
 			select {
@@ -34,4 +37,5 @@ func main() {
 		fmt.Println(x)
 	}
 	close(chStop)
+	time.Sleep(1 * time.Second)
 }

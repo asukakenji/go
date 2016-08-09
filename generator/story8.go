@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type XRange struct {
@@ -28,6 +29,8 @@ func (r *XRange) Start() <-chan int {
 		close(chStop)
 	}
 	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
 		defer close(chOut)
 		for i := r.begin; i < r.end; i++ {
 			select {
@@ -55,4 +58,5 @@ func main() {
 		fmt.Println(x)
 	}
 	r.Stop()
+	time.Sleep(1 * time.Second)
 }
