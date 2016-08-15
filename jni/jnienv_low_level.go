@@ -275,39 +275,55 @@ func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
 
 // jni.h:
 //     jobject (JNICALL *GetObjectField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jboolean (JNICALL *GetBooleanField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jbyte (JNICALL *GetByteField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jchar (JNICALL *GetCharField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jshort (JNICALL *GetShortField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jint (JNICALL *GetIntField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jlong (JNICALL *GetLongField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jfloat (JNICALL *GetFloatField)(JNIEnv *env, jobject obj, jfieldID fieldID);
+
 // jni.h:
 //     jdouble (JNICALL *GetDoubleField)(JNIEnv *env, jobject obj, jfieldID fieldID);
 
 // jni.h:
 //     void (JNICALL *SetObjectField)(JNIEnv *env, jobject obj, jfieldID fieldID, jobject val);
+
 // jni.h:
 //     void (JNICALL *SetBooleanField)(JNIEnv *env, jobject obj, jfieldID fieldID, jboolean val);
+
 // jni.h:
 //     void (JNICALL *SetByteField)(JNIEnv *env, jobject obj, jfieldID fieldID, jbyte val);
+
 // jni.h:
 //     void (JNICALL *SetCharField)(JNIEnv *env, jobject obj, jfieldID fieldID, jchar val);
+
 // jni.h:
 //     void (JNICALL *SetShortField)(JNIEnv *env, jobject obj, jfieldID fieldID, jshort val);
+
 // jni.h:
 //     void (JNICALL *SetIntField)(JNIEnv *env, jobject obj, jfieldID fieldID, jint val);
+
 // jni.h:
 //     void (JNICALL *SetLongField)(JNIEnv *env, jobject obj, jfieldID fieldID, jlong val);
+
 // jni.h:
 //     void (JNICALL *SetFloatField)(JNIEnv *env, jobject obj, jfieldID fieldID, jfloat val);
+
 // jni.h:
 //     void (JNICALL *SetDoubleField)(JNIEnv *env, jobject obj, jfieldID fieldID, jdouble val);
 
@@ -366,59 +382,82 @@ func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
 
 // jni.h:
 //     jfieldID (JNICALL *GetStaticFieldID)(JNIEnv *env, jclass clazz, const char *name, const char *sig);
+
 // jni.h:
 //     jobject (JNICALL *GetStaticObjectField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jboolean (JNICALL *GetStaticBooleanField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jbyte (JNICALL *GetStaticByteField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jchar (JNICALL *GetStaticCharField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jshort (JNICALL *GetStaticShortField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jint (JNICALL *GetStaticIntField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jlong (JNICALL *GetStaticLongField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jfloat (JNICALL *GetStaticFloatField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
+
 // jni.h:
 //     jdouble (JNICALL *GetStaticDoubleField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
 
 // jni.h:
 //     void (JNICALL *SetStaticObjectField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jobject value);
+
 // jni.h:
 //     void (JNICALL *SetStaticBooleanField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jboolean value);
+
 // jni.h:
 //     void (JNICALL *SetStaticByteField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jbyte value);
+
 // jni.h:
 //     void (JNICALL *SetStaticCharField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jchar value);
+
 // jni.h:
 //     void (JNICALL *SetStaticShortField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jshort value);
+
 // jni.h:
 //     void (JNICALL *SetStaticIntField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jint value);
+
 // jni.h:
 //     void (JNICALL *SetStaticLongField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jlong value);
+
 // jni.h:
 //     void (JNICALL *SetStaticFloatField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jfloat value);
+
 // jni.h:
 //     void (JNICALL *SetStaticDoubleField)(JNIEnv *env, jclass clazz, jfieldID fieldID, jdouble value);
 
 // jni.h:
 //     jstring (JNICALL *NewString)(JNIEnv *env, const jchar *unicode, jsize len);
+
 // jni.h:
 //     jsize (JNICALL *GetStringLength)(JNIEnv *env, jstring str);
+
 // jni.h:
 //     const jchar *(JNICALL *GetStringChars)(JNIEnv *env, jstring str, jboolean *isCopy);
+
 // jni.h:
 //     void (JNICALL *ReleaseStringChars)(JNIEnv *env, jstring str, const jchar *chars);
 
 // jni.h:
 //     jstring (JNICALL *NewStringUTF)(JNIEnv *env, const char *utf);
+
 // jni.h:
 //     jsize (JNICALL *GetStringUTFLength)(JNIEnv *env, jstring str);
+
 // jni.h:
 //     const char* (JNICALL *GetStringUTFChars)(JNIEnv *env, jstring str, jboolean *isCopy);
+
 // jni.h:
 //     void (JNICALL *ReleaseStringUTFChars)(JNIEnv *env, jstring str, const char* chars);
 
@@ -427,103 +466,142 @@ func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
 
 // jni.h:
 //     jobjectArray (JNICALL *NewObjectArray)(JNIEnv *env, jsize len, jclass clazz, jobject init);
+
 // jni.h:
 //     jobject (JNICALL *GetObjectArrayElement)(JNIEnv *env, jobjectArray array, jsize index);
+
 // jni.h:
 //     void (JNICALL *SetObjectArrayElement)(JNIEnv *env, jobjectArray array, jsize index, jobject val);
 
 // jni.h:
 //     jbooleanArray (JNICALL *NewBooleanArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jbyteArray (JNICALL *NewByteArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jcharArray (JNICALL *NewCharArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jshortArray (JNICALL *NewShortArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jintArray (JNICALL *NewIntArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jlongArray (JNICALL *NewLongArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jfloatArray (JNICALL *NewFloatArray)(JNIEnv *env, jsize len);
+
 // jni.h:
 //     jdoubleArray (JNICALL *NewDoubleArray)(JNIEnv *env, jsize len);
 
 // jni.h:
 //     jboolean * (JNICALL *GetBooleanArrayElements)(JNIEnv *env, jbooleanArray array, jboolean *isCopy);
+
 // jni.h:
 //     jbyte * (JNICALL *GetByteArrayElements)(JNIEnv *env, jbyteArray array, jboolean *isCopy);
+
 // jni.h:
 //     jchar * (JNICALL *GetCharArrayElements)(JNIEnv *env, jcharArray array, jboolean *isCopy);
+
 // jni.h:
 //     jshort * (JNICALL *GetShortArrayElements)(JNIEnv *env, jshortArray array, jboolean *isCopy);
+
 // jni.h:
 //     jint * (JNICALL *GetIntArrayElements)(JNIEnv *env, jintArray array, jboolean *isCopy);
+
 // jni.h:
 //     jlong * (JNICALL *GetLongArrayElements)(JNIEnv *env, jlongArray array, jboolean *isCopy);
+
 // jni.h:
 //     jfloat * (JNICALL *GetFloatArrayElements)(JNIEnv *env, jfloatArray array, jboolean *isCopy);
+
 // jni.h:
 //     jdouble * (JNICALL *GetDoubleArrayElements)(JNIEnv *env, jdoubleArray array, jboolean *isCopy);
 
 // jni.h:
 //     void (JNICALL *ReleaseBooleanArrayElements)(JNIEnv *env, jbooleanArray array, jboolean *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseByteArrayElements)(JNIEnv *env, jbyteArray array, jbyte *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseCharArrayElements)(JNIEnv *env, jcharArray array, jchar *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseShortArrayElements)(JNIEnv *env, jshortArray array, jshort *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseIntArrayElements)(JNIEnv *env, jintArray array, jint *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseLongArrayElements)(JNIEnv *env, jlongArray array, jlong *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseFloatArrayElements)(JNIEnv *env, jfloatArray array, jfloat *elems, jint mode);
+
 // jni.h:
 //     void (JNICALL *ReleaseDoubleArrayElements)(JNIEnv *env, jdoubleArray array, jdouble *elems, jint mode);
 
 // jni.h:
 //     void (JNICALL *GetBooleanArrayRegion)(JNIEnv *env, jbooleanArray array, jsize start, jsize l, jboolean *buf);
+
 // jni.h:
 //     void (JNICALL *GetByteArrayRegion)(JNIEnv *env, jbyteArray array, jsize start, jsize len, jbyte *buf);
+
 // jni.h:
 //     void (JNICALL *GetCharArrayRegion)(JNIEnv *env, jcharArray array, jsize start, jsize len, jchar *buf);
+
 // jni.h:
 //     void (JNICALL *GetShortArrayRegion)(JNIEnv *env, jshortArray array, jsize start, jsize len, jshort *buf);
+
 // jni.h:
 //     void (JNICALL *GetIntArrayRegion)(JNIEnv *env, jintArray array, jsize start, jsize len, jint *buf);
+
 // jni.h:
 //     void (JNICALL *GetLongArrayRegion)(JNIEnv *env, jlongArray array, jsize start, jsize len, jlong *buf);
+
 // jni.h:
 //     void (JNICALL *GetFloatArrayRegion)(JNIEnv *env, jfloatArray array, jsize start, jsize len, jfloat *buf);
+
 // jni.h:
 //     void (JNICALL *GetDoubleArrayRegion)(JNIEnv *env, jdoubleArray array, jsize start, jsize len, jdouble *buf);
 
 // jni.h:
 //     void (JNICALL *SetBooleanArrayRegion)(JNIEnv *env, jbooleanArray array, jsize start, jsize l, const jboolean *buf);
+
 // jni.h:
 //     void (JNICALL *SetByteArrayRegion)(JNIEnv *env, jbyteArray array, jsize start, jsize len, const jbyte *buf);
+
 // jni.h:
 //     void (JNICALL *SetCharArrayRegion)(JNIEnv *env, jcharArray array, jsize start, jsize len, const jchar *buf);
+
 // jni.h:
 //     void (JNICALL *SetShortArrayRegion)(JNIEnv *env, jshortArray array, jsize start, jsize len, const jshort *buf);
+
 // jni.h:
 //     void (JNICALL *SetIntArrayRegion)(JNIEnv *env, jintArray array, jsize start, jsize len, const jint *buf);
+
 // jni.h:
 //     void (JNICALL *SetLongArrayRegion)(JNIEnv *env, jlongArray array, jsize start, jsize len, const jlong *buf);
+
 // jni.h:
 //     void (JNICALL *SetFloatArrayRegion)(JNIEnv *env, jfloatArray array, jsize start, jsize len, const jfloat *buf);
+
 // jni.h:
 //     void (JNICALL *SetDoubleArrayRegion)(JNIEnv *env, jdoubleArray array, jsize start, jsize len, const jdouble *buf);
 
 // jni.h:
 //     jint (JNICALL *RegisterNatives)(JNIEnv *env, jclass clazz, const JNINativeMethod *methods, jint nMethods);
+
 // jni.h:
 //     jint (JNICALL *UnregisterNatives)(JNIEnv *env, jclass clazz);
 
 // jni.h:
 //     jint (JNICALL *MonitorEnter)(JNIEnv *env, jobject obj);
+
 // jni.h:
 //     jint (JNICALL *MonitorExit)(JNIEnv *env, jobject obj);
 
@@ -532,21 +610,25 @@ func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
 
 // jni.h:
 //     void (JNICALL *GetStringRegion)(JNIEnv *env, jstring str, jsize start, jsize len, jchar *buf);
+
 // jni.h:
 //     void (JNICALL *GetStringUTFRegion)(JNIEnv *env, jstring str, jsize start, jsize len, char *buf);
 
 // jni.h:
 //     void * (JNICALL *GetPrimitiveArrayCritical)(JNIEnv *env, jarray array, jboolean *isCopy);
+
 // jni.h:
 //     void (JNICALL *ReleasePrimitiveArrayCritical)(JNIEnv *env, jarray array, void *carray, jint mode);
 
 // jni.h:
 //     const jchar * (JNICALL *GetStringCritical)(JNIEnv *env, jstring string, jboolean *isCopy);
+
 // jni.h:
 //     void (JNICALL *ReleaseStringCritical)(JNIEnv *env, jstring string, const jchar *cstring);
 
 // jni.h:
 //     jweak (JNICALL *NewWeakGlobalRef)(JNIEnv *env, jobject obj);
+
 // jni.h:
 //     void (JNICALL *DeleteWeakGlobalRef)(JNIEnv *env, jweak ref);
 
@@ -555,12 +637,12 @@ func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
 
 // jni.h:
 //     jobject (JNICALL *NewDirectByteBuffer)(JNIEnv* env, void* address, jlong capacity);
+
 // jni.h:
 //     void* (JNICALL *GetDirectBufferAddress)(JNIEnv* env, jobject buf);
+
 // jni.h:
 //     jlong (JNICALL *GetDirectBufferCapacity)(JNIEnv* env, jobject buf);
-
-//     /* New JNI 1.6 Features */
 
 // jni.h:
 //     jobjectRefType (JNICALL *GetObjectRefType)(JNIEnv* env, jobject obj);
