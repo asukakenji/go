@@ -1,10 +1,10 @@
 public class Main {
 
 	static {
-		// Load "test.dll" on Windows
-		// Load "libtest.so" on Linux
-		// Load "libtest.jnilib" on Mac
-		System.loadLibrary("test");
+		// Load "gojni.dll" on Windows
+		// Load "libgojni.so" on Linux
+		// Load "libgojni.jnilib" on Mac
+		System.loadLibrary("gojni");
 	}
 
 	private static native void test();

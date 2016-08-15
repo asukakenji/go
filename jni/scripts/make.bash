@@ -44,14 +44,14 @@ javah -classpath "${DIR}" -d "${DIR}/.." Main
 # This does NOT work because *.c files have to be built.
 # C sources cannot be built via listing as arguments.
 # Therefore, a package is needed.
-#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libtest.jnilib -buildmode=c-shared export.go
+#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libgojni.jnilib -buildmode=c-shared export.go
 
 # Normal:
 #go fmt github.com/asukakenji/go/jni
-CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libtest.jnilib -buildmode=c-shared github.com/asukakenji/go/jni
+CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libgojni.jnilib -buildmode=c-shared github.com/asukakenji/go/jni
 
 # For Debugging Linker Errors:
-#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -x -ldflags "-extldflags -v" -o libtest.jnilib -buildmode=c-shared github.com/asukakenji/go/jni
+#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -x -ldflags "-extldflags -v" -o libgojni.jnilib -buildmode=c-shared github.com/asukakenji/go/jni
 
 # For Viewing Temporary Files:
-#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libtest.jnilib -work -buildmode=c-shared github.com/asukakenji/go/jni
+#CGO_CFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin" go build -o libgojni.jnilib -work -buildmode=c-shared github.com/asukakenji/go/jni
