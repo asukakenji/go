@@ -765,7 +765,7 @@ jint _GoJniMonitorExit(JNIEnv* env, jobject obj)
 	return (*env)->MonitorExit(env, obj);
 }
 
-jint _GoJniGetJavaVM(JNIEnv* env, JavaVM* * vm)
+jint _GoJniGetJavaVM(JNIEnv* env, JavaVM** vm)
 {
 	return (*env)->GetJavaVM(env, vm);
 }

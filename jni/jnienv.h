@@ -679,7 +679,7 @@ jint _GoJniMonitorExit(JNIEnv* env, jobject obj);
 
 // jni.h:
 //     jint (JNICALL *GetJavaVM)(JNIEnv *env, JavaVM **vm);
-jint _GoJniGetJavaVM(JNIEnv* env, JavaVM* * vm);
+jint _GoJniGetJavaVM(JNIEnv* env, JavaVM** vm);
 
 // jni.h:
 //     void (JNICALL *GetStringRegion)(JNIEnv *env, jstring str, jsize start, jsize len, jchar *buf);
