@@ -25,46 +25,47 @@ func get_first_parameter_name(parameter_list) {
 	if (parameter_list == "") {
 		return ""
 	}
-	match(parameter_list, /^[^,]+/)
-	parameter = substr(parameter_list, 0, RLENGTH)
-	split(parameter, array, / /)
-	return array[length(array)]
+	match(parameter_list, / [^ ,]+(, |$)/)
+	first_parameter_name = substr(parameter_list, RSTART + 1, RLENGTH - 1)
+	len = length(first_parameter_name)
+	if (substr(first_parameter_name, len - 1) == ", ") {
+		return substr(first_parameter_name, 1, len - 2)
+	}
+	return first_parameter_name
 }
 
 func remove_first_parameter(parameter_list) {
 	if (parameter_list == "") {
 		return ""
 	}
-	match(parameter_list, /^[^,]+(, )?/)
+	match(parameter_list, /^[^,]+(, |$)/)
 	return substr(parameter_list, RLENGTH + 1)
 }
 
-# AWK cannot return arrays
-func get_parameter_names(parameter_list, pnames) {
-	for (i in pnames) {
-		delete pnames[i]
+/^[^#\/]/ {
+	# Method
+	m = get_method($0)
+
+	# Parameter List
+	pl = get_parameter_list($0)
+	for (i in pns) {
+		delete pns[i]
 	}
 	i = 1
 	while (1) {
-		pname = get_first_parameter_name(parameter_list)
-		if (pname == "") {
+		pn1 = get_first_parameter_name(pl)
+		if (pn1 == "") {
 			break
 		}
-		pnames[i] = pname
-		parameter_list = remove_first_parameter(parameter_list)
+		pns[i] = pn1
+		pl = remove_first_parameter(pl)
 		++i
 	}
-}
 
-/^[^#\/]/ {
-	method = get_method($0)
-	parameter_list = get_parameter_list($0)
-	get_parameter_names(parameter_list, pnames)
-
-	# Get rid of the final semi-colon
+	# Invocation
 	print ""
 	print substr($0, 1, length($0) - 1)
 	print "{"
-	print "\treturn (*env)->" method "(" join(pnames, ", ") ");"
+	print "\t" "return (*env)->" m "(" join(pns, ", ") ");"
 	print "}"
 }

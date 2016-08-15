@@ -1,6 +1,13 @@
 BEGIN {
 	# Beginning Stub
-	print "#include \"jnienv.h\""
+	print "package main"
+	print ""
+	print "// #include \"jnienv.h\""
+	print "import \"C\""
+	print ""
+	print "import ("
+	print "\t" "\"unsafe\""
+	print ")"
 }
 
 func join(array, separator) {
@@ -12,8 +19,8 @@ func join(array, separator) {
 }
 
 func get_return_type(declaration) {
-	match(declaration, /^[^ ]+/)
-	return substr(declaration, 1, RLENGTH)
+	match(declaration, / _GoJni/)
+	return substr(declaration, 1, RSTART - 1)
 }
 
 func get_method(declaration) {
@@ -59,16 +66,23 @@ func transform_type(type) {
 	if (type == "void") {
 		return ""
 	}
+	if (type == "void*") {
+		return "unsafe.Pointer"
+	}
 	if (substr(type, 1, 6) == "const ") {
 		type = substr(type, 7)
 	}
-	len = length(type)
-	if (substr(type, len) == "*") {
-		type = "*C." substr(type, 1, len - 1)
-	} else {
-		type = "C." type
+	asterisks = ""
+	while (1) {
+		len = length(type)
+		if (substr(type, len) == "*") {
+			type = substr(type, 1, len - 1)
+			asterisks = "*" asterisks
+		} else {
+			break
+		}
 	}
-	return type
+	return asterisks "C." type
 }
 
 func transform_parameter_name(parameter_name) {

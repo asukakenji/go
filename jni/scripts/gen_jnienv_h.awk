@@ -49,7 +49,12 @@ END {
 		} else if (method == family "A") {
 			print "//     " declaration
 			sub(RE_GET_METHOD, "_GoJni" method, declaration)
-			gsub(/ *\* */, "* ", declaration)
+			# Note: There may be more than one level of redirection
+			# (pointer to pointer to something)
+			gsub(/ +\*\*/, "** ", declaration)
+			gsub(/ +\*/, "* ", declaration)
+			gsub(/\*\* +/, "** ", declaration)
+			gsub(/\* +/, "* ", declaration)
 			print declaration
 			family = ""
 		} else {
@@ -57,7 +62,12 @@ END {
 			print "// jni.h:"
 			print "//     " declaration
 			sub(RE_GET_METHOD, "_GoJni" method, declaration)
-			gsub(/ *\* */, "* ", declaration)
+			# Note: There may be more than one level of redirection
+			# (pointer to pointer to something)
+			gsub(/ +\*\*/, "** ", declaration)
+			gsub(/ +\*/, "* ", declaration)
+			gsub(/\*\* +/, "** ", declaration)
+			gsub(/\* +/, "* ", declaration)
 			print declaration
 		}
 	}
