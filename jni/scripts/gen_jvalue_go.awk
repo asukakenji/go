@@ -1,7 +1,6 @@
 BEGIN {
-	types[1] = ""
-	fields[1] = ""
-	line_index = 1
+	# types[1] = ""
+	# fields[1] = ""
 	decl_index = 1
 
 	# Java to Go Map
@@ -20,13 +19,19 @@ function capitalize(s, count) {
 	return toupper(substr(s, 1, count)) substr(s, count + 1)
 }
 
+function save_type_and_field(type, field) {
+	types[decl_index] = type
+	fields[decl_index] = field
+	++decl_index
+}
+
 function get_type(line) {
-	match($0, /^[a-z]+/)
+	match($0, /[a-z]+/)
 	return substr($0, RSTART, RLENGTH)
 }
 
 function get_field(line) {
-	match($0, /[a-z];$/)
+	match($0, /[a-z]+;$/)
 	return substr($0, RSTART, RLENGTH - 1)
 }
 
@@ -51,25 +56,25 @@ END {
 	print "// #include \"jvalue.h\""
 	print "import \"C\""
 
-	for (i = 1; i <= length(types); i++) {
+	for (i = 1; i < decl_index; i++) {
 		print ""
 		print "func " capitalize(types[i], 2) "ToJValue(" fields[i] " C." types[i] ") C.jvalue {"
 		print "\treturn C._GoJni" capitalize(types[i], 2) "ToJValue(" fields[i] ")"
 		print "}"
 	}
-	for (i = 1; i <= length(types); i++) {
+	for (i = 1; i < decl_index; i++) {
 		print ""
 		print "func JValueTo" capitalize(types[i], 2) "(v C.jvalue) C." types[i] " {"
 		print "\treturn C._GoJniJValueTo" capitalize(types[i], 2) "(v)"
 		print "}"
 	}
-	for (i = 1; i <= length(types); i++) {
+	for (i = 1; i < decl_index; i++) {
 		print ""
 		print "func JValueFrom" capitalize(j_to_g_map[types[i]], 1) "(" fields[i] " " j_to_g_map[types[i]] ") JValue {"
 		print "\treturn JValue{" capitalize(types[i], 2) "ToJValue(" unwrap(types[i], fields[i]) ")}"
 		print "}"
 	}
-	for (i = 1; i <= length(types); i++) {
+	for (i = 1; i < decl_index; i++) {
 		print ""
 		print "func (value JValue) " capitalize(j_to_g_map[types[i]], 1) "() " j_to_g_map[types[i]] " {"
 		print "\treturn " wrap(types[i], "JValueTo" capitalize(types[i], 2) "(value.peer)")
@@ -78,13 +83,12 @@ END {
 }
 
 /^typedef union jvalue {$/, /^} jvalue;$/ {
-	sub(/^[\t ]+/, "", $0)
-	if ($0 !~ /^j/) {
+	if ($0 !~ /^[[:space:]]*j/) {
 		next
 	}
 
 	# Type and Field
-	types[decl_index] = get_type($0)
-	fields[decl_index] = get_field($0)
-	++decl_index
+	t = get_type($0)
+	f = get_field($0)
+	save_type_and_field(t, f)
 }
