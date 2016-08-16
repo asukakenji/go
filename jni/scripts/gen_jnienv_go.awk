@@ -121,8 +121,13 @@ function get_transformed_parameter_list(mi) {
 	}
 	for (pi = 1; pi <= param_indices[mi]; ++pi) {
 		pt = parameter_types[mi, pi]
+		pt1 = parameter_types[mi, pi + 1]
 		pn = parameter_names[mi, pi]
-		pa[pi] = transform_parameter_name(pn) " " transform_type(pt)
+		if (pt == pt1) {
+			pa[pi] = transform_parameter_name(pn)
+		} else {
+			pa[pi] = transform_parameter_name(pn) " " transform_type(pt)
+		}
 	}
 	return join(pa, ", ", param_indices[mi])
 }
