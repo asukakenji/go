@@ -7,17 +7,11 @@ BEGIN {
 	# Variables
 	state = 0
 	pending = ""
-	declarations[1] = ""
+	# declarations[1] = ""
 	decl_index = 1
-
-	# Beginning Stub
-	print "#ifndef _GO_JNI_JNIENV_H_"
-	print "#define _GO_JNI_JNIENV_H_"
-	print ""
-	print "#include <jni.h>"
 }
 
-function save(declaration) {
+function save_decl(declaration) {
 	declarations[decl_index++] = declaration
 }
 
@@ -27,14 +21,17 @@ function get_method(declaration) {
 }
 
 END {
+	# Beginning Stub
+	print "#ifndef _GO_JNI_JNIENV_H_"
+	print "#define _GO_JNI_JNIENV_H_"
+	print ""
+	print "#include <jni.h>"
+
 	# Notice: "index" is a built-in function.
 	method = ""
 	family = ""
 	declaration = ""
-	# j MUST be declared here, since when declarations[i+1] is accessed,
-	# an entry will be added to the array
-	j = length(declarations)
-	for (i = 1; i <= j; i++) {
+	for (i = 1; i < decl_index; i++) {
 		declaration = declarations[i]
 		next_declaration = declarations[i+1]
 		method = get_method(declaration)
@@ -84,7 +81,7 @@ END {
 			next
 		}
 		if ($0 ~ /;$/) {
-			save($0)
+			save_decl($0)
 		} else {
 			pending = $0
 			state = 1
@@ -94,7 +91,7 @@ END {
 		if ($0 ~ /,$/) {
 			pending = pending " "
 		} else if ($0 ~ /;$/) {
-			save(pending)
+			save_decl(pending)
 			state = 0
 		}
 	}
