@@ -1,7 +1,7 @@
 BEGIN {
 	# types[1] = ""
 	# fields[1] = ""
-	decl_index = 1
+	decl_index = 0
 
 	# Java to Go Map
 	j_to_g_map["jboolean"] = "bool"
@@ -20,9 +20,9 @@ function capitalize(s, count) {
 }
 
 function save_type_and_field(type, field) {
+	++decl_index
 	types[decl_index] = type
 	fields[decl_index] = field
-	++decl_index
 }
 
 function get_type(line) {
@@ -56,25 +56,25 @@ END {
 	print "// #include \"jvalue.h\""
 	print "import \"C\""
 
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; ++i) {
 		print ""
 		print "func " capitalize(types[i], 2) "ToJValue(" fields[i] " C." types[i] ") C.jvalue {"
 		print "\treturn C._GoJni" capitalize(types[i], 2) "ToJValue(" fields[i] ")"
 		print "}"
 	}
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; ++i) {
 		print ""
 		print "func JValueTo" capitalize(types[i], 2) "(v C.jvalue) C." types[i] " {"
 		print "\treturn C._GoJniJValueTo" capitalize(types[i], 2) "(v)"
 		print "}"
 	}
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; ++i) {
 		print ""
 		print "func JValueFrom" capitalize(j_to_g_map[types[i]], 1) "(" fields[i] " " j_to_g_map[types[i]] ") JValue {"
 		print "\treturn JValue{" capitalize(types[i], 2) "ToJValue(" unwrap(types[i], fields[i]) ")}"
 		print "}"
 	}
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; ++i) {
 		print ""
 		print "func (value JValue) " capitalize(j_to_g_map[types[i]], 1) "() " j_to_g_map[types[i]] " {"
 		print "\treturn " wrap(types[i], "JValueTo" capitalize(types[i], 2) "(value.peer)")

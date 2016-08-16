@@ -8,11 +8,11 @@ BEGIN {
 	state = 0
 	pending = ""
 	# declarations[1] = ""
-	decl_index = 1
+	decl_index = 0
 }
 
 function save_decl(declaration) {
-	declarations[decl_index++] = declaration
+	declarations[++decl_index] = declaration
 }
 
 function get_method(declaration) {
@@ -31,7 +31,7 @@ END {
 	method = ""
 	family = ""
 	declaration = ""
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; i++) {
 		declaration = declarations[i]
 		next_declaration = declarations[i+1]
 		method = get_method(declaration)

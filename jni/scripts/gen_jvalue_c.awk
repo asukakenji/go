@@ -1,7 +1,7 @@
 BEGIN {
 	# types[1] = ""
 	# fields[1] = ""
-	decl_index = 1
+	decl_index = 0
 }
 
 function capitalize(s, count) {
@@ -9,9 +9,9 @@ function capitalize(s, count) {
 }
 
 function save_type_and_field(type, field) {
+	++decl_index
 	types[decl_index] = type
 	fields[decl_index] = field
-	++decl_index
 }
 
 function get_type(line) {
@@ -28,7 +28,7 @@ END {
 	# Beginning Stub
 	print "#include \"jvalue.h\""
 
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; ++i) {
 		print ""
 		print "jvalue _GoJni" capitalize(types[i], 2) "ToJValue(" types[i] " " fields[i] ")"
 		print "{"
@@ -36,7 +36,7 @@ END {
 		print "\treturn v;"
 		print "}"
 	}
-	for (i = 1; i < decl_index; i++) {
+	for (i = 1; i <= decl_index; ++i) {
 		print ""
 		print types[i] " _GoJniJValueTo" capitalize(types[i], 2) "(jvalue v)"
 		print "{"
