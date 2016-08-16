@@ -173,7 +173,7 @@ func IsInstanceOf(env *C.JNIEnv, obj C.jobject, clazz C.jclass) C.jboolean {
 
 // jni.h:
 //     jmethodID (JNICALL *GetMethodID)(JNIEnv *env, jclass clazz, const char *name, const char *sig);
-func GetMethodID(env *C.JNIEnv, clazz C.jclass, name *C.char, sig *C.char) C.jmethodID {
+func GetMethodID(env *C.JNIEnv, clazz C.jclass, name, sig *C.char) C.jmethodID {
 	return C._GoJniGetMethodID(env, clazz, name, sig)
 }
 
@@ -339,7 +339,7 @@ func CallNonvirtualVoidMethodA(env *C.JNIEnv, obj C.jobject, clazz C.jclass, met
 
 // jni.h:
 //     jfieldID (JNICALL *GetFieldID)(JNIEnv *env, jclass clazz, const char *name, const char *sig);
-func GetFieldID(env *C.JNIEnv, clazz C.jclass, name *C.char, sig *C.char) C.jfieldID {
+func GetFieldID(env *C.JNIEnv, clazz C.jclass, name, sig *C.char) C.jfieldID {
 	return C._GoJniGetFieldID(env, clazz, name, sig)
 }
 
@@ -453,7 +453,7 @@ func SetDoubleField(env *C.JNIEnv, obj C.jobject, fieldID C.jfieldID, val C.jdou
 
 // jni.h:
 //     jmethodID (JNICALL *GetStaticMethodID)(JNIEnv *env, jclass clazz, const char *name, const char *sig);
-func GetStaticMethodID(env *C.JNIEnv, clazz C.jclass, name *C.char, sig *C.char) C.jmethodID {
+func GetStaticMethodID(env *C.JNIEnv, clazz C.jclass, name, sig *C.char) C.jmethodID {
 	return C._GoJniGetStaticMethodID(env, clazz, name, sig)
 }
 
@@ -539,7 +539,7 @@ func CallStaticVoidMethodA(env *C.JNIEnv, cls C.jclass, methodID C.jmethodID, ar
 
 // jni.h:
 //     jfieldID (JNICALL *GetStaticFieldID)(JNIEnv *env, jclass clazz, const char *name, const char *sig);
-func GetStaticFieldID(env *C.JNIEnv, clazz C.jclass, name *C.char, sig *C.char) C.jfieldID {
+func GetStaticFieldID(env *C.JNIEnv, clazz C.jclass, name, sig *C.char) C.jfieldID {
 	return C._GoJniGetStaticFieldID(env, clazz, name, sig)
 }
 
@@ -869,97 +869,97 @@ func ReleaseDoubleArrayElements(env *C.JNIEnv, array C.jdoubleArray, elems *C.jd
 
 // jni.h:
 //     void (JNICALL *GetBooleanArrayRegion)(JNIEnv *env, jbooleanArray array, jsize start, jsize l, jboolean *buf);
-func GetBooleanArrayRegion(env *C.JNIEnv, array C.jbooleanArray, start C.jsize, l C.jsize, buf *C.jboolean) {
+func GetBooleanArrayRegion(env *C.JNIEnv, array C.jbooleanArray, start, l C.jsize, buf *C.jboolean) {
 	C._GoJniGetBooleanArrayRegion(env, array, start, l, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetByteArrayRegion)(JNIEnv *env, jbyteArray array, jsize start, jsize len, jbyte *buf);
-func GetByteArrayRegion(env *C.JNIEnv, array C.jbyteArray, start C.jsize, _len C.jsize, buf *C.jbyte) {
+func GetByteArrayRegion(env *C.JNIEnv, array C.jbyteArray, start, _len C.jsize, buf *C.jbyte) {
 	C._GoJniGetByteArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetCharArrayRegion)(JNIEnv *env, jcharArray array, jsize start, jsize len, jchar *buf);
-func GetCharArrayRegion(env *C.JNIEnv, array C.jcharArray, start C.jsize, _len C.jsize, buf *C.jchar) {
+func GetCharArrayRegion(env *C.JNIEnv, array C.jcharArray, start, _len C.jsize, buf *C.jchar) {
 	C._GoJniGetCharArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetShortArrayRegion)(JNIEnv *env, jshortArray array, jsize start, jsize len, jshort *buf);
-func GetShortArrayRegion(env *C.JNIEnv, array C.jshortArray, start C.jsize, _len C.jsize, buf *C.jshort) {
+func GetShortArrayRegion(env *C.JNIEnv, array C.jshortArray, start, _len C.jsize, buf *C.jshort) {
 	C._GoJniGetShortArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetIntArrayRegion)(JNIEnv *env, jintArray array, jsize start, jsize len, jint *buf);
-func GetIntArrayRegion(env *C.JNIEnv, array C.jintArray, start C.jsize, _len C.jsize, buf *C.jint) {
+func GetIntArrayRegion(env *C.JNIEnv, array C.jintArray, start, _len C.jsize, buf *C.jint) {
 	C._GoJniGetIntArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetLongArrayRegion)(JNIEnv *env, jlongArray array, jsize start, jsize len, jlong *buf);
-func GetLongArrayRegion(env *C.JNIEnv, array C.jlongArray, start C.jsize, _len C.jsize, buf *C.jlong) {
+func GetLongArrayRegion(env *C.JNIEnv, array C.jlongArray, start, _len C.jsize, buf *C.jlong) {
 	C._GoJniGetLongArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetFloatArrayRegion)(JNIEnv *env, jfloatArray array, jsize start, jsize len, jfloat *buf);
-func GetFloatArrayRegion(env *C.JNIEnv, array C.jfloatArray, start C.jsize, _len C.jsize, buf *C.jfloat) {
+func GetFloatArrayRegion(env *C.JNIEnv, array C.jfloatArray, start, _len C.jsize, buf *C.jfloat) {
 	C._GoJniGetFloatArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetDoubleArrayRegion)(JNIEnv *env, jdoubleArray array, jsize start, jsize len, jdouble *buf);
-func GetDoubleArrayRegion(env *C.JNIEnv, array C.jdoubleArray, start C.jsize, _len C.jsize, buf *C.jdouble) {
+func GetDoubleArrayRegion(env *C.JNIEnv, array C.jdoubleArray, start, _len C.jsize, buf *C.jdouble) {
 	C._GoJniGetDoubleArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetBooleanArrayRegion)(JNIEnv *env, jbooleanArray array, jsize start, jsize l, const jboolean *buf);
-func SetBooleanArrayRegion(env *C.JNIEnv, array C.jbooleanArray, start C.jsize, l C.jsize, buf *C.jboolean) {
+func SetBooleanArrayRegion(env *C.JNIEnv, array C.jbooleanArray, start, l C.jsize, buf *C.jboolean) {
 	C._GoJniSetBooleanArrayRegion(env, array, start, l, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetByteArrayRegion)(JNIEnv *env, jbyteArray array, jsize start, jsize len, const jbyte *buf);
-func SetByteArrayRegion(env *C.JNIEnv, array C.jbyteArray, start C.jsize, _len C.jsize, buf *C.jbyte) {
+func SetByteArrayRegion(env *C.JNIEnv, array C.jbyteArray, start, _len C.jsize, buf *C.jbyte) {
 	C._GoJniSetByteArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetCharArrayRegion)(JNIEnv *env, jcharArray array, jsize start, jsize len, const jchar *buf);
-func SetCharArrayRegion(env *C.JNIEnv, array C.jcharArray, start C.jsize, _len C.jsize, buf *C.jchar) {
+func SetCharArrayRegion(env *C.JNIEnv, array C.jcharArray, start, _len C.jsize, buf *C.jchar) {
 	C._GoJniSetCharArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetShortArrayRegion)(JNIEnv *env, jshortArray array, jsize start, jsize len, const jshort *buf);
-func SetShortArrayRegion(env *C.JNIEnv, array C.jshortArray, start C.jsize, _len C.jsize, buf *C.jshort) {
+func SetShortArrayRegion(env *C.JNIEnv, array C.jshortArray, start, _len C.jsize, buf *C.jshort) {
 	C._GoJniSetShortArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetIntArrayRegion)(JNIEnv *env, jintArray array, jsize start, jsize len, const jint *buf);
-func SetIntArrayRegion(env *C.JNIEnv, array C.jintArray, start C.jsize, _len C.jsize, buf *C.jint) {
+func SetIntArrayRegion(env *C.JNIEnv, array C.jintArray, start, _len C.jsize, buf *C.jint) {
 	C._GoJniSetIntArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetLongArrayRegion)(JNIEnv *env, jlongArray array, jsize start, jsize len, const jlong *buf);
-func SetLongArrayRegion(env *C.JNIEnv, array C.jlongArray, start C.jsize, _len C.jsize, buf *C.jlong) {
+func SetLongArrayRegion(env *C.JNIEnv, array C.jlongArray, start, _len C.jsize, buf *C.jlong) {
 	C._GoJniSetLongArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetFloatArrayRegion)(JNIEnv *env, jfloatArray array, jsize start, jsize len, const jfloat *buf);
-func SetFloatArrayRegion(env *C.JNIEnv, array C.jfloatArray, start C.jsize, _len C.jsize, buf *C.jfloat) {
+func SetFloatArrayRegion(env *C.JNIEnv, array C.jfloatArray, start, _len C.jsize, buf *C.jfloat) {
 	C._GoJniSetFloatArrayRegion(env, array, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *SetDoubleArrayRegion)(JNIEnv *env, jdoubleArray array, jsize start, jsize len, const jdouble *buf);
-func SetDoubleArrayRegion(env *C.JNIEnv, array C.jdoubleArray, start C.jsize, _len C.jsize, buf *C.jdouble) {
+func SetDoubleArrayRegion(env *C.JNIEnv, array C.jdoubleArray, start, _len C.jsize, buf *C.jdouble) {
 	C._GoJniSetDoubleArrayRegion(env, array, start, _len, buf)
 }
 
@@ -995,13 +995,13 @@ func GetJavaVM(env *C.JNIEnv, vm **C.JavaVM) C.jint {
 
 // jni.h:
 //     void (JNICALL *GetStringRegion)(JNIEnv *env, jstring str, jsize start, jsize len, jchar *buf);
-func GetStringRegion(env *C.JNIEnv, str C.jstring, start C.jsize, _len C.jsize, buf *C.jchar) {
+func GetStringRegion(env *C.JNIEnv, str C.jstring, start, _len C.jsize, buf *C.jchar) {
 	C._GoJniGetStringRegion(env, str, start, _len, buf)
 }
 
 // jni.h:
 //     void (JNICALL *GetStringUTFRegion)(JNIEnv *env, jstring str, jsize start, jsize len, char *buf);
-func GetStringUTFRegion(env *C.JNIEnv, str C.jstring, start C.jsize, _len C.jsize, buf *C.char) {
+func GetStringUTFRegion(env *C.JNIEnv, str C.jstring, start, _len C.jsize, buf *C.char) {
 	C._GoJniGetStringUTFRegion(env, str, start, _len, buf)
 }
 
