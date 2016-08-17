@@ -1,9 +1,8 @@
 package main
 
 /*
-// TODO: Should get rid of these after the 2 demo functions are removed.
+// TODO: Should get rid of this after the 2 demo functions are removed.
 #include "Main.h"
-#include "jnienv.h"
 
 // free()
 #include <stdlib.h>
@@ -27,8 +26,8 @@ func Java_Main_test(env *C.JNIEnv, clazz C.jclass) {
 func test2(env *C.JNIEnv, clazz C.jclass) {
 	WithCString("test2", func(c_name *C.char) {
 		WithCString("()V", func(c_sig *C.char) {
-			if mid := C._GoJniGetStaticMethodID(env, clazz, c_name, c_sig); mid != nil {
-				C._GoJniCallStaticVoidMethodA(env, clazz, mid, nil)
+			if mid := GetStaticMethodID(env, clazz, c_name, c_sig); mid != nil {
+				CallStaticVoidMethodA(env, clazz, mid, nil)
 			}
 		})
 	})
