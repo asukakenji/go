@@ -35,7 +35,7 @@ func JavaShort(s int16) C.jshort {
 }
 
 var JavaInt = func() func(int) C.jint {
-	// From /strconv/itoa.go (strconv.formatBits()):
+	// From src/strconv/itoa.go (strconv.formatBits()):
 	//     if ^uintptr(0)>>32 == 0 {
 	//         ...
 	//     }
