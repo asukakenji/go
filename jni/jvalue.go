@@ -3,41 +3,45 @@ package main
 // #include "jvalue.h"
 import "C"
 
-func JBooleanToJValue(z C.jboolean) C.jvalue {
-	return C._GoJniJBooleanToJValue(z)
+// jvalue From Any
+
+func JValueFromJBoolean(z C.jboolean) C.jvalue {
+	return C._GoJniJValueFromJBoolean(z)
 }
 
-func JByteToJValue(b C.jbyte) C.jvalue {
-	return C._GoJniJByteToJValue(b)
+func JValueFromJByte(b C.jbyte) C.jvalue {
+	return C._GoJniJValueFromJByte(b)
 }
 
-func JCharToJValue(c C.jchar) C.jvalue {
-	return C._GoJniJCharToJValue(c)
+func JValueFromJChar(c C.jchar) C.jvalue {
+	return C._GoJniJValueFromJChar(c)
 }
 
-func JShortToJValue(s C.jshort) C.jvalue {
-	return C._GoJniJShortToJValue(s)
+func JValueFromJShort(s C.jshort) C.jvalue {
+	return C._GoJniJValueFromJShort(s)
 }
 
-func JIntToJValue(i C.jint) C.jvalue {
-	return C._GoJniJIntToJValue(i)
+func JValueFromJInt(i C.jint) C.jvalue {
+	return C._GoJniJValueFromJInt(i)
 }
 
-func JLongToJValue(j C.jlong) C.jvalue {
-	return C._GoJniJLongToJValue(j)
+func JValueFromJLong(j C.jlong) C.jvalue {
+	return C._GoJniJValueFromJLong(j)
 }
 
-func JFloatToJValue(f C.jfloat) C.jvalue {
-	return C._GoJniJFloatToJValue(f)
+func JValueFromJFloat(f C.jfloat) C.jvalue {
+	return C._GoJniJValueFromJFloat(f)
 }
 
-func JDoubleToJValue(d C.jdouble) C.jvalue {
-	return C._GoJniJDoubleToJValue(d)
+func JValueFromJDouble(d C.jdouble) C.jvalue {
+	return C._GoJniJValueFromJDouble(d)
 }
 
-func JObjectToJValue(l C.jobject) C.jvalue {
-	return C._GoJniJObjectToJValue(l)
+func JValueFromJObject(l C.jobject) C.jvalue {
+	return C._GoJniJValueFromJObject(l)
 }
+
+// jvalue To Any
 
 func JValueToJBoolean(v C.jvalue) C.jboolean {
 	return C._GoJniJValueToJBoolean(v)
@@ -73,76 +77,4 @@ func JValueToJDouble(v C.jvalue) C.jdouble {
 
 func JValueToJObject(v C.jvalue) C.jobject {
 	return C._GoJniJValueToJObject(v)
-}
-
-func JValueFromBool(z bool) JValue {
-	return JValue{JBooleanToJValue(JavaBoolean(z))}
-}
-
-func JValueFromInt8(b int8) JValue {
-	return JValue{JByteToJValue(JavaByte(b))}
-}
-
-func JValueFromUint16(c uint16) JValue {
-	return JValue{JCharToJValue(JavaChar(c))}
-}
-
-func JValueFromInt16(s int16) JValue {
-	return JValue{JShortToJValue(JavaShort(s))}
-}
-
-func JValueFromInt32(i int32) JValue {
-	return JValue{JIntToJValue(JavaInt(i))}
-}
-
-func JValueFromInt64(j int64) JValue {
-	return JValue{JLongToJValue(JavaLong(j))}
-}
-
-func JValueFromFloat32(f float32) JValue {
-	return JValue{JFloatToJValue(JavaFloat(f))}
-}
-
-func JValueFromFloat64(d float64) JValue {
-	return JValue{JDoubleToJValue(JavaDouble(d))}
-}
-
-func JValueFromJObject(l JObject) JValue {
-	return JValue{JObjectToJValue(l.Peer())}
-}
-
-func (value JValue) Bool() bool {
-	return GoBool(JValueToJBoolean(value.peer))
-}
-
-func (value JValue) Int8() int8 {
-	return GoInt8(JValueToJByte(value.peer))
-}
-
-func (value JValue) Uint16() uint16 {
-	return GoUint16(JValueToJChar(value.peer))
-}
-
-func (value JValue) Int16() int16 {
-	return GoInt16(JValueToJShort(value.peer))
-}
-
-func (value JValue) Int32() int32 {
-	return GoInt32(JValueToJInt(value.peer))
-}
-
-func (value JValue) Int64() int64 {
-	return GoInt64(JValueToJLong(value.peer))
-}
-
-func (value JValue) Float32() float32 {
-	return GoFloat32(JValueToJFloat(value.peer))
-}
-
-func (value JValue) Float64() float64 {
-	return GoFloat64(JValueToJDouble(value.peer))
-}
-
-func (value JValue) JObject() JObject {
-	return NewJObject(JValueToJObject(value.peer))
 }

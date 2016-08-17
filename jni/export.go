@@ -1,16 +1,19 @@
 package main
 
-// #include "Main.h"
-//
-// // TODO: Should get rid of this after the 2 demo functions are removed.
-// #include "jnienv.h"
-//
-// // free()
-// #include <stdlib.h>
+/*
+// TODO: Should get rid of these after the 2 demo functions are removed.
+#include "Main.h"
+#include "jnienv.h"
+
+// free()
+#include <stdlib.h>
+*/
 import "C"
 
 import (
+	"errors"
 	"fmt"
+	"reflect"
 	"unsafe"
 )
 
@@ -46,45 +49,71 @@ func main() {
 // jni.h:
 //     struct _jobject;
 //     typedef struct _jobject *jobject;
-type JObject struct {
-	peer C.jobject
+type JObject uintptr
+
+func GoJObject(peer C.jobject) JObject {
+	return JObject(uintptr(unsafe.Pointer(peer)))
 }
 
-func NewJObject(peer C.jobject) JObject {
-	return JObject{peer}
+func (obj JObject) JObjectPeer() C.jobject {
+	return C.jobject(unsafe.Pointer(uintptr(obj)))
 }
 
 func (obj JObject) Peer() C.jobject {
-	return obj.peer
+	return obj.JObjectPeer()
 }
 
 // jni.h:
 //     typedef jobject jclass;
 type JClass JObject
 
-func NewJClass(peer C.jclass) JClass {
-	return JClass{C.jobject(peer)}
+func GoJClass(peer C.jclass) JClass {
+	return JClass(GoJObject(C.jobject(peer)))
+}
+
+func (clazz JClass) JObjectPeer() C.jobject {
+	return JObject(clazz).JObjectPeer()
 }
 
 func (clazz JClass) Peer() C.jclass {
-	return C.jclass(clazz.peer)
+	return C.jclass(clazz.JObjectPeer())
 }
 
 // jni.h:
 //     typedef jobject jthrowable;
 type JThrowable JObject
 
-func NewJThrowable(peer C.jthrowable) JThrowable {
-	return JThrowable{C.jobject(peer)}
+func GoJThrowable(peer C.jthrowable) JThrowable {
+	return JThrowable(GoJObject(C.jobject(peer)))
 }
 
-func (obj JThrowable) Peer() C.jthrowable {
-	return C.jthrowable(obj.peer)
+func (throw JThrowable) JObjectPeer() C.jobject {
+	return JObject(throw).JObjectPeer()
 }
+
+func (throw JThrowable) Peer() C.jthrowable {
+	return C.jthrowable(throw.JObjectPeer())
+}
+
+/* See "jthrowable.go" for related methods */
 
 // jni.h:
 //     typedef jobject jstring;
-// type JString JObject
+type JString JObject
+
+func GoJString(peer C.jstring) JString {
+	return JString(GoJObject(C.jobject(peer)))
+}
+
+func (str JString) JObjectPeer() C.jobject {
+	return JObject(str).JObjectPeer()
+}
+
+func (str JString) Peer() C.jstring {
+	return C.jstring(str.JObjectPeer())
+}
+
+/* See "jstring.go" for related methods */
 
 // jni.h:
 //     typedef jobject jarray;
@@ -130,12 +159,16 @@ func (obj JThrowable) Peer() C.jthrowable {
 //     typedef jobject jweak;
 type JWeak JObject
 
-func NewJWeak(peer C.jweak) JWeak {
-	return JWeak{C.jobject(peer)}
+func GoJWeak(peer C.jweak) JWeak {
+	return JWeak(GoJObject(C.jobject(peer)))
 }
 
-func (ref JWeak) Peer() C.jweak {
-	return C.jweak(ref.peer)
+func (weak JWeak) JObjectPeer() C.jobject {
+	return JObject(weak).JObjectPeer()
+}
+
+func (weak JWeak) Peer() C.jweak {
+	return C.jweak(weak.JObjectPeer())
 }
 
 // jni.h:
@@ -150,48 +183,33 @@ func (ref JWeak) Peer() C.jweak {
 //         jdouble  d;
 //         jobject  l;
 //     } jvalue;
-type JValue struct {
-	peer C.jvalue
-}
-
-func NewJValue(peer C.jvalue) JValue {
-	return JValue{peer}
-}
-
-func (value JValue) Peer() C.jvalue {
-	return value.peer
-}
 
 /* See "jvalue.go" for related methods */
 
 // jni.h:
 //     struct _jfieldID;
 //     typedef struct _jfieldID *jfieldID;
-type JFieldID struct {
-	peer C.jfieldID
-}
+type JFieldID uintptr
 
-func NewJFieldID(peer C.jfieldID) JFieldID {
-	return JFieldID{peer}
+func GoJFieldID(peer C.jfieldID) JFieldID {
+	return JFieldID(uintptr(unsafe.Pointer(peer)))
 }
 
 func (fieldID JFieldID) Peer() C.jfieldID {
-	return fieldID.peer
+	return C.jfieldID(unsafe.Pointer(uintptr(fieldID)))
 }
 
 // jni.h:
 //     struct _jmethodID;
 //     typedef struct _jmethodID *jmethodID;
-type JMethodID struct {
-	peer C.jmethodID
-}
+type JMethodID uintptr
 
-func NewJMethodID(peer C.jmethodID) JMethodID {
-	return JMethodID{peer}
+func GoJMethodID(peer C.jmethodID) JMethodID {
+	return JMethodID(uintptr(unsafe.Pointer(peer)))
 }
 
 func (methodID JMethodID) Peer() C.jmethodID {
-	return methodID.peer
+	return C.jmethodID(unsafe.Pointer(uintptr(methodID)))
 }
 
 // jni.h:
@@ -203,10 +221,12 @@ func (methodID JMethodID) Peer() C.jmethodID {
 //         JNIWeakGlobalRefType = 3
 //     } jobjectRefType;
 const (
-	JNIInvalidRefType    = C.JNIInvalidRefType
-	JNILocalRefType      = C.JNILocalRefType
-	JNIGlobalRefType     = C.JNIGlobalRefType
-	JNIWeakGlobalRefType = C.JNIWeakGlobalRefType
+	// To prevent the values from not being defined in C side,
+	// actual values are used.
+	JNIInvalidRefType    = 0
+	JNILocalRefType      = 1
+	JNIGlobalRefType     = 2
+	JNIWeakGlobalRefType = 3
 )
 
 // jni.h:
@@ -243,6 +263,16 @@ const (
 	JNI_EINVAL    = -6
 )
 
+var Errors = []error{
+	errors.New("JNI_OK: Success"), // This should never be used. Use nil as err for success.
+	errors.New("JNI_ERR: Unknown error"),
+	errors.New("JNI_EDETACHED: Thread detached from the VM"),
+	errors.New("JNI_EVERSION: JNI version error"),
+	errors.New("JNI_ENOMEM: Not enough memory"),
+	errors.New("JNI_EEXIST: VM already created"),
+	errors.New("JNI_EINVAL: Invalid arguments"),
+}
+
 // jni.h:
 //     /*
 //      * used in ReleaseScalarArrayElements
@@ -275,17 +305,17 @@ const (
 //
 //     struct JNINativeInterface_;
 //     typedef const struct JNINativeInterface_ *JNIEnv;
-type JNIEnv struct {
-	peer *C.JNIEnv
-}
+type JNIEnv uintptr
 
-func NewJNIEnv(peer *C.JNIEnv) JNIEnv {
-	return JNIEnv{peer}
+func GoJNIEnv(peer *C.JNIEnv) JNIEnv {
+	return JNIEnv(uintptr(unsafe.Pointer(peer)))
 }
 
 func (env JNIEnv) Peer() *C.JNIEnv {
-	return env.peer
+	return (*C.JNIEnv)(unsafe.Pointer(uintptr(env)))
 }
+
+/* See "jnienv_low_level.go" for related methods */
 
 // jni.h:
 //     /*
@@ -294,29 +324,46 @@ func (env JNIEnv) Peer() *C.JNIEnv {
 //
 //     struct JNIInvokeInterface_;
 //     typedef const struct JNIInvokeInterface_ *JavaVM;
-type JavaVM struct {
-	peer *C.JavaVM
-}
+type JavaVM uintptr
 
-func NewJavaVM(peer *C.JavaVM) JavaVM {
-	return JavaVM{peer}
+func GoJavaVM(peer *C.JavaVM) JavaVM {
+	return JavaVM(uintptr(unsafe.Pointer(peer)))
 }
 
 func (vm JavaVM) Peer() *C.JavaVM {
-	return vm.peer
+	return (*C.JavaVM)(unsafe.Pointer(uintptr(vm)))
 }
 
 ////////////////////
 // JNIEnv Methods //
 ////////////////////
 
-func (env JNIEnv) GetVersion() int32 {
-	return GoInt32(GetVersion(env.Peer()))
+func (env JNIEnv) GetVersion() (Version, error) {
+	result := GoInt32(GetVersion(env.Peer()))
+	if result < 0 {
+		return 0, Errors[-result]
+	}
+	return Version(result), nil
 }
 
-func (env JNIEnv) DefineClass(name string, loader JObject, buf []byte, _len int32) JClass {
-	// TODO: Implement this!
-	panic("Not Yet Implemented")
+func (env JNIEnv) DefineClass(name string, loader JObject, buf []byte, _len int) (JClass, error) {
+	var result C.jclass
+	WithCString(name, func(c_name *C.char) {
+		header := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
+		c_buf := (*C.jbyte)(unsafe.Pointer(header.Data))
+		c_len := JavaSize(header.Len)
+		result = DefineClass(env.Peer(), c_name, loader.Peer(), c_buf, c_len)
+	})
+	if env.ExceptionCheck() {
+		// TODO: Delete local reference (throwable)
+		throwable := env.ExceptionOccurred()
+		throwable = throwable
+		// TODO: Implement this!
+		var err error
+		return GoJClass(nil), err
+	}
+	// TODO: Handle exceptions
+	return GoJClass(result), nil
 }
 
 func (env JNIEnv) FindClass(name string) JClass {
@@ -324,23 +371,24 @@ func (env JNIEnv) FindClass(name string) JClass {
 	WithCString(name, func(c_name *C.char) {
 		result = FindClass(env.Peer(), c_name)
 	})
-	return NewJClass(result)
+	// TODO: Handle exceptions
+	return GoJClass(result)
 }
 
 func (env JNIEnv) FromReflectedMethod(method JObject) JMethodID {
-	return NewJMethodID(FromReflectedMethod(env.Peer(), method.Peer()))
+	return GoJMethodID(FromReflectedMethod(env.Peer(), method.Peer()))
 }
 
 func (env JNIEnv) FromReflectedField(field JObject) JFieldID {
-	return NewJFieldID(FromReflectedField(env.Peer(), field.Peer()))
+	return GoJFieldID(FromReflectedField(env.Peer(), field.Peer()))
 }
 
 func (env JNIEnv) ToReflectedMethod(cls JClass, methodID JMethodID, isStatic bool) JObject {
-	return NewJObject(ToReflectedMethod(env.Peer(), cls.Peer(), methodID.Peer(), JavaBoolean(isStatic)))
+	return GoJObject(ToReflectedMethod(env.Peer(), cls.Peer(), methodID.Peer(), JavaBoolean(isStatic)))
 }
 
 func (env JNIEnv) GetSuperclass(sub JClass) JClass {
-	return NewJClass(GetSuperclass(env.Peer(), sub.Peer()))
+	return GoJClass(GetSuperclass(env.Peer(), sub.Peer()))
 }
 
 func (env JNIEnv) IsAssignableFrom(sub, sup JClass) bool {
@@ -348,23 +396,23 @@ func (env JNIEnv) IsAssignableFrom(sub, sup JClass) bool {
 }
 
 func (env JNIEnv) ToReflectedField(cls JClass, fieldID JFieldID, isStatic bool) JObject {
-	return NewJObject(ToReflectedField(env.Peer(), cls.Peer(), fieldID.Peer(), JavaBoolean(isStatic)))
+	return GoJObject(ToReflectedField(env.Peer(), cls.Peer(), fieldID.Peer(), JavaBoolean(isStatic)))
 }
 
-func (env JNIEnv) Throw(obj JThrowable) int32 {
-	return GoInt32(Throw(env.Peer(), obj.Peer()))
+func (env JNIEnv) Throw(obj JThrowable) int {
+	return GoInt(Throw(env.Peer(), obj.Peer()))
 }
 
-func (env JNIEnv) ThrowNew(clazz JClass, msg string) int32 {
+func (env JNIEnv) ThrowNew(clazz JClass, msg string) int {
 	var result C.jint
 	WithCString(msg, func(c_msg *C.char) {
 		result = ThrowNew(env.Peer(), clazz.Peer(), c_msg)
 	})
-	return GoInt32(result)
+	return GoInt(result)
 }
 
 func (env JNIEnv) ExceptionOccurred() JThrowable {
-	return NewJThrowable(ExceptionOccurred(env.Peer()))
+	return GoJThrowable(ExceptionOccurred(env.Peer()))
 }
 
 func (env JNIEnv) ExceptionDescribe() {
@@ -381,16 +429,16 @@ func (env JNIEnv) FatalError(msg string) {
 	})
 }
 
-func (env JNIEnv) PushLocalFrame(capacity int32) int32 {
-	return GoInt32(PushLocalFrame(env.Peer(), C.jint(capacity)))
+func (env JNIEnv) PushLocalFrame(capacity int) int {
+	return GoInt(PushLocalFrame(env.Peer(), C.jint(capacity)))
 }
 
 func (env JNIEnv) PopLocalFrame(result JObject) JObject {
-	return NewJObject(PopLocalFrame(env.Peer(), result.Peer()))
+	return GoJObject(PopLocalFrame(env.Peer(), result.Peer()))
 }
 
 func (env JNIEnv) NewGlobalRef(lobj JObject) JObject {
-	return NewJObject(NewGlobalRef(env.Peer(), lobj.Peer()))
+	return GoJObject(NewGlobalRef(env.Peer(), lobj.Peer()))
 }
 
 func (env JNIEnv) DeleteGlobalRef(gref JObject) {
@@ -406,28 +454,87 @@ func (env JNIEnv) IsSameObject(obj1, obj2 JObject) bool {
 }
 
 func (env JNIEnv) NewLocalRef(ref JObject) JObject {
-	return NewJObject(NewLocalRef(env.Peer(), ref.Peer()))
+	return GoJObject(NewLocalRef(env.Peer(), ref.Peer()))
 }
 
-func (env JNIEnv) EnsureLocalCapacity(capacity int32) int32 {
-	return GoInt32(EnsureLocalCapacity(env.Peer(), C.jint(capacity)))
+func (env JNIEnv) EnsureLocalCapacity(capacity int) int {
+	return GoInt(EnsureLocalCapacity(env.Peer(), C.jint(capacity)))
 }
 
 func (env JNIEnv) AllocObject(clazz JClass) JObject {
-	return NewJObject(AllocObject(env.Peer(), clazz.Peer()))
+	return GoJObject(AllocObject(env.Peer(), clazz.Peer()))
 }
 
-func (env JNIEnv) NewObject(clazz JClass, methodID JMethodID, args []interface{}) JObject {
+func (env JNIEnv) NewObject(clazz JClass, methodID JMethodID, args ...interface{}) JObject {
 	// TODO: Implement this!
 	panic("Not Yet Implemented")
 }
 
 func (env JNIEnv) GetObjectClass(obj JObject) JClass {
-	return NewJClass(GetObjectClass(env.Peer(), obj.Peer()))
+	return GoJClass(GetObjectClass(env.Peer(), obj.Peer()))
 }
 
 func (env JNIEnv) IsInstanceOf(obj JObject, clazz JClass) bool {
 	return GoBool(IsInstanceOf(env.Peer(), obj.Peer(), clazz.Peer()))
+}
+
+func (env JNIEnv) GetMethodID(clazz JClass, name, sig string) JMethodID {
+	var result C.jmethodID
+	WithCString(name, func(c_name *C.char) {
+		WithCString(sig, func(c_sig *C.char) {
+			result = GetMethodID(env.Peer(), clazz.Peer(), c_name, c_sig)
+		})
+	})
+	return GoJMethodID(result)
+}
+
+func (env JNIEnv) CallObjectMethod(obj JObject, methodID JMethodID, args ...interface{}) JObject {
+	argsCopy := make([]C.jvalue, len(args))
+	for i, v := range args {
+		value := reflect.ValueOf(v)
+		kind := value.Kind()
+		switch kind {
+		case reflect.Bool:
+			argsCopy[i] = JValueFromJBoolean(JavaBoolean(value.Bool()))
+		case reflect.Int:
+			argsCopy[i] = JValueFromJInt(JavaInt(int(value.Int())))
+		case reflect.Int8:
+			argsCopy[i] = JValueFromJByte(JavaByte(int8(value.Int())))
+		case reflect.Int16:
+			argsCopy[i] = JValueFromJShort(JavaShort(int16(value.Int())))
+		case reflect.Int32:
+			argsCopy[i] = JValueFromJInt(JavaIntRaw(int32(value.Int())))
+		case reflect.Int64:
+			argsCopy[i] = JValueFromJLong(JavaLong(int64(value.Int())))
+		case reflect.Uint16:
+			argsCopy[i] = JValueFromJChar(JavaChar(uint16(value.Uint())))
+		case reflect.Float32:
+			argsCopy[i] = JValueFromJFloat(JavaFloat(float32(value.Float())))
+		case reflect.Float64:
+			argsCopy[i] = JValueFromJDouble(JavaDouble(float64(value.Float())))
+		case reflect.Array:
+			panic("Not Yet Implemented")
+		case reflect.Interface:
+			panic("Not Yet Implemented")
+		case reflect.Map:
+			panic("Not Yet Implemented")
+		case reflect.Slice:
+			panic("Not Yet Implemented")
+		case reflect.String:
+			panic("Not Yet Implemented")
+		default:
+			panic("Not Yet Implemented")
+		}
+	}
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&argsCopy))
+	c_argsCopy := (*C.jvalue)(unsafe.Pointer(header.Data))
+	result := CallObjectMethodA(env.Peer(), obj.Peer(), methodID.Peer(), c_argsCopy)
+	// TODO: Exception Handling
+	return GoJObject(result)
+}
+
+func (env JNIEnv) ExceptionCheck() bool {
+	return GoBool(ExceptionCheck(env.Peer()))
 }
 
 // jni.h:
@@ -487,90 +594,19 @@ func (env JNIEnv) IsInstanceOf(obj JObject, clazz JClass) bool {
 //     #define JNI_VERSION_1_4 0x00010004
 //     #define JNI_VERSION_1_6 0x00010006
 //     #define JNI_VERSION_1_8 0x00010008
+type Version int32
+
 const (
-	JNI_VERSION_1_1 = C.JNI_VERSION_1_1
-	JNI_VERSION_1_2 = C.JNI_VERSION_1_2
-	JNI_VERSION_1_4 = C.JNI_VERSION_1_4
-	JNI_VERSION_1_6 = C.JNI_VERSION_1_6
-	JNI_VERSION_1_8 = C.JNI_VERSION_1_8
+	// To prevent the values from not being defined in C side,
+	// actual values are used.
+	JNI_VERSION_1_1 Version = iota + 0x00010001
+	JNI_VERSION_1_2
+	_
+	JNI_VERSION_1_4
+	_
+	JNI_VERSION_1_6
+	_
+	JNI_VERSION_1_8
 )
 
-/* Support Functions - Primitive Conversion */
-
-func JavaBoolean(z bool) C.jboolean {
-	if z {
-		return JNI_TRUE
-	}
-	return JNI_FALSE
-}
-
-func JavaByte(b int8) C.jbyte {
-	return C.jbyte(b)
-}
-
-func JavaChar(c uint16) C.jchar {
-	return C.jchar(c)
-}
-
-func JavaShort(s int16) C.jshort {
-	return C.jshort(s)
-}
-
-func JavaInt(i int32) C.jint {
-	return C.jint(i)
-}
-
-func JavaLong(j int64) C.jlong {
-	return C.jlong(j)
-}
-
-func JavaFloat(f float32) C.jfloat {
-	return C.jfloat(f)
-}
-
-func JavaDouble(d float64) C.jdouble {
-	return C.jdouble(d)
-}
-
-func GoBool(z C.jboolean) bool {
-	return z != JNI_FALSE
-}
-
-func GoInt8(b C.jbyte) int8 {
-	return int8(b)
-}
-
-func GoUint16(c C.jchar) uint16 {
-	return uint16(c)
-}
-
-func GoInt16(s C.jshort) int16 {
-	return int16(s)
-}
-
-func GoInt32(i C.jint) int32 {
-	return int32(i)
-}
-
-func GoInt64(j C.jlong) int64 {
-	return int64(j)
-}
-
-func GoFloat32(f C.jfloat) float32 {
-	return float32(f)
-}
-
-func GoFloat64(d C.jdouble) float64 {
-	return float64(d)
-}
-
-/* Support Functions - String Conversion */
-
-// For example, see:
-//     src/net/cgo_unix.go
-//     src/os/user/lookup_unix.go
-func WithCString(s string, f func(*C.char)) {
-	pc := C.CString(s)
-	defer C.free(unsafe.Pointer(pc))
-	f(pc)
-}
+//go:generate stringer -type=Version

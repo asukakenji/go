@@ -1,54 +1,54 @@
 #include "jvalue.h"
 
-jvalue _GoJniJBooleanToJValue(jboolean z)
+jvalue _GoJniJValueFromJBoolean(jboolean z)
 {
 	jvalue v = {.z = z};
 	return v;
 }
 
-jvalue _GoJniJByteToJValue(jbyte b)
+jvalue _GoJniJValueFromJByte(jbyte b)
 {
 	jvalue v = {.b = b};
 	return v;
 }
 
-jvalue _GoJniJCharToJValue(jchar c)
+jvalue _GoJniJValueFromJChar(jchar c)
 {
 	jvalue v = {.c = c};
 	return v;
 }
 
-jvalue _GoJniJShortToJValue(jshort s)
+jvalue _GoJniJValueFromJShort(jshort s)
 {
 	jvalue v = {.s = s};
 	return v;
 }
 
-jvalue _GoJniJIntToJValue(jint i)
+jvalue _GoJniJValueFromJInt(jint i)
 {
 	jvalue v = {.i = i};
 	return v;
 }
 
-jvalue _GoJniJLongToJValue(jlong j)
+jvalue _GoJniJValueFromJLong(jlong j)
 {
 	jvalue v = {.j = j};
 	return v;
 }
 
-jvalue _GoJniJFloatToJValue(jfloat f)
+jvalue _GoJniJValueFromJFloat(jfloat f)
 {
 	jvalue v = {.f = f};
 	return v;
 }
 
-jvalue _GoJniJDoubleToJValue(jdouble d)
+jvalue _GoJniJValueFromJDouble(jdouble d)
 {
 	jvalue v = {.d = d};
 	return v;
 }
 
-jvalue _GoJniJObjectToJValue(jobject l)
+jvalue _GoJniJValueFromJObject(jobject l)
 {
 	jvalue v = {.l = l};
 	return v;

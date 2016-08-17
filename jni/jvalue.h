@@ -16,15 +16,15 @@
 //     jobject  l;
 // } jvalue;
 
-jvalue _GoJniJBooleanToJValue(jboolean z);
-jvalue _GoJniJByteToJValue(jbyte b);
-jvalue _GoJniJCharToJValue(jchar c);
-jvalue _GoJniJShortToJValue(jshort s);
-jvalue _GoJniJIntToJValue(jint i);
-jvalue _GoJniJLongToJValue(jlong j);
-jvalue _GoJniJFloatToJValue(jfloat f);
-jvalue _GoJniJDoubleToJValue(jdouble d);
-jvalue _GoJniJObjectToJValue(jobject l);
+jvalue _GoJniJValueFromJBoolean(jboolean z);
+jvalue _GoJniJValueFromJByte(jbyte b);
+jvalue _GoJniJValueFromJChar(jchar c);
+jvalue _GoJniJValueFromJShort(jshort s);
+jvalue _GoJniJValueFromJInt(jint i);
+jvalue _GoJniJValueFromJLong(jlong j);
+jvalue _GoJniJValueFromJFloat(jfloat f);
+jvalue _GoJniJValueFromJDouble(jdouble d);
+jvalue _GoJniJValueFromJObject(jobject l);
 
 jboolean _GoJniJValueToJBoolean(jvalue v);
 jbyte _GoJniJValueToJByte(jvalue v);
