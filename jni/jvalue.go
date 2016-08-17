@@ -5,6 +5,21 @@ package main
 
 #include <jni.h>
 
+// jni.h:
+// typedef union jvalue {
+//     jboolean z;
+//     jbyte    b;
+//     jchar    c;
+//     jshort   s;
+//     jint     i;
+//     jlong    j;
+//     jfloat   f;
+//     jdouble  d;
+//     jobject  l;
+// } jvalue;
+
+// jvalue From Any
+
 static jvalue _GoJniJValueFromJBoolean(jboolean z)
 {
 	jvalue v = {.z = z};
@@ -58,6 +73,8 @@ static jvalue _GoJniJValueFromJObject(jobject l)
 	jvalue v = {.l = l};
 	return v;
 }
+
+// jvalue To Any
 
 static jboolean _GoJniJValueToJBoolean(jvalue v)
 {
