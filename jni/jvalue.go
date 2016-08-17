@@ -1,6 +1,109 @@
 package main
 
-// #include "jvalue.h"
+/*
+// See src/os/user/lookup_unix.go for usage of "static"
+
+#include <jni.h>
+
+static jvalue _GoJniJValueFromJBoolean(jboolean z)
+{
+	jvalue v = {.z = z};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJByte(jbyte b)
+{
+	jvalue v = {.b = b};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJChar(jchar c)
+{
+	jvalue v = {.c = c};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJShort(jshort s)
+{
+	jvalue v = {.s = s};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJInt(jint i)
+{
+	jvalue v = {.i = i};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJLong(jlong j)
+{
+	jvalue v = {.j = j};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJFloat(jfloat f)
+{
+	jvalue v = {.f = f};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJDouble(jdouble d)
+{
+	jvalue v = {.d = d};
+	return v;
+}
+
+static jvalue _GoJniJValueFromJObject(jobject l)
+{
+	jvalue v = {.l = l};
+	return v;
+}
+
+static jboolean _GoJniJValueToJBoolean(jvalue v)
+{
+	return v.z;
+}
+
+static jbyte _GoJniJValueToJByte(jvalue v)
+{
+	return v.b;
+}
+
+static jchar _GoJniJValueToJChar(jvalue v)
+{
+	return v.c;
+}
+
+static jshort _GoJniJValueToJShort(jvalue v)
+{
+	return v.s;
+}
+
+static jint _GoJniJValueToJInt(jvalue v)
+{
+	return v.i;
+}
+
+static jlong _GoJniJValueToJLong(jvalue v)
+{
+	return v.j;
+}
+
+static jfloat _GoJniJValueToJFloat(jvalue v)
+{
+	return v.f;
+}
+
+static jdouble _GoJniJValueToJDouble(jvalue v)
+{
+	return v.d;
+}
+
+static jobject _GoJniJValueToJObject(jvalue v)
+{
+	return v.l;
+}
+*/
 import "C"
 
 // jvalue From Any
