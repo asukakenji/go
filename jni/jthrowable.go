@@ -1,4 +1,4 @@
-package main
+package jni
 
 /*
 #include <jni.h>

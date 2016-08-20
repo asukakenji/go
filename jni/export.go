@@ -1,40 +1,18 @@
-package main
+package jni
 
 /*
-// TODO: Should get rid of this after the 2 demo functions are removed.
-#include "Main.h"
-
 // free()
 #include <stdlib.h>
+
+#include <jni.h>
 */
 import "C"
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"unsafe"
 )
-
-//export Java_Main_test
-func Java_Main_test(env *C.JNIEnv, clazz C.jclass) {
-	fmt.Println(GetVersion(env))
-	fmt.Println("Hello, world from a Go function!")
-	test2(env, clazz)
-}
-
-func test2(env *C.JNIEnv, clazz C.jclass) {
-	WithCString("test2", func(c_name *C.char) {
-		WithCString("()V", func(c_sig *C.char) {
-			if mid := GetStaticMethodID(env, clazz, c_name, c_sig); mid != nil {
-				CallStaticVoidMethodA(env, clazz, mid, nil)
-			}
-		})
-	})
-}
-
-func main() {
-}
 
 // jni.h:
 //     /*

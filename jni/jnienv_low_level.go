@@ -1,4 +1,4 @@
-package main
+package jni
 
 /*
 // See src/os/user/lookup_unix.go for usage of "static"
