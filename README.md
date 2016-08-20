@@ -1,8 +1,13 @@
-# go
-Go (Golang) Libraries
+# Go (Golang) Libraries by Asuka Kenji
 
-Stream:
-Downstream has a field that contains an openUpstream() function
-Before openUpstream() is called, no goroutines or channels are created.
-Therefore, there is no resource leakage if only intermediate operations are called.
-The openUpstream() function is not thread-safe --- it must not be called from multiple goroutines concurrently.
+[The Stream Library](stream):
+- Simulates Java's Stream library
+- Completeness: Alpha stage
+
+[The Generator Library](generator):
+- Simulates Python's Generator (a.k.a. `yield`) functionality
+- Completeness: Beta stage
+
+[The JNI Library](jni):
+- Wraps the Java Native Interface library in Go
+- Completeness: Alpha stage
