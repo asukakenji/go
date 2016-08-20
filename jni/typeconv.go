@@ -10,10 +10,11 @@ import "C"
 
 import (
 	"fmt"
+	"reflect"
 	"unsafe"
 )
 
-/* Support Functions - Primitive Conversion */
+/* Support Functions - Primitive Conversion (High Level) */
 
 func JavaBoolean(z bool) C.jboolean {
 	if z {
@@ -139,7 +140,7 @@ func GoFloat64(d C.jdouble) float64 {
 	return float64(d)
 }
 
-/* Support Functions - String Conversion */
+/* Support Functions - String Conversion (High Level) */
 
 // For example, see:
 //     src/net/cgo_unix.go
@@ -148,4 +149,73 @@ func WithCString(s string, f func(*C.char)) {
 	pc := C.CString(s)
 	defer C.free(unsafe.Pointer(pc))
 	f(pc)
+}
+
+/* Support Functions - jvalue Conversion (Low Level) */
+
+func JValueArray(args ...interface{}) []C.jvalue {
+	result := make([]C.jvalue, len(args))
+	for i, v := range args {
+		switch v2 := v.(type) {
+		case C.jboolean:
+			result[i] = JValueFromJBoolean(v2)
+		case C.jbyte:
+			result[i] = JValueFromJByte(v2)
+		case C.jchar:
+			result[i] = JValueFromJChar(v2)
+		case C.jshort:
+			result[i] = JValueFromJShort(v2)
+		case C.jint:
+			result[i] = JValueFromJInt(v2)
+		case C.jlong:
+			result[i] = JValueFromJLong(v2)
+		case C.jfloat:
+			result[i] = JValueFromJFloat(v2)
+		case C.jdouble:
+			result[i] = JValueFromJDouble(v2)
+		case C.jsize:
+			result[i] = JValueFromJInt(C.jint(v2))
+		case C.jobject:
+			result[i] = JValueFromJObject(v2)
+		case C.jclass:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jthrowable:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jstring:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jarray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jbooleanArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jbyteArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jcharArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jshortArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jintArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jlongArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jfloatArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jdoubleArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jobjectArray:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jweak:
+			result[i] = JValueFromJObject(C.jobject(v2))
+		case C.jvalue:
+			result[i] = v2
+		default:
+			panic("Unknown type")
+		}
+	}
+	return result
+}
+
+func WithJValueArray(va []C.jvalue, f func(*C.jvalue)) {
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&va))
+	c_va := (*C.jvalue)(unsafe.Pointer(header.Data))
+	f(c_va)
 }

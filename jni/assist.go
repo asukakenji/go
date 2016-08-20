@@ -148,8 +148,18 @@ func GetPtrCChar(pc unsafe.Pointer) *C.char {
 	return (*C.char)(pc)
 }
 
+func GetPtrCJValue(pv unsafe.Pointer) *C.jvalue {
+	return (*C.jvalue)(pv)
+}
+
 func UnwrapPtrCChar(f func(unsafe.Pointer)) func(*C.char) {
 	return func(pc *C.char) {
 		f(unsafe.Pointer(pc))
+	}
+}
+
+func UnwrapPtrCJValue(f func(unsafe.Pointer)) func(*C.jvalue) {
+	return func(pv *C.jvalue) {
+		f(unsafe.Pointer(pv))
 	}
 }

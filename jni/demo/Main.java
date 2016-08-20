@@ -13,6 +13,10 @@ public class Main {
 		System.out.println("Hello, world from Java method!");
 	}
 
+	private static void test3(String s) {
+		System.out.println(s);
+	}
+
 	public static void main(String[] args) {
 		test();
 	}

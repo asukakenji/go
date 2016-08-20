@@ -10,7 +10,10 @@ import "C"
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
+	"unicode/utf8"
+	"unicode/utf16"
 	"unsafe"
 )
 
@@ -508,6 +511,112 @@ func (env JNIEnv) CallObjectMethod(obj JObject, methodID JMethodID, args ...inte
 	result := CallObjectMethodA(env.Peer(), obj.Peer(), methodID.Peer(), c_argsCopy)
 	// TODO: Exception Handling
 	return GoJObject(result)
+}
+
+// NewString is a middle-level API.
+// Use methods from jstring.go for general purposes.
+func (env JNIEnv) NewString(s string) (str JString, err error) {
+	// Encoding
+	runes := []rune(s)
+	uint16s := utf16.Encode(runes)
+
+	// Slice to pointer translation
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&uint16s))
+	c_unicode := (*C.jchar)(unsafe.Pointer(header.Data))
+	c_len := C.jsize(header.Len)
+
+	// var result C.jstring
+	result := NewString(env.Peer(), c_unicode, c_len)
+	str = GoJString(result)
+
+	// Deal with NULL return value
+	if result == nil {
+		err = fmt.Errorf("The string cannot be constructed")
+	}
+
+	// TODO: Deal with OutOfMemoryError
+	return
+}
+
+// GetStringLength is a middle-level API.
+// Use methods from jstring.go for general purposes.
+func (env JNIEnv) GetStringLength(str JString) int {
+	return GoIntFromSize(GetStringLength(env.Peer(), str.Peer()))
+}
+
+// GetStringChars is a middle-level API.
+func (env JNIEnv) GetStringChars(str JString) (chars *C.jchar, isCopy bool, err error) {
+	var c_isCopy C.jboolean
+	chars = GetStringChars(env.Peer(), str.Peer(), &c_isCopy)
+	isCopy = GoBool(c_isCopy)
+
+	// Deal with NULL return value
+	if chars == nil {
+		err = fmt.Errorf("The operation failed")
+	}
+	return
+}
+
+// ReleaseStringChars is a middle-level API.
+func (env JNIEnv) ReleaseStringChars(str JString, chars *C.jchar) {
+	ReleaseStringChars(env.Peer(), str.Peer(), chars)
+}
+
+// NewStringUTF is a middle-level API.
+func (env JNIEnv) NewStringUTF(s string) (str JString, err error) {
+	// Encoding
+	runes := []rune(s)
+	bytes := make([]byte, len(runes) * utf8.UTFMax)
+	byteIndex := 0
+	for _, v := range runes {
+		if v != 0 {
+			byteCount := utf8.EncodeRune(bytes[byteIndex:], v)
+			byteIndex += byteCount
+		} else {
+			// Rules for modified UTF-8
+			bytes[byteIndex], bytes[byteIndex+1] = 0xC0, 0x80
+			byteIndex += 2
+		}
+	}
+
+	// Slice to pointer translation
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&bytes))
+	c_utf := (*C.char)(unsafe.Pointer(header.Data))
+
+	// var result C.jstring
+	result := NewStringUTF(env.Peer(), c_utf)
+	str = GoJString(result)
+
+	// Deal with NULL return value
+	if result == nil {
+		err = fmt.Errorf("The string cannot be constructed")
+	}
+
+	// TODO: Deal with OutOfMemoryError
+	return
+}
+
+// GetStringUTFLength is a middle-level API.
+func (env JNIEnv) GetStringUTFLength(str JString) int {
+	return GoIntFromSize(GetStringUTFLength(env.Peer(), str.Peer()))
+}
+
+// GetStringUTFChars is a middle-level API.
+func (env JNIEnv) GetStringUTFChars(str JString) (chars *C.char, isCopy bool, err error) {
+	var c_isCopy C.jboolean
+	chars = GetStringUTFChars(env.Peer(), str.Peer(), &c_isCopy)
+	isCopy = GoBool(c_isCopy)
+
+	// Deal with NULL return value
+	if chars == nil {
+		err = fmt.Errorf("The operation failed")
+	}
+	return
+}
+
+// ReleaseStringUTFChars is a middle-level API.
+func (env JNIEnv) ReleaseStringUTFChars(str JString, chars *C.char) {
+	ReleaseStringUTFChars(env.Peer(), str.Peer(), chars)
 }
 
 func (env JNIEnv) ExceptionCheck() bool {
