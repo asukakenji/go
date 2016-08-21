@@ -6,9 +6,7 @@ package jni
 import "C"
 
 import (
-	"reflect"
 	"unicode/utf16"
-	"unsafe"
 )
 
 // JStringFromGoString() creates a JString from a Go string.
@@ -101,16 +99,7 @@ func (str JString) WithCharsE(consumer func(chars []uint16, isCopy bool), env JN
 		return err
 	}
 	defer env.ReleaseStringChars(str, chars)
-
-	// GetStringLength()
-	_len := str.LenE(env)
-
-	header := reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(chars)),
-		Len: _len,
-		Cap: _len,
-	}
-	consumer(*((*[]uint16)(unsafe.Pointer(&header))), isCopy)
+	consumer(chars, isCopy)
 	return nil
 }
 
@@ -149,16 +138,7 @@ func (str JString) WithUTFCharsE(consumer func(chars []byte, isCopy bool), env J
 		return err
 	}
 	defer env.ReleaseStringUTFChars(str, chars)
-
-	// GetStringUTFLength()
-	_len := str.UTFLenE(env)
-
-	header := reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(chars)),
-		Len: _len,
-		Cap: _len,
-	}
-	consumer(*((*[]byte)(unsafe.Pointer(&header))), isCopy)
+	consumer(chars, isCopy)
 	return nil
 }
 

@@ -12,8 +12,8 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"unicode/utf8"
 	"unicode/utf16"
+	"unicode/utf8"
 	"unsafe"
 )
 
@@ -514,18 +514,18 @@ func (env JNIEnv) CallObjectMethod(obj JObject, methodID JMethodID, args ...inte
 }
 
 // NewString is a middle-level API.
-// Use methods from jstring.go for general purposes.
+// Use JStringFromGoString{,E} from jstring.go for general purposes.
 func (env JNIEnv) NewString(s string) (str JString, err error) {
-	// Encoding
+	// Encoding to UTF-16
 	runes := []rune(s)
-	uint16s := utf16.Encode(runes)
+	unicode := utf16.Encode(runes)
 
-	// Slice to pointer translation
-	header := (*reflect.SliceHeader)(unsafe.Pointer(&uint16s))
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&unicode))
 	c_unicode := (*C.jchar)(unsafe.Pointer(header.Data))
 	c_len := C.jsize(header.Len)
 
-	// var result C.jstring
+	// Call and wrap
 	result := NewString(env.Peer(), c_unicode, c_len)
 	str = GoJString(result)
 
@@ -539,15 +539,31 @@ func (env JNIEnv) NewString(s string) (str JString, err error) {
 }
 
 // GetStringLength is a middle-level API.
-// Use methods from jstring.go for general purposes.
+// Use JString.Len{,E} from jstring.go for general purposes.
 func (env JNIEnv) GetStringLength(str JString) int {
 	return GoIntFromSize(GetStringLength(env.Peer(), str.Peer()))
 }
 
 // GetStringChars is a middle-level API.
-func (env JNIEnv) GetStringChars(str JString) (chars *C.jchar, isCopy bool, err error) {
+// Use JString.WithChars{,E} from jstring.go for general purposes.
+func (env JNIEnv) GetStringChars(str JString) (chars []uint16, isCopy bool, err error) {
 	var c_isCopy C.jboolean
-	chars = GetStringChars(env.Peer(), str.Peer(), &c_isCopy)
+
+	// GetStringLength()
+	_len := env.GetStringLength(str)
+
+	// GetStringChars()
+	c_chars := GetStringChars(env.Peer(), str.Peer(), &c_isCopy)
+
+	// Pointer to slice conversion
+	header := reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(c_chars)),
+		Len: _len,
+		Cap: _len,
+	}
+	chars = *(*[]uint16)(unsafe.Pointer(&header))
+
+	// Boolean conversion
 	isCopy = GoBool(c_isCopy)
 
 	// Deal with NULL return value
@@ -558,32 +574,51 @@ func (env JNIEnv) GetStringChars(str JString) (chars *C.jchar, isCopy bool, err 
 }
 
 // ReleaseStringChars is a middle-level API.
-func (env JNIEnv) ReleaseStringChars(str JString, chars *C.jchar) {
-	ReleaseStringChars(env.Peer(), str.Peer(), chars)
+// Use JString.WithChars{,E} from jstring.go for general purposes.
+func (env JNIEnv) ReleaseStringChars(str JString, chars []uint16) {
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&chars))
+	c_chars := (*C.jchar)(unsafe.Pointer(header.Data))
+
+	// Clear header data (TODO: is this needed?)
+	header.Data = uintptr(0)
+	header.Len = 0
+	header.Cap = 0
+
+	ReleaseStringChars(env.Peer(), str.Peer(), c_chars)
 }
 
 // NewStringUTF is a middle-level API.
+// In JNI, this function allows the caller to provide a "modified UTF-8" buffer,
+// instead of a UTF-16 buffer as in NewString.
+// However, this makes no difference in this wrapper,
+// since the parameter type is a Go string.
+// As a result, this duplicats the functionality of NewString.
+// This function exists for completeness only.
+// Use JStringFromGoString{,E} from jstring.go for general purposes.
 func (env JNIEnv) NewStringUTF(s string) (str JString, err error) {
-	// Encoding
-	runes := []rune(s)
-	bytes := make([]byte, len(runes) * utf8.UTFMax)
-	byteIndex := 0
-	for _, v := range runes {
-		if v != 0 {
-			byteCount := utf8.EncodeRune(bytes[byteIndex:], v)
-			byteIndex += byteCount
+	// Encoding to "modified UTF-8"
+	// len(s) is a good estimation of the length of utf.
+	// If there is no embedded null characters, len(s) the actual length of utf.
+	utf := make([]byte, 0, len(s))
+	utfIndex := 0
+	for sIndex, sLen, size := 0, len(s), 0; sIndex < sLen; sIndex += size {
+		r, size := utf8.DecodeRuneInString(s[sIndex:])
+		if r != 0 {
+			utf = append(utf, s[sIndex:sIndex+size]...)
+			utfIndex += size
 		} else {
-			// Rules for modified UTF-8
-			bytes[byteIndex], bytes[byteIndex+1] = 0xC0, 0x80
-			byteIndex += 2
+			// Embedded null character for "modified UTF-8"
+			utf = append(utf, 0xC0, 0x80)
+			utfIndex += 2
 		}
 	}
 
-	// Slice to pointer translation
-	header := (*reflect.SliceHeader)(unsafe.Pointer(&bytes))
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&utf))
 	c_utf := (*C.char)(unsafe.Pointer(header.Data))
 
-	// var result C.jstring
+	// Call and wrap
 	result := NewStringUTF(env.Peer(), c_utf)
 	str = GoJString(result)
 
@@ -597,14 +632,31 @@ func (env JNIEnv) NewStringUTF(s string) (str JString, err error) {
 }
 
 // GetStringUTFLength is a middle-level API.
+// Use JString.UTFLen{,E} from jstring.go for general purposes.
 func (env JNIEnv) GetStringUTFLength(str JString) int {
 	return GoIntFromSize(GetStringUTFLength(env.Peer(), str.Peer()))
 }
 
 // GetStringUTFChars is a middle-level API.
-func (env JNIEnv) GetStringUTFChars(str JString) (chars *C.char, isCopy bool, err error) {
+// Use JString.WithUTFChars{,E} from jstring.go for general purposes.
+func (env JNIEnv) GetStringUTFChars(str JString) (chars []byte, isCopy bool, err error) {
 	var c_isCopy C.jboolean
-	chars = GetStringUTFChars(env.Peer(), str.Peer(), &c_isCopy)
+
+	// GetStringUTFLength()
+	_len := env.GetStringUTFLength(str)
+
+	// GetStringUTFChars()
+	c_chars := GetStringUTFChars(env.Peer(), str.Peer(), &c_isCopy)
+
+	// Pointer to slice conversion
+	header := reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(c_chars)),
+		Len: _len,
+		Cap: _len,
+	}
+	chars = *((*[]byte)(unsafe.Pointer(&header)))
+
+	// Boolean conversion
 	isCopy = GoBool(c_isCopy)
 
 	// Deal with NULL return value
@@ -615,8 +667,70 @@ func (env JNIEnv) GetStringUTFChars(str JString) (chars *C.char, isCopy bool, er
 }
 
 // ReleaseStringUTFChars is a middle-level API.
-func (env JNIEnv) ReleaseStringUTFChars(str JString, chars *C.char) {
-	ReleaseStringUTFChars(env.Peer(), str.Peer(), chars)
+// Use JString.WithUTFChars{,E} from jstring.go for general purposes.
+func (env JNIEnv) ReleaseStringUTFChars(str JString, chars []byte) {
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&chars))
+	c_chars := (*C.char)(unsafe.Pointer(header.Data))
+
+	// Clear header data (TODO: is this needed?)
+	header.Data = uintptr(0)
+	header.Len = 0
+	header.Cap = 0
+
+	ReleaseStringUTFChars(env.Peer(), str.Peer(), c_chars)
+}
+
+// ReleaseStringUTFChars is a middle-level API.
+func (env JNIEnv) GetStringRegion(str JString, start, _len int, buf []uint16) {
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
+	c_buf := (*C.jchar)(unsafe.Pointer(header.Data))
+
+	GetStringRegion(env.Peer(), str.Peer(), JavaSize(start), JavaSize(_len), c_buf)
+}
+
+// ReleaseStringUTFChars is a middle-level API.
+func (env JNIEnv) GetStringUTFRegion(str JString, start, _len int, buf []byte) {
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
+	c_buf := (*C.char)(unsafe.Pointer(header.Data))
+
+	GetStringUTFRegion(env.Peer(), str.Peer(), JavaSize(start), JavaSize(_len), c_buf)
+}
+
+// ReleaseStringUTFChars is a middle-level API.
+func (env JNIEnv) GetStringCritical(str JString) (cstring []uint16, isCopy bool) {
+	var c_isCopy C.jboolean
+	c_cstring := GetStringCritical(env.Peer(), str.Peer(), &c_isCopy)
+
+	// GetStringUTFLength()
+	_len := env.GetStringUTFLength(str)
+
+	// Pointer to slice conversion
+	header := reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(c_cstring)),
+		Len:  _len,
+		Cap:  _len,
+	}
+	cstring = *((*[]uint16)(unsafe.Pointer(&header)))
+
+	isCopy = GoBool(c_isCopy)
+	return
+}
+
+// ReleaseStringUTFChars is a middle-level API.
+func (env JNIEnv) ReleaseStringCritical(str JString, cstring []uint16) {
+	// Slice to pointer conversion
+	header := (*reflect.SliceHeader)(unsafe.Pointer(&cstring))
+	c_cstring := (*C.jchar)(unsafe.Pointer(header.Data))
+
+	// Clear header data (TODO: is this needed?)
+	header.Data = uintptr(0)
+	header.Len = 0
+	header.Cap = 0
+
+	ReleaseStringCritical(env.Peer(), str.Peer(), c_cstring)
 }
 
 func (env JNIEnv) ExceptionCheck() bool {
