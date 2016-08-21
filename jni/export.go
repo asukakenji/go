@@ -558,8 +558,8 @@ func (env JNIEnv) GetStringChars(str JString) (chars []uint16, isCopy bool, err 
 	// Pointer to slice conversion
 	header := reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(c_chars)),
-		Len: _len,
-		Cap: _len,
+		Len:  _len,
+		Cap:  _len,
 	}
 	chars = *(*[]uint16)(unsafe.Pointer(&header))
 
@@ -651,8 +651,8 @@ func (env JNIEnv) GetStringUTFChars(str JString) (chars []byte, isCopy bool, err
 	// Pointer to slice conversion
 	header := reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(c_chars)),
-		Len: _len,
-		Cap: _len,
+		Len:  _len,
+		Cap:  _len,
 	}
 	chars = *((*[]byte)(unsafe.Pointer(&header)))
 
