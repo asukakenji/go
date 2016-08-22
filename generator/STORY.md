@@ -348,6 +348,8 @@ an object is taken from the source each time it is invoked.
 
 ### 8. Packaging and Generalization
 
+**TODO: Write this!**
+
 
 
 [story1.go]: story1.go
