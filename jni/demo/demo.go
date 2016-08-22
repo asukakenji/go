@@ -49,7 +49,7 @@ func test3(env *C.JNIEnv, clazz C.jclass) {
 				fmt.Println(err)
 				return
 			}
-			c_s.WithCharsE(func(chars []uint16, isCopy bool) {
+			c_s.WithUTF16CharsE(func(chars []uint16, isCopy bool) {
 				for _, v := range chars {
 					fmt.Printf("%[1]d: %[1]c\n", v)
 				}

@@ -529,7 +529,7 @@ func (env JNIEnv) NewString(s string) (str JString, err error) {
 	result := NewString(env.Peer(), c_unicode, c_len)
 	str = GoJString(result)
 
-	// Deal with NULL return value
+	// NilReturnValueError
 	if result == nil {
 		err = fmt.Errorf("The string cannot be constructed")
 	}
@@ -566,7 +566,7 @@ func (env JNIEnv) GetStringChars(str JString) (chars []uint16, isCopy bool, err 
 	// Boolean conversion
 	isCopy = GoBool(c_isCopy)
 
-	// Deal with NULL return value
+	// NilReturnValueError
 	if chars == nil {
 		err = fmt.Errorf("The operation failed")
 	}
@@ -622,7 +622,7 @@ func (env JNIEnv) NewStringUTF(s string) (str JString, err error) {
 	result := NewStringUTF(env.Peer(), c_utf)
 	str = GoJString(result)
 
-	// Deal with NULL return value
+	// NilReturnValueError
 	if result == nil {
 		err = fmt.Errorf("The string cannot be constructed")
 	}
@@ -659,7 +659,7 @@ func (env JNIEnv) GetStringUTFChars(str JString) (chars []byte, isCopy bool, err
 	// Boolean conversion
 	isCopy = GoBool(c_isCopy)
 
-	// Deal with NULL return value
+	// NilReturnValueError
 	if chars == nil {
 		err = fmt.Errorf("The operation failed")
 	}
@@ -682,25 +682,31 @@ func (env JNIEnv) ReleaseStringUTFChars(str JString, chars []byte) {
 }
 
 // ReleaseStringUTFChars is a middle-level API.
-func (env JNIEnv) GetStringRegion(str JString, start, _len int, buf []uint16) {
+func (env JNIEnv) GetStringRegion(str JString, start, _len int, buf []uint16) error {
 	// Slice to pointer conversion
 	header := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
 	c_buf := (*C.jchar)(unsafe.Pointer(header.Data))
 
 	GetStringRegion(env.Peer(), str.Peer(), JavaSize(start), JavaSize(_len), c_buf)
+
+	// TODO: Deal with StringIndexOutOfBoundsException
+	return nil
 }
 
 // ReleaseStringUTFChars is a middle-level API.
-func (env JNIEnv) GetStringUTFRegion(str JString, start, _len int, buf []byte) {
+func (env JNIEnv) GetStringUTFRegion(str JString, start, _len int, buf []byte) error {
 	// Slice to pointer conversion
 	header := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
 	c_buf := (*C.char)(unsafe.Pointer(header.Data))
 
 	GetStringUTFRegion(env.Peer(), str.Peer(), JavaSize(start), JavaSize(_len), c_buf)
+
+	// TODO: Deal with StringIndexOutOfBoundsException
+	return nil
 }
 
 // ReleaseStringUTFChars is a middle-level API.
-func (env JNIEnv) GetStringCritical(str JString) (cstring []uint16, isCopy bool) {
+func (env JNIEnv) GetStringCritical(str JString) (cstring []uint16, isCopy bool, err error) {
 	var c_isCopy C.jboolean
 	c_cstring := GetStringCritical(env.Peer(), str.Peer(), &c_isCopy)
 
