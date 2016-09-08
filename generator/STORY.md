@@ -18,7 +18,7 @@ This library originates from writing an answer to this question on StackOverflow
 
 [golang implementing generator / yield with channels: odd channel behavior][so1]
 
-This reminds me of this question I asked when I began developing in Go (Golang):
+This reminds me of a similar question I asked when I began developing in Go (Golang):
 
 [The idiomatic way to implement generators (yield) in Golang for recursive functions][so2]
 
@@ -27,7 +27,7 @@ And this question asked by another developer:
 [Python-style generators in Go][so3]
 
 Since none of the answers to the above questions fulfill my requirements,
-I decided roll my own implementation.
+I decided to roll my own implementation.
 
 [so1]: http://stackoverflow.com/q/37648288/142239
 [so2]: http://stackoverflow.com/q/34464146/142239
@@ -131,7 +131,7 @@ Goroutine Terminated
 ```
 
 In the code above,
-the creation of the channel and the goroutine are handled by the library
+the creation of the channel and the goroutine is handled by the library
 (fulfills "Requirement 1").
 The generator returns a value (the channel) assignable to a variable
 (fulfills "Requirement 2") like this
@@ -152,7 +152,7 @@ However, there is a serious problem --- resource leak.
 The goroutine is started in the body of `xrange()`.
 If the client doesn't read all values from the returned channel,
 the goroutine blocks at `ch <- i` and never terminates.
-Since we don't have a way to "destroy" the goroutine,
+Since we don't have a way to "destroy" a goroutine in Go,
 and it will not be garbage collected,
 there is a resource leak (breaks "Requirement 4").
 The channel won't be closed properly too,
@@ -332,11 +332,12 @@ and one object is taken away from the stream each time it is invoked.
 
 ### 4. Goroutine-Channel Approach - Wrong Solution
 
-**TODO: Write this!**
-
-<kbd>[view][story4.go]</kbd>:
+Before starting our first step into the correct solution,
+let's see an incorrect one first
+(<kbd>[view][story4.go]</kbd>):
 
 ```go
+// story4.go
 func xrange(begin, end int) chan int {
 	ch := make(chan int)
 	go func() {
@@ -362,13 +363,32 @@ func main() {
 }
 ```
 
-### 5. Preventing Resource Leak (start only when I ask so)
+The code above modified the generator to return a `chan int` instead of a `<-chan int`,
+so that the client code has a chance to `close()` the channel.
 
-**TODO: Write this!**
+However, there are 2 major problems.
+Firstly, as already stated in Requirement 4,
+the primary resource leak is unterminated goroutines, not unclosed channels.
+Closing the channel does not automatically terminate the goroutine.
+Secondly, since the goroutine continues to run after the channel is closed,
+it panics when it reaches `ch <- i`, and the program crashes.
 
-<kbd>[view][story5.go]</kbd>:
+### 5. Preventing Resource Leak (Start Only When I Ask So)
+
+Let's make our first step into the correct solution!
+
+The following is what Requirement 2 states:
+
+> The generator should return a value assignable to a variable.
+> If the value is not safe to be discarded because some resources are acquired,
+> the library should provide an API to release the resources.
+
+This could easily be achieved by returning "a function that returns a channel",
+instead of "returning a channel" as in Step 1
+(<kbd>[view][story5.go]</kbd>):
 
 ```go
+// story5.go
 func xrange(begin, end int) func() <-chan int {
 	return func() <-chan int {
 		ch := make(chan int)
@@ -392,9 +412,24 @@ func main() {
 }
 ```
 
-<kbd>[view][story5a.go]</kbd>:
+There are 2 points worth to notice:
+1. Since a closure or a function reference does not involve resource management,
+   there is no resource leak no matter how the returned value is manipulated.
+2. The major reason of why we had resource leak so far is that
+   the goroutine started in the body of the generator.
+   Now, the goroutine is started in the body of the returned function,
+   so there is no resource leak if we simply discard it without invoking it.
+
+In the client code, `xrange(10, 20)` returns "a function that returns a channel",
+`xrange(10, 20)()` invokes the returned function,
+and evaluates to the returned channel.
+It is then fed to `range`, turning the line into a `for`-`range`-loop over a channel.
+
+The following is a variant of the client code shown above
+(<kbd>[view][story5a.go]</kbd>):
 
 ```go
+// story5a.go
 func main() {
 	f := xrange(10, 20)
 	for x := range f() {
@@ -404,9 +439,15 @@ func main() {
 }
 ```
 
+You can see that the value returned by `xrange()` is assigned to `f`
+(fulfills "Requirement 2").
+
+However, there is still resource leak if not all the values are received from the channel:
+
 <kbd>[view][story5b.go]</kbd>:
 
 ```go
+// story5b.go
 func main() {
 	f := xrange(10, 20)
 	for x := range f() {
@@ -419,13 +460,14 @@ func main() {
 }
 ```
 
-### 6. Preventing Resource Leak (stop when I say so)
+### 6. Preventing Resource Leak (Stop When I Say So)
 
 **TODO: Write this!**
 
 <kbd>[view][story6.go]</kbd>:
 
 ```go
+// story6.go
 func xrange(begin, end int) (<-chan int, chan<- struct{}) {
 	chOut := make(chan int)
 	chStop := make(chan struct{})
@@ -458,6 +500,7 @@ func main() {
 <kbd>[view][story6a.go]</kbd>:
 
 ```go
+// story6a.go
 func main() {
 	chOut, chStop := xrange(10, 20)
 	for x := range chOut {
@@ -471,13 +514,14 @@ func main() {
 }
 ```
 
-### 7. Preventing Resource Leak (start + stop)
+### 7. Preventing Resource Leak (Start + Stop)
 
 **TODO: Write this!**
 
 <kbd>[view][story7.go]</kbd>:
 
 ```go
+// story7.go
 func xrange(begin, end int) func() (<-chan int, chan<- struct{}) {
 	return func() (<-chan int, chan<- struct{}) {
 		chOut := make(chan int)
@@ -516,6 +560,7 @@ func main() {
 <kbd>[view][story7a.go]</kbd>:
 
 ```go
+// story7a.go
 func xrange(begin, end int) func() (<-chan int, func()) {
 	return func() (<-chan int, func()) {
 		chOut := make(chan int)
@@ -561,6 +606,7 @@ func main() {
 <kbd>[view][story8.go]</kbd>:
 
 ```go
+// story8.go
 type XRange struct {
 	begin int
 	end   int
@@ -617,6 +663,7 @@ func main() {
 <kbd>[view][story8a.go]</kbd>:
 
 ```go
+// story8a.go
 type IntGenerator struct {
 	impl func(chan<- int, <-chan struct{})
 	stop func()
@@ -677,6 +724,7 @@ func main() {
 <kbd>[view][story8b.go]</kbd>:
 
 ```go
+// story8b.go
 type IntYielder func(int) bool
 
 type IntGenerator struct {
