@@ -38,8 +38,8 @@ I decided roll my own implementation.
 1. The underlying mechanism of the generator should be encapsulated by the library.
    The [RAII][raii] principle should be followed.
 2. The generator should return a value assignable to a variable.
-   If the value is not safe to be discarded because resource is acquired,
-   the library should provide an API the release the resource.
+   If the value is not safe to be discarded because some resources are acquired,
+   the library should provide an API to release the resources.
 3. The library should provide an API to stop the generator.
    The client should be able to stop the generation if no more values are needed.
 4. There shouldn't be any resource leak (primarily unterminated goroutines,
@@ -266,7 +266,7 @@ func main() {
 ```
 
 The `xrange()` function returns a closure that takes a `consumer`
-(which could also be a closure, or a function reference) as parameter.
+(which could also be a closure or a function reference) as a parameter.
 The `for`-loop is "hard-wired" for every invocation
 (`begin` and `end` could be different, though),
 but what to do with the result `i` is determined by the `consumer` supplied.
@@ -316,39 +316,430 @@ func main() {
 }
 ```
 
-At this point, our requirements are all fulfilled. Are we done? No, of course!
+At this point, our requirements are all fulfilled. Are we done? Of course not!
 What we just developed is a function that accepts a callback,
 which is very different from what a generator is.
 
-The callback approach hard wires the control flow for you.
-Your callback functions fill in the holes in the library code.
-This style is more popular in (and appropriate for) things like
+The callback approach hard wires the control flow for the client.
+The client callback functions fill in the holes in the library code.
+It is more popular in (and more appropriate for) situations like
 "providing a comparison callback to a sorting function",
-or "providing a event handler callback to a event-driven framework".
+or "providing an event handler callback to an event-driven framework".
 
-On the other hand, the generator approach let you control the flow.
-You may treat the generator is a source of objects,
-an object is taken from the source each time it is invoked.
+On the other hand, the generator approach lets the client control the flow.
+You may treat the generator as a stream of objects,
+and one object is taken away from the stream each time it is invoked.
 
 ### 4. Goroutine-Channel Approach - Wrong Solution
 
 **TODO: Write this!**
 
+<kbd>[view][story4.go]</kbd>:
+
+```go
+func xrange(begin, end int) chan int {
+	ch := make(chan int)
+	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
+		for i := begin; i < end; i++ {
+			ch <- i
+		}
+	}()
+	return ch
+}
+
+func main() {
+	c := xrange(10, 20)
+	for x := range c {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	close(c)
+	time.Sleep(1 * time.Second)
+}
+```
+
 ### 5. Preventing Resource Leak (start only when I ask so)
 
 **TODO: Write this!**
+
+<kbd>[view][story5.go]</kbd>:
+
+```go
+func xrange(begin, end int) func() <-chan int {
+	return func() <-chan int {
+		ch := make(chan int)
+		go func() {
+			fmt.Println("Goroutine Started")
+			defer fmt.Println("Goroutine Terminated")
+			defer close(ch)
+			for i := begin; i < end; i++ {
+				ch <- i
+			}
+		}()
+		return ch
+	}
+}
+
+func main() {
+	for x := range xrange(10, 20)() {
+		fmt.Println(x)
+	}
+	time.Sleep(1 * time.Second)
+}
+```
+
+<kbd>[view][story5a.go]</kbd>:
+
+```go
+func main() {
+	f := xrange(10, 20)
+	for x := range f() {
+		fmt.Println(x)
+	}
+	time.Sleep(1 * time.Second)
+}
+```
+
+<kbd>[view][story5b.go]</kbd>:
+
+```go
+func main() {
+	f := xrange(10, 20)
+	for x := range f() {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	time.Sleep(1 * time.Second)
+}
+```
 
 ### 6. Preventing Resource Leak (stop when I say so)
 
 **TODO: Write this!**
 
+<kbd>[view][story6.go]</kbd>:
+
+```go
+func xrange(begin, end int) (<-chan int, chan<- struct{}) {
+	chOut := make(chan int)
+	chStop := make(chan struct{})
+	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
+		defer close(chOut)
+		for i := begin; i < end; i++ {
+			select {
+			case chOut <- i:
+				// Nothing to be done
+			case <-chStop:
+				break
+			}
+		}
+	}()
+	return chOut, chStop
+}
+
+func main() {
+	chOut, chStop := xrange(10, 20)
+	for x := range chOut {
+		fmt.Println(x)
+	}
+	close(chStop)
+	time.Sleep(1 * time.Second)
+}
+```
+
+<kbd>[view][story6a.go]</kbd>:
+
+```go
+func main() {
+	chOut, chStop := xrange(10, 20)
+	for x := range chOut {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	close(chStop)
+	time.Sleep(1 * time.Second)
+}
+```
+
 ### 7. Preventing Resource Leak (start + stop)
 
 **TODO: Write this!**
 
+<kbd>[view][story7.go]</kbd>:
+
+```go
+func xrange(begin, end int) func() (<-chan int, chan<- struct{}) {
+	return func() (<-chan int, chan<- struct{}) {
+		chOut := make(chan int)
+		chStop := make(chan struct{})
+		go func() {
+			fmt.Println("Goroutine Started")
+			defer fmt.Println("Goroutine Terminated")
+			defer close(chOut)
+			for i := begin; i < end; i++ {
+				select {
+				case chOut <- i:
+					// Nothing to be done
+				case <-chStop:
+					break
+				}
+			}
+		}()
+		return chOut, chStop
+	}
+}
+
+func main() {
+	f := xrange(10, 20)
+	chOut, chStop := f()
+	for x := range chOut {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	close(chStop)
+	time.Sleep(1 * time.Second)
+}
+```
+
+<kbd>[view][story7a.go]</kbd>:
+
+```go
+func xrange(begin, end int) func() (<-chan int, func()) {
+	return func() (<-chan int, func()) {
+		chOut := make(chan int)
+		chStop := make(chan struct{})
+		fnStop := func() {
+			close(chStop)
+		}
+		go func() {
+			fmt.Println("Goroutine Started")
+			defer fmt.Println("Goroutine Terminated")
+			defer close(chOut)
+			for i := begin; i < end; i++ {
+				select {
+				case chOut <- i:
+					// Nothing to be done
+				case <-chStop:
+					break
+				}
+			}
+		}()
+		return chOut, fnStop
+	}
+}
+
+func main() {
+	fnStart := xrange(10, 20)
+	chOut, fnStop := fnStart()
+	for x := range chOut {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	fnStop()
+	time.Sleep(1 * time.Second)
+}
+```
+
 ### 8. Packaging and Generalization
 
 **TODO: Write this!**
+
+<kbd>[view][story8.go]</kbd>:
+
+```go
+type XRange struct {
+	begin int
+	end   int
+	stop  func()
+}
+
+func NewXRange(begin, end int) *XRange {
+	return &XRange{
+		begin: begin,
+		end:   end,
+	}
+}
+
+func (r *XRange) Start() <-chan int {
+	chOut := make(chan int)
+	chStop := make(chan struct{})
+	r.stop = func() {
+		close(chStop)
+	}
+	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
+		defer close(chOut)
+		for i := r.begin; i < r.end; i++ {
+			select {
+			case chOut <- i:
+				// Nothing to be done
+			case <-chStop:
+				break
+			}
+		}
+	}()
+	return chOut
+}
+
+func (r *XRange) Stop() {
+	r.stop()
+}
+
+func main() {
+	r := NewXRange(10, 20)
+	c := r.Start()
+	for x := range c {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	r.Stop()
+	time.Sleep(1 * time.Second)
+}
+```
+
+<kbd>[view][story8a.go]</kbd>:
+
+```go
+type IntGenerator struct {
+	impl func(chan<- int, <-chan struct{})
+	stop func()
+}
+
+func NewIntGenerator(impl func(chan<- int, <-chan struct{})) *IntGenerator {
+	return &IntGenerator{
+		impl: impl,
+	}
+}
+
+func (g *IntGenerator) Start() <-chan int {
+	chOut := make(chan int)
+	chStop := make(chan struct{})
+	g.stop = func() {
+		close(chStop)
+	}
+	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
+		defer close(chOut)
+		g.impl(chOut, chStop)
+	}()
+	return chOut
+}
+
+func (g *IntGenerator) Stop() {
+	g.stop()
+}
+
+func XRange(begin, end int) *IntGenerator {
+	return NewIntGenerator(func(chOut chan<- int, chStop <-chan struct{}) {
+		for i := begin; i < end; i++ {
+			select {
+			case chOut <- i:
+				// Nothing to be done
+			case <-chStop:
+				break
+			}
+		}
+	})
+}
+
+func main() {
+	g := XRange(10, 20)
+	c := g.Start()
+	for x := range c {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	g.Stop()
+	time.Sleep(1 * time.Second)
+}
+```
+
+<kbd>[view][story8b.go]</kbd>:
+
+```go
+type IntYielder func(int) bool
+
+type IntGenerator struct {
+	impl func(IntYielder)
+	stop func()
+}
+
+func NewIntGenerator(impl func(IntYielder)) *IntGenerator {
+	return &IntGenerator{
+		impl: impl,
+	}
+}
+
+func (g *IntGenerator) Start() <-chan int {
+	chOut := make(chan int)
+	chStop := make(chan struct{})
+	g.stop = func() {
+		close(chStop)
+	}
+	go func() {
+		fmt.Println("Goroutine Started")
+		defer fmt.Println("Goroutine Terminated")
+		defer close(chOut)
+		g.impl(IntYielder(func(msg int) bool {
+			select {
+			case chOut <- msg:
+				return true
+			case <-chStop:
+				return false
+			}
+		}))
+	}()
+	return chOut
+}
+
+func (g *IntGenerator) Stop() {
+	g.stop()
+}
+
+func XRange(begin, end int) *IntGenerator {
+	return NewIntGenerator(func(yield IntYielder) {
+		for i := begin; i < end; i++ {
+			if !yield(i) {
+				break
+			}
+		}
+	})
+}
+
+func main() {
+	g := XRange(10, 20)
+	c := g.Start()
+	for x := range c {
+		if x%8 == 0 {
+			break
+		}
+		fmt.Println(x)
+	}
+	g.Stop()
+	time.Sleep(1 * time.Second)
+}
+```
+
 
 
 
