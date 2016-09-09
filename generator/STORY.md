@@ -2,15 +2,15 @@
 
 ## Introduction
 
-**TODO**
+**TODO: Write this!**
 
 Say something about:
 
 - Generator
 - Python's `yield`
-- ECMAScript 6's `yield`,
+- ECMAScript 6's `yield`
 - Control Flow
-- Infinite sequence should be supported.
+- Infinite sequences should be supported
 
 ## Background
 
@@ -332,7 +332,7 @@ and one object is taken away from the stream each time it is invoked.
 
 ### 4. Goroutine-Channel Approach - Wrong Solution
 
-Before starting our first step into the correct solution,
+Before making our first step to the correct solution,
 let's see an incorrect one first
 (<kbd>[view][story4.go]</kbd>):
 
@@ -375,7 +375,7 @@ it panics when it reaches `ch <- i`, and the program crashes.
 
 ### 5. Preventing Resource Leak (Start Only When I Ask So)
 
-Let's make our first step into the correct solution!
+Okay, let's make our first step to the correct solution now!
 
 The following is what Requirement 2 states:
 
@@ -383,8 +383,7 @@ The following is what Requirement 2 states:
 > If the value is not safe to be discarded because some resources are acquired,
 > the library should provide an API to release the resources.
 
-This could easily be achieved by returning "a function that returns a channel",
-instead of "returning a channel" as in Step 1
+This could easily be achieved like this
 (<kbd>[view][story5.go]</kbd>):
 
 ```go
@@ -412,20 +411,46 @@ func main() {
 }
 ```
 
-There are 2 points worth to notice:
-1. Since a closure or a function reference does not involve resource management,
-   there is no resource leak no matter how the returned value is manipulated.
-2. The major reason of why we had resource leak so far is that
-   the goroutine started in the body of the generator.
-   Now, the goroutine is started in the body of the returned function,
-   so there is no resource leak if we simply discard it without invoking it.
+If you compare the generator code above to that in Step 1,
+you will find that not many lines are changed:
 
-In the client code, `xrange(10, 20)` returns "a function that returns a channel",
-`xrange(10, 20)()` invokes the returned function,
-and evaluates to the returned channel.
-It is then fed to `range`, turning the line into a `for`-`range`-loop over a channel.
+In Step 1, a channel is returned:
+```go
+// story1.go
+func xrange(begin, end int) <-chan int {
+    /* Generator Logic */
+}
+```
 
-The following is a variant of the client code shown above
+In Step 5, "a function that returns a channel" is returned:
+```go
+// story5.go
+func xrange(begin, end int) func() <-chan int {
+	return func() <-chan int {
+		/* Same Generator Logic */
+	}
+}
+```
+
+It is just like adding one more level of redirection.
+
+However, there are subtle differences:
+
+1. Since a closure or a function reference does not require resource management,
+   no resource leak exists no matter how the returned value is manipulated.
+2. Since the goroutine is started in the body of the returned function,
+   no resource leak exists if we simply discard it without invoking it.
+
+If you find it difficult to understand `for x := range xrange(10, 20)()` in the client code,
+here are some explanations.
+`xrange(10, 20)` is a call to `xrange()`, which returns "a function that returns a channel".
+`xrange(10, 20)()` invokes the function returned by `xrange()`,
+and evaluates to the channel returned by the returned function.
+The channel is then fed to `range`,
+turning the line into a `for`-`range`-loop over a channel,
+just like `for x := range ch`.
+
+The following client code is equivalent to which shown above
 (<kbd>[view][story5a.go]</kbd>):
 
 ```go
@@ -442,9 +467,8 @@ func main() {
 You can see that the value returned by `xrange()` is assigned to `f`
 (fulfills "Requirement 2").
 
-However, there is still resource leak if not all the values are received from the channel:
-
-<kbd>[view][story5b.go]</kbd>:
+However, there is still resource leak if not all the values are received from the channel
+(<kbd>[view][story5b.go]</kbd>):
 
 ```go
 // story5b.go
@@ -459,6 +483,8 @@ func main() {
 	time.Sleep(1 * time.Second)
 }
 ```
+
+Therefore, we need a mechanism to tell the generator to stop when the client need no more values.
 
 ### 6. Preventing Resource Leak (Stop When I Say So)
 
