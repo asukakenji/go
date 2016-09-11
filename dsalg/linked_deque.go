@@ -44,8 +44,8 @@ func NewLinkedDeque() *LinkedDeque {
 		capacity: 1,
 	}
 	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
-	q.fnPopBack, q.fnPopFront = q.popBackImpl, q.popFrontImpl
 	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
+	q.fnPopBack, q.fnPopFront = q.popBackImpl, q.popFrontImpl
 	return q
 }
 
@@ -167,8 +167,8 @@ func (q *LinkedDeque) PopFront() {
 
 func (q *LinkedDeque) Reverse() {
 	q.fnBack, q.fnFront = q.fnFront, q.fnBack
-	q.fnPopBack, q.fnPopFront = q.fnPopFront, q.fnPopBack
 	q.fnPushBack, q.fnPushFront = q.fnPushFront, q.fnPushBack
+	q.fnPopBack, q.fnPopFront = q.fnPopFront, q.fnPopBack
 }
 
 func (q *LinkedDeque) Len() int {
