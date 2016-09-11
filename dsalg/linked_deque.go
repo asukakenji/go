@@ -39,8 +39,8 @@ type LinkedDeque struct {
 func NewLinkedDeque() *LinkedDeque {
 	node := &dequeNode{}
 	q := &LinkedDeque{
-		back: node,
-		front: node,
+		back:     node,
+		front:    node,
 		capacity: 1,
 	}
 	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
