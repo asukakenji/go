@@ -12,5 +12,5 @@
 - Wraps [The Java Native Interface](http://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/jniTOC.html) in Go
 - Completeness: Alpha stage
 
-[Data Structures and Algorithms in Go][dsalg]:
+[Data Structures and Algorithms in Go](dsalg):
 - Completeness: Alpha stage
