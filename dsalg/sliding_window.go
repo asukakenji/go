@@ -101,13 +101,13 @@ func SlidingWindowMaxDiff(values []int, w int) []int {
 	}
 	maxDiffs := make([]int, n-w+1)
 	qMax := NewIntLinkedDeque()
-    qMin := NewIntLinkedDeque()
+	qMin := NewIntLinkedDeque()
 	for i := 0; i < w; i++ {
 		for !qMax.IsEmpty() && values[i] >= values[qMax.Back()] {
 			qMax.PopBack()
 		}
 		qMax.PushBack(i)
-        for !qMin.IsEmpty() && values[i] <= values[qMin.Back()] {
+		for !qMin.IsEmpty() && values[i] <= values[qMin.Back()] {
 			qMin.PopBack()
 		}
 		qMin.PushBack(i)
@@ -121,7 +121,7 @@ func SlidingWindowMaxDiff(values []int, w int) []int {
 			qMax.PopFront()
 		}
 		qMax.PushBack(i)
-        for !qMin.IsEmpty() && values[i] <= values[qMin.Back()] {
+		for !qMin.IsEmpty() && values[i] <= values[qMin.Back()] {
 			qMin.PopBack()
 		}
 		for !qMin.IsEmpty() && qMin.Front() <= i-w {
