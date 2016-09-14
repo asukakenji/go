@@ -36,19 +36,6 @@ type Float64LinkedDeque struct {
 	capacity    int
 }
 
-func NewFloat64LinkedDeque() *Float64LinkedDeque {
-	node := &float64DequeNode{}
-	q := &Float64LinkedDeque{
-		back:     node,
-		front:    node,
-		capacity: 1,
-	}
-	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
-	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
-	q.fnPopBack, q.fnPopFront = q.popBackImpl, q.popFrontImpl
-	return q
-}
-
 // Warning: Does not check emptiness!
 // Invoking this method on an empty queue leak to undefined behavior.
 func (q *Float64LinkedDeque) backImpl() float64 {
@@ -141,6 +128,19 @@ func (q *Float64LinkedDeque) popFrontImpl() {
 	q.length--
 }
 
+func NewFloat64LinkedDeque() *Float64LinkedDeque {
+	node := &float64DequeNode{}
+	q := &Float64LinkedDeque{
+		back:     node,
+		front:    node,
+		capacity: 1,
+	}
+	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
+	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
+	q.fnPopBack, q.fnPopFront = q.popBackImpl, q.popFrontImpl
+	return q
+}
+
 func (q *Float64LinkedDeque) Back() float64 {
 	return q.fnBack()
 }
@@ -175,12 +175,16 @@ func (q *Float64LinkedDeque) Len() int {
 	return q.length
 }
 
+func (q *Float64LinkedDeque) Cap() int {
+	return q.capacity
+}
+
 func (q *Float64LinkedDeque) IsEmpty() bool {
 	return q.length == 0
 }
 
-func (q *Float64LinkedDeque) Cap() int {
-	return q.capacity
+func (q *Float64LinkedDeque) IsFull() bool {
+	return false
 }
 
 func (q *Float64LinkedDeque) Print() {

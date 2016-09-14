@@ -36,19 +36,6 @@ type StringLinkedDeque struct {
 	capacity    int
 }
 
-func NewStringLinkedDeque() *StringLinkedDeque {
-	node := &stringDequeNode{}
-	q := &StringLinkedDeque{
-		back:     node,
-		front:    node,
-		capacity: 1,
-	}
-	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
-	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
-	q.fnPopBack, q.fnPopFront = q.popBackImpl, q.popFrontImpl
-	return q
-}
-
 // Warning: Does not check emptiness!
 // Invoking this method on an empty queue leak to undefined behavior.
 func (q *StringLinkedDeque) backImpl() string {
@@ -141,6 +128,19 @@ func (q *StringLinkedDeque) popFrontImpl() {
 	q.length--
 }
 
+func NewStringLinkedDeque() *StringLinkedDeque {
+	node := &stringDequeNode{}
+	q := &StringLinkedDeque{
+		back:     node,
+		front:    node,
+		capacity: 1,
+	}
+	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
+	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
+	q.fnPopBack, q.fnPopFront = q.popBackImpl, q.popFrontImpl
+	return q
+}
+
 func (q *StringLinkedDeque) Back() string {
 	return q.fnBack()
 }
@@ -175,12 +175,16 @@ func (q *StringLinkedDeque) Len() int {
 	return q.length
 }
 
+func (q *StringLinkedDeque) Cap() int {
+	return q.capacity
+}
+
 func (q *StringLinkedDeque) IsEmpty() bool {
 	return q.length == 0
 }
 
-func (q *StringLinkedDeque) Cap() int {
-	return q.capacity
+func (q *StringLinkedDeque) IsFull() bool {
+	return false
 }
 
 func (q *StringLinkedDeque) Print() {
