@@ -106,22 +106,26 @@ func (q *IntLinkedDeque) pushFrontImpl(x int) {
 	q.length++
 }
 
-// Warning: Does not check emptiness
-// Invoking this method on an empty queue leak to undefined behavior.
 func (q *IntLinkedDeque) popBackImpl() {
+	// Empty Queue
+	if q.length == 0 {
+		panic("Empty queue")
+	}
 	// More-Than-One-Element Queue
-	if q.back != q.front {
+	if q.length > 1 {
 		q.back = q.back.prev
 	}
 	// Non-Empty Queue
 	q.length--
 }
 
-// Warning: Does not check emptiness
-// Invoking this method on an empty queue leak to undefined behavior.
 func (q *IntLinkedDeque) popFrontImpl() {
+	// Empty Queue
+	if q.length == 0 {
+		panic("Empty queue")
+	}
 	// More-Than-One-Element Queue
-	if q.front != q.back {
+	if q.length > 1 {
 		q.front = q.front.next
 	}
 	// Non-Empty Queue
