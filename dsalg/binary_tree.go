@@ -6,27 +6,30 @@ type intBinaryTreeNode struct {
 }
 
 func (node *intBinaryTreeNode) traversePreOrder(consumer func(int)) {
-	if node != nil {
-		consumer(node.value)
-		node.leftChild.traversePreOrder(consumer)
-		node.rightChild.traversePreOrder(consumer)
-	}
+	if node == nil {
+        return
+    }
+	consumer(node.value)
+	node.leftChild.traversePreOrder(consumer)
+	node.rightChild.traversePreOrder(consumer)
 }
 
 func (node *intBinaryTreeNode) traverseInOrder(consumer func(int)) {
-	if node != nil {
-        node.leftChild.traverseInOrder(consumer)
-        consumer(node.value)
-		node.rightChild.traverseInOrder(consumer)
-	}
+    if node == nil {
+        return
+    }
+    node.leftChild.traverseInOrder(consumer)
+    consumer(node.value)
+	node.rightChild.traverseInOrder(consumer)
 }
 
 func (node *intBinaryTreeNode) traversePostOrder(consumer func(int)) {
-	if node != nil {
-        node.leftChild.traversePostOrder(consumer)
-		node.rightChild.traversePostOrder(consumer)
-        consumer(node.value)
-	}
+    if node == nil {
+        return
+    }
+    node.leftChild.traversePostOrder(consumer)
+	node.rightChild.traversePostOrder(consumer)
+    consumer(node.value)
 }
 
 type IntBinaryTree struct {

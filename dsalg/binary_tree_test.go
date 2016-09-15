@@ -85,6 +85,10 @@ func TestInsert(t *testing.T) {
 
 func TestTraverse(t *testing.T) {
     tree := NewIntBinaryTree()
+    checkTraverse(t, tree, tree.TraversePreOrder, []int{})
+    checkTraverse(t, tree, tree.TraverseInOrder, []int{})
+    checkTraverse(t, tree, tree.TraversePostOrder, []int{})
+
     tree.Insert(4)
     checkTraverse(t, tree, tree.TraversePreOrder, []int{4})
     checkTraverse(t, tree, tree.TraverseInOrder, []int{4})
