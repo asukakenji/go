@@ -1,11 +1,11 @@
 package dsalg
 
-type intBinaryTreeNode struct {
-	parent, leftChild, rightChild *intBinaryTreeNode
+type intBinarySearchTreeNode struct {
+	parent, leftChild, rightChild *intBinarySearchTreeNode
 	value                         int
 }
 
-func (node *intBinaryTreeNode) traversePreOrder(consumer func(int)) {
+func (node *intBinarySearchTreeNode) traversePreOrder(consumer func(int)) {
 	if node == nil {
         return
     }
@@ -14,7 +14,7 @@ func (node *intBinaryTreeNode) traversePreOrder(consumer func(int)) {
 	node.rightChild.traversePreOrder(consumer)
 }
 
-func (node *intBinaryTreeNode) traverseInOrder(consumer func(int)) {
+func (node *intBinarySearchTreeNode) traverseInOrder(consumer func(int)) {
     if node == nil {
         return
     }
@@ -23,7 +23,7 @@ func (node *intBinaryTreeNode) traverseInOrder(consumer func(int)) {
 	node.rightChild.traverseInOrder(consumer)
 }
 
-func (node *intBinaryTreeNode) traversePostOrder(consumer func(int)) {
+func (node *intBinarySearchTreeNode) traversePostOrder(consumer func(int)) {
     if node == nil {
         return
     }
@@ -32,22 +32,22 @@ func (node *intBinaryTreeNode) traversePostOrder(consumer func(int)) {
     consumer(node.value)
 }
 
-type IntBinaryTree struct {
-	root   *intBinaryTreeNode
+type IntBinarySearchTree struct {
+	root   *intBinarySearchTreeNode
 	length int
 }
 
-func NewIntBinaryTree() *IntBinaryTree {
-	return &IntBinaryTree{}
+func NewIntBinarySearchTree() *IntBinarySearchTree {
+	return &IntBinarySearchTree{}
 }
 
-func (t *IntBinaryTree) Insert(x int) {
-	parent := (*intBinaryTreeNode)(nil)
+func (t *IntBinarySearchTree) Insert(x int) {
+	parent := (*intBinarySearchTreeNode)(nil)
 	ptr := &t.root
 	curr := t.root
 	for {
 		if curr == nil {
-			*ptr = &intBinaryTreeNode{parent: parent, value: x}
+			*ptr = &intBinarySearchTreeNode{parent: parent, value: x}
 			t.length++
 			return
 		}
@@ -65,22 +65,22 @@ func (t *IntBinaryTree) Insert(x int) {
 	}
 }
 
-func (t *IntBinaryTree) TraversePreOrder(consumer func(int)) {
+func (t *IntBinarySearchTree) TraversePreOrder(consumer func(int)) {
 	t.root.traversePreOrder(consumer)
 }
 
-func (t *IntBinaryTree) TraverseInOrder(consumer func(int)) {
+func (t *IntBinarySearchTree) TraverseInOrder(consumer func(int)) {
 	t.root.traverseInOrder(consumer)
 }
 
-func (t *IntBinaryTree) TraversePostOrder(consumer func(int)) {
+func (t *IntBinarySearchTree) TraversePostOrder(consumer func(int)) {
 	t.root.traversePostOrder(consumer)
 }
 
-func (t *IntBinaryTree) Len() int {
+func (t *IntBinarySearchTree) Len() int {
 	return t.length
 }
 
-func (t *IntBinaryTree) IsEmpty() bool {
+func (t *IntBinarySearchTree) IsEmpty() bool {
 	return t.root == nil
 }

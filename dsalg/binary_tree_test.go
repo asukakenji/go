@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func checkPLRV(t *testing.T, n, expectedP, expectedL, expectedR *intBinaryTreeNode, expectedV int) {
+func checkPLRV(t *testing.T, n, expectedP, expectedL, expectedR *intBinarySearchTreeNode, expectedV int) {
 	p := n.parent
 	if p != expectedP {
 		t.Errorf("n.parent == %v; expected %v", p, expectedP)
@@ -28,7 +28,7 @@ func checkPLRV(t *testing.T, n, expectedP, expectedL, expectedR *intBinaryTreeNo
 	}
 }
 
-func checkLen(t *testing.T, tree *IntBinaryTree, expectedLength int) {
+func checkLen(t *testing.T, tree *IntBinarySearchTree, expectedLength int) {
     length := tree.Len()
     if length != expectedLength {
         t.Errorf("n.Len() == %d; expected %d", length, expectedLength)
@@ -36,7 +36,7 @@ func checkLen(t *testing.T, tree *IntBinaryTree, expectedLength int) {
     }
 }
 
-func checkTraverse(t *testing.T, tree *IntBinaryTree, traverse func(func(int)), expectedStack []int) {
+func checkTraverse(t *testing.T, tree *IntBinarySearchTree, traverse func(func(int)), expectedStack []int) {
     stack := make([]int, 0, tree.Len())
     consumer := func(x int) {
         stack = append(stack, x)
@@ -49,7 +49,7 @@ func checkTraverse(t *testing.T, tree *IntBinaryTree, traverse func(func(int)), 
 }
 
 func TestNewBinaryTree(t *testing.T) {
-	tree := NewIntBinaryTree()
+	tree := NewIntBinarySearchTree()
     checkLen(t, tree, 0)
 	isEmpty := tree.IsEmpty()
 	if !isEmpty {
@@ -58,7 +58,7 @@ func TestNewBinaryTree(t *testing.T) {
 }
 
 func TestInsert(t *testing.T) {
-	tree := NewIntBinaryTree()
+	tree := NewIntBinarySearchTree()
 
 	tree.Insert(4)
 	checkPLRV(t, tree.root, nil, nil, nil, 4)
@@ -84,7 +84,7 @@ func TestInsert(t *testing.T) {
 }
 
 func TestTraverse(t *testing.T) {
-    tree := NewIntBinaryTree()
+    tree := NewIntBinarySearchTree()
     checkTraverse(t, tree, tree.TraversePreOrder, []int{})
     checkTraverse(t, tree, tree.TraverseInOrder, []int{})
     checkTraverse(t, tree, tree.TraversePostOrder, []int{})
