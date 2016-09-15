@@ -7,29 +7,29 @@ type intBinarySearchTreeNode struct {
 
 func (node *intBinarySearchTreeNode) traversePreOrder(consumer func(int)) {
 	if node == nil {
-        return
-    }
+		return
+	}
 	consumer(node.value)
 	node.leftChild.traversePreOrder(consumer)
 	node.rightChild.traversePreOrder(consumer)
 }
 
 func (node *intBinarySearchTreeNode) traverseInOrder(consumer func(int)) {
-    if node == nil {
-        return
-    }
-    node.leftChild.traverseInOrder(consumer)
-    consumer(node.value)
+	if node == nil {
+		return
+	}
+	node.leftChild.traverseInOrder(consumer)
+	consumer(node.value)
 	node.rightChild.traverseInOrder(consumer)
 }
 
 func (node *intBinarySearchTreeNode) traversePostOrder(consumer func(int)) {
-    if node == nil {
-        return
-    }
-    node.leftChild.traversePostOrder(consumer)
+	if node == nil {
+		return
+	}
+	node.leftChild.traversePostOrder(consumer)
 	node.rightChild.traversePostOrder(consumer)
-    consumer(node.value)
+	consumer(node.value)
 }
 
 type IntBinarySearchTree struct {
