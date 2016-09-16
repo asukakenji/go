@@ -1,38 +1,60 @@
 package dsalg
 
 type intAVLTreeNode struct {
-	leftChild, rightChild *intAVLTreeNode
-	value                 int
-	count                 int
-	balanceFactor         int
+	leftChild, rightChild   *intAVLTreeNode
+	value                   int
+	count                   int
+	leftHeight, rightHeight int
+}
+
+func max(a, b int) int {
+	if a < b {
+		return b
+	}
+	return a
+}
+
+func (node *intAVLTreeNode) height() int {
+	if node == nil {
+		return -1
+	}
+	return max(node.leftHeight, node.rightHeight)
 }
 
 // LL Single Rotation
 func (node *intAVLTreeNode) rotateLL(ptrParent **intAVLTreeNode) {
 	*ptrParent = node.leftChild
-	node.balanceFactor, node.leftChild.balanceFactor = 0, 0
 	node.leftChild, node.leftChild.rightChild = node.leftChild.rightChild, node
+	node.leftHeight = node.leftChild.height() + 1
+	(*ptrParent).rightHeight = (*ptrParent).rightChild.height() + 1
 }
 
 // RR Single Rotation
 func (node *intAVLTreeNode) rotateRR(ptrParent **intAVLTreeNode) {
 	*ptrParent = node.rightChild
-	node.balanceFactor, node.rightChild.balanceFactor = 0, 0
 	node.rightChild, node.rightChild.leftChild = node.rightChild.leftChild, node
+	node.rightHeight = node.rightChild.height() + 1
+	(*ptrParent).leftHeight = (*ptrParent).leftChild.height() + 1
 }
 
 // LR Double Rotation
 func (node *intAVLTreeNode) rotateLR(ptrParent **intAVLTreeNode) {
 	*ptrParent = node.leftChild.rightChild
-	node.balanceFactor, node.leftChild.balanceFactor, node.rightChild.balanceFactor = 0, 0, 0
 	node.leftChild, node.leftChild.rightChild, node.leftChild.rightChild.leftChild, node.leftChild.rightChild.rightChild = node.leftChild.rightChild.rightChild, node.leftChild.rightChild.leftChild, node.leftChild, node
+	node.leftHeight = node.leftChild.height() + 1
+	(*ptrParent).leftChild.rightHeight = (*ptrParent).leftChild.rightChild.height() + 1
+	(*ptrParent).leftHeight = (*ptrParent).leftChild.height() + 1
+	(*ptrParent).rightHeight = (*ptrParent).rightChild.height() + 1
 }
 
 // RL Double Rotation
 func (node *intAVLTreeNode) rotateRL(ptrParent **intAVLTreeNode) {
 	*ptrParent = node.rightChild.leftChild
-	node.balanceFactor, node.leftChild.balanceFactor, node.rightChild.balanceFactor = 0, 0, 0
 	node.rightChild, node.rightChild.leftChild, node.rightChild.leftChild.leftChild, node.rightChild.leftChild.rightChild = node.rightChild.leftChild.leftChild, node.rightChild.leftChild.rightChild, node, node.rightChild
+	node.rightHeight = node.rightChild.height() + 1
+	(*ptrParent).rightChild.leftHeight = (*ptrParent).rightChild.leftChild.height() + 1
+	(*ptrParent).leftHeight = (*ptrParent).leftChild.height() + 1
+	(*ptrParent).rightHeight = (*ptrParent).rightChild.height() + 1
 }
 
 // ptrParent: The pointer to the pointer from the parent node pointing to the "this" node
@@ -41,22 +63,19 @@ func (node *intAVLTreeNode) rotateRL(ptrParent **intAVLTreeNode) {
 // (1) whether a new node is allocated
 // (2) whether the balance factor of the caller should be updated
 // (3) whether the recursive call to insert is on the leftChild or the rightChild of "this" node
-func (node *intAVLTreeNode) insert(ptrParent **intAVLTreeNode, x int) (bool, bool, direction) {
+func (node *intAVLTreeNode) insert(ptrParent **intAVLTreeNode, x int) (bool, direction) {
 	if node == nil {
 		*ptrParent = &intAVLTreeNode{value: x, count: 1}
-		return true, true, nil
+		return true, nil
 	}
 	if x < node.value {
-		isNewNodeCreated, shouldUpdateBalanceFactor, d := node.leftChild.insert(&node.leftChild, x)
+		isNewNodeCreated, d := node.leftChild.insert(&node.leftChild, x)
 		if !isNewNodeCreated {
-			return false, false, left
+			return false, left
 		}
-		if !shouldUpdateBalanceFactor {
-			return true, false, left
-		}
-		node.balanceFactor++
-		if node.balanceFactor != 2 {
-			return true, true, left
+		node.leftHeight = node.leftChild.height() + 1
+		if node.leftHeight-node.rightHeight <= 1 {
+			return true, left
 		}
 		if d == left {
 			node.rotateLL(ptrParent)
@@ -65,18 +84,15 @@ func (node *intAVLTreeNode) insert(ptrParent **intAVLTreeNode, x int) (bool, boo
 		} else {
 			panic("")
 		}
-		return true, false, left
+		return true, left
 	} else if x > node.value {
-		isNewNodeCreated, shouldUpdateBalanceFactor, d := node.rightChild.insert(&node.rightChild, x)
+		isNewNodeCreated, d := node.rightChild.insert(&node.rightChild, x)
 		if !isNewNodeCreated {
-			return false, false, right
+			return false, right
 		}
-		if !shouldUpdateBalanceFactor {
-			return true, false, right
-		}
-		node.balanceFactor--
-		if node.balanceFactor != -2 {
-			return true, true, right
+		node.rightHeight = node.rightChild.height() + 1
+		if node.rightHeight-node.leftHeight <= 1 {
+			return true, right
 		}
 		if d == left {
 			node.rotateRL(ptrParent)
@@ -85,10 +101,10 @@ func (node *intAVLTreeNode) insert(ptrParent **intAVLTreeNode, x int) (bool, boo
 		} else {
 			panic("")
 		}
-		return true, false, right
+		return true, right
 	} else {
 		node.count++
-		return false, false, nil
+		return false, nil
 	}
 }
 
@@ -136,7 +152,7 @@ func NewIntAVLTree() *IntAVLTree {
 }
 
 func (tree *IntAVLTree) Insert(x int) {
-	if isNewNodeCreated, _, _ := tree.root.insert(&tree.root, x); isNewNodeCreated {
+	if isNewNodeCreated, _ := tree.root.insert(&tree.root, x); isNewNodeCreated {
 		tree.capacity++
 	}
 	tree.length++
