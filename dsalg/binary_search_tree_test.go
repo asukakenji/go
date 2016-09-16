@@ -5,12 +5,7 @@ import (
 	"testing"
 )
 
-func checkPLRV(t *testing.T, n, expectedP, expectedL, expectedR *intBinarySearchTreeNode, expectedV int) {
-	p := n.parent
-	if p != expectedP {
-		t.Errorf("n.parent == %v; expected %v", p, expectedP)
-		panic("")
-	}
+func checkLRV(t *testing.T, n, expectedL, expectedR *intBinarySearchTreeNode, expectedV int) {
 	l := n.leftChild
 	if l != expectedL {
 		t.Errorf("n.leftChild == %v; expected %v", l, expectedL)
@@ -61,25 +56,25 @@ func TestInsert(t *testing.T) {
 	tree := NewIntBinarySearchTree()
 
 	tree.Insert(4)
-	checkPLRV(t, tree.root, nil, nil, nil, 4)
+	checkLRV(t, tree.root, nil, nil, 4)
 	checkLen(t, tree, 1)
 
 	tree.Insert(2)
-	checkPLRV(t, tree.root, nil, tree.root.leftChild, nil, 4)
-	checkPLRV(t, tree.root.leftChild, tree.root, nil, nil, 2)
+	checkLRV(t, tree.root, tree.root.leftChild, nil, 4)
+	checkLRV(t, tree.root.leftChild, nil, nil, 2)
 	checkLen(t, tree, 2)
 
 	tree.Insert(6)
-	checkPLRV(t, tree.root, nil, tree.root.leftChild, tree.root.rightChild, 4)
-	checkPLRV(t, tree.root.leftChild, tree.root, nil, nil, 2)
-	checkPLRV(t, tree.root.rightChild, tree.root, nil, nil, 6)
+	checkLRV(t, tree.root, tree.root.leftChild, tree.root.rightChild, 4)
+	checkLRV(t, tree.root.leftChild, nil, nil, 2)
+	checkLRV(t, tree.root.rightChild, nil, nil, 6)
 	checkLen(t, tree, 3)
 
 	tree.Insert(1)
-	checkPLRV(t, tree.root, nil, tree.root.leftChild, tree.root.rightChild, 4)
-	checkPLRV(t, tree.root.leftChild, tree.root, tree.root.leftChild.leftChild, nil, 2)
-	checkPLRV(t, tree.root.rightChild, tree.root, nil, nil, 6)
-	checkPLRV(t, tree.root.leftChild.leftChild, tree.root.leftChild, nil, nil, 1)
+	checkLRV(t, tree.root, tree.root.leftChild, tree.root.rightChild, 4)
+	checkLRV(t, tree.root.leftChild, tree.root.leftChild.leftChild, nil, 2)
+	checkLRV(t, tree.root.rightChild, nil, nil, 6)
+	checkLRV(t, tree.root.leftChild.leftChild, nil, nil, 1)
 	checkLen(t, tree, 4)
 }
 
