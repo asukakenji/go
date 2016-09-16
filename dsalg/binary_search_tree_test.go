@@ -1,7 +1,6 @@
 package dsalg
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -27,18 +26,6 @@ func checkLen(t *testing.T, tree *IntBinarySearchTree, expectedLength int) {
 	length := tree.Len()
 	if length != expectedLength {
 		t.Errorf("n.Len() == %d; expected %d", length, expectedLength)
-		panic("")
-	}
-}
-
-func checkTraverse(t *testing.T, tree *IntBinarySearchTree, traverse func(func(int)), expectedStack []int) {
-	stack := make([]int, 0, tree.Len())
-	consumer := func(x int) {
-		stack = append(stack, x)
-	}
-	traverse(consumer)
-	if !reflect.DeepEqual(stack, expectedStack) {
-		t.Errorf("tree.TraverseXXX(consumer) == %v; expected %v", stack, expectedStack)
 		panic("")
 	}
 }
@@ -78,7 +65,7 @@ func TestInsert(t *testing.T) {
 	checkLen(t, tree, 4)
 }
 
-func TestTraverse(t *testing.T) {
+func TestTraverseBST(t *testing.T) {
 	tree := NewIntBinarySearchTree()
 	checkTraverse(t, tree, tree.TraversePreOrder, []int{})
 	checkTraverse(t, tree, tree.TraverseInOrder, []int{})
