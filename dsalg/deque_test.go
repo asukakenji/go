@@ -4,22 +4,22 @@ import (
 	"testing"
 )
 
-type queue interface {
-	Back() interface{}
-	Front() interface{}
-	PushBack(x interface{})
-	PushFront(x interface{})
-	PopBack()
-	PopFront()
+type Deque interface {
+	BackValue() interface{}
+	FrontValue() interface{}
+	PushBackValue(v interface{})
+	PushFrontValue(v interface{})
+	PopBack() interface{}
+	PopFront() interface{}
 	Reverse()
 	Len() int
 	Cap() int
 	IsEmpty() bool
 	IsFull() bool
-	Print()
+	String() string
 }
 
-func checkLC(t *testing.T, q queue, expectedL, expectedC int, isCapChecked bool) {
+func checkLC(t *testing.T, q Deque, expectedL, expectedC int, isCapChecked bool) {
 	l := q.Len()
 	if l != expectedL {
 		t.Errorf("q.Len() == %d; expected %d", l, expectedL)
@@ -32,28 +32,28 @@ func checkLC(t *testing.T, q queue, expectedL, expectedC int, isCapChecked bool)
 	}
 }
 
-func checkFBLC(t *testing.T, q queue, expectedF, expectedB, expectedL, expectedC int, isCapChecked bool) {
-	f := q.Front().(int)
+func checkFBLC(t *testing.T, q Deque, expectedF, expectedB, expectedL, expectedC int, isCapChecked bool) {
+	f := q.FrontValue()
 	if f != expectedF {
 		t.Errorf("q.Front() == %d; expected %d", f, expectedF)
 	}
-	b := q.Back().(int)
+	b := q.BackValue()
 	if b != expectedB {
 		t.Errorf("q.Back() == %d; expected %d", b, expectedB)
 	}
 	checkLC(t, q, expectedL, expectedC, isCapChecked)
 }
 
-func newArrayDeque() queue {
+func newArrayDeque() Deque {
 	return NewArrayDeque(3)
 }
 
-func newLinkedDeque() queue {
+func newLinkedDeque() Deque {
 	return NewLinkedDeque()
 }
 
-func testNewDeque(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testNewDeque(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
 	if q == nil {
 		t.Errorf("Returned nil")
@@ -69,59 +69,59 @@ func testNewDeque(t *testing.T, newQueue func() queue, isCapChecked bool) {
 	}
 }
 
-func testPushBack(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPushBack(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushBack(42)
+	q.PushBackValue(42)
 	checkFBLC(t, q, 42, 42, 1, 1, isCapChecked)
 
-	q.PushBack(14)
+	q.PushBackValue(14)
 	checkFBLC(t, q, 42, 14, 2, 2, isCapChecked)
 }
 
-func testPushFront(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPushFront(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushFront(42)
+	q.PushFrontValue(42)
 	checkFBLC(t, q, 42, 42, 1, 1, isCapChecked)
 
-	q.PushFront(14)
+	q.PushFrontValue(14)
 	checkFBLC(t, q, 14, 42, 2, 2, isCapChecked)
 }
 
-func testPushBackAndPushFront0(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPushBackAndPushFront0(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushBack(42)
-	q.PushFront(14)
+	q.PushBackValue(42)
+	q.PushFrontValue(14)
 	checkFBLC(t, q, 14, 42, 2, 2, isCapChecked)
 
-	q.PushBack(49)
+	q.PushBackValue(49)
 	checkFBLC(t, q, 14, 49, 3, 3, isCapChecked)
 }
 
-func testPushBackAndPushFront1(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPushBackAndPushFront1(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushFront(42)
-	q.PushBack(14)
+	q.PushFrontValue(42)
+	q.PushBackValue(14)
 	checkFBLC(t, q, 42, 14, 2, 2, isCapChecked)
 
-	q.PushFront(49)
+	q.PushFrontValue(49)
 	checkFBLC(t, q, 49, 14, 3, 3, isCapChecked)
 }
 
-func testPopBack(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPopBack(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushBack(91)
+	q.PushBackValue(91)
 	q.PopBack()
 	checkLC(t, q, 0, 1, isCapChecked)
 
-	q.PushBack(92)
+	q.PushBackValue(92)
 	checkFBLC(t, q, 92, 92, 1, 1, isCapChecked)
 
-	q.PushBack(93)
+	q.PushBackValue(93)
 	checkFBLC(t, q, 92, 93, 2, 2, isCapChecked)
 
 	q.PopBack()
@@ -130,13 +130,13 @@ func testPopBack(t *testing.T, newQueue func() queue, isCapChecked bool) {
 	q.PopBack()
 	checkLC(t, q, 0, 2, isCapChecked)
 
-	q.PushBack(94)
+	q.PushBackValue(94)
 	checkFBLC(t, q, 94, 94, 1, 2, isCapChecked)
 
-	q.PushBack(95)
+	q.PushBackValue(95)
 	checkFBLC(t, q, 94, 95, 2, 2, isCapChecked)
 
-	q.PushBack(96)
+	q.PushBackValue(96)
 	checkFBLC(t, q, 94, 96, 3, 3, isCapChecked)
 
 	q.PopBack()
@@ -149,17 +149,17 @@ func testPopBack(t *testing.T, newQueue func() queue, isCapChecked bool) {
 	checkLC(t, q, 0, 3, isCapChecked)
 }
 
-func testPopFront(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPopFront(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushFront(91)
+	q.PushFrontValue(91)
 	q.PopFront()
 	checkLC(t, q, 0, 1, isCapChecked)
 
-	q.PushFront(92)
+	q.PushFrontValue(92)
 	checkFBLC(t, q, 92, 92, 1, 1, isCapChecked)
 
-	q.PushFront(93)
+	q.PushFrontValue(93)
 	checkFBLC(t, q, 93, 92, 2, 2, isCapChecked)
 
 	q.PopFront()
@@ -168,13 +168,13 @@ func testPopFront(t *testing.T, newQueue func() queue, isCapChecked bool) {
 	q.PopFront()
 	checkLC(t, q, 0, 2, isCapChecked)
 
-	q.PushFront(94)
+	q.PushFrontValue(94)
 	checkFBLC(t, q, 94, 94, 1, 2, isCapChecked)
 
-	q.PushFront(95)
+	q.PushFrontValue(95)
 	checkFBLC(t, q, 95, 94, 2, 2, isCapChecked)
 
-	q.PushFront(96)
+	q.PushFrontValue(96)
 	checkFBLC(t, q, 96, 94, 3, 3, isCapChecked)
 
 	q.PopFront()
@@ -187,80 +187,80 @@ func testPopFront(t *testing.T, newQueue func() queue, isCapChecked bool) {
 	checkLC(t, q, 0, 3, isCapChecked)
 }
 
-func testPopBackAndPopFront0(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPopBackAndPopFront0(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushBack(91)
-	q.PushBack(92)
-	q.PushBack(93)
+	q.PushBackValue(91)
+	q.PushBackValue(92)
+	q.PushBackValue(93)
 	q.PopFront()
 	checkFBLC(t, q, 92, 93, 2, 3, isCapChecked)
 
-	q.PushBack(94)
+	q.PushBackValue(94)
 	checkFBLC(t, q, 92, 94, 3, 3, isCapChecked)
 
 	q.PopBack()
 	checkFBLC(t, q, 92, 93, 2, 3, isCapChecked)
 
-	q.PushFront(95)
+	q.PushFrontValue(95)
 	checkFBLC(t, q, 95, 93, 3, 3, isCapChecked)
 }
 
-func testPopBackAndPopFront1(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPopBackAndPopFront1(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushBack(91)
-	q.PushBack(92)
-	q.PushBack(93)
+	q.PushBackValue(91)
+	q.PushBackValue(92)
+	q.PushBackValue(93)
 	q.PopFront()
 	q.PopFront()
 	checkFBLC(t, q, 93, 93, 1, 3, isCapChecked)
 
-	q.PushBack(94)
+	q.PushBackValue(94)
 	checkFBLC(t, q, 93, 94, 2, 3, isCapChecked)
 
-	q.PushBack(95)
+	q.PushBackValue(95)
 	checkFBLC(t, q, 93, 95, 3, 3, isCapChecked)
 
 	q.PopBack()
 	q.PopBack()
-	q.PushFront(96)
+	q.PushFrontValue(96)
 	checkFBLC(t, q, 96, 93, 2, 3, isCapChecked)
 
-	q.PushFront(97)
+	q.PushFrontValue(97)
 	checkFBLC(t, q, 97, 93, 3, 3, isCapChecked)
 }
 
-func testPopBackAndPopFront2(t *testing.T, newQueue func() queue, isCapChecked bool) {
-	q := newQueue()
+func testPopBackAndPopFront2(t *testing.T, newDeque func() Deque, isCapChecked bool) {
+	q := newDeque()
 
-	q.PushBack(91)
-	q.PushBack(92)
-	q.PushBack(93)
+	q.PushBackValue(91)
+	q.PushBackValue(92)
+	q.PushBackValue(93)
 	q.PopFront()
 	q.PopFront()
 	q.PopFront()
 	checkLC(t, q, 0, 3, isCapChecked)
 
-	q.PushBack(94)
+	q.PushBackValue(94)
 	checkFBLC(t, q, 94, 94, 1, 3, isCapChecked)
 
-	q.PushBack(95)
+	q.PushBackValue(95)
 	checkFBLC(t, q, 94, 95, 2, 3, isCapChecked)
 
-	q.PushBack(96)
+	q.PushBackValue(96)
 	checkFBLC(t, q, 94, 96, 3, 3, isCapChecked)
 
 	q.PopBack()
 	q.PopBack()
 	q.PopBack()
-	q.PushFront(97)
+	q.PushFrontValue(97)
 	checkFBLC(t, q, 97, 97, 1, 3, isCapChecked)
 
-	q.PushFront(98)
+	q.PushFrontValue(98)
 	checkFBLC(t, q, 98, 97, 2, 3, isCapChecked)
 
-	q.PushFront(99)
+	q.PushFrontValue(99)
 	checkFBLC(t, q, 99, 97, 3, 3, isCapChecked)
 }
 

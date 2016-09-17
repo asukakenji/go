@@ -1,97 +1,114 @@
 package dsalg
 
 import (
+	"bytes"
 	"fmt"
 )
 
 type ArrayDeque struct {
-	fnBack      func() interface{}
-	fnFront     func() interface{}
-	fnPushBack  func(interface{})
-	fnPushFront func(interface{})
-	fnPopBack   func()
-	fnPopFront  func()
+	fnBack      func() int
+	fnFront     func() int
+	fnPushBack  func(interface{}) int
+	fnPushFront func(interface{}) int
+	fnPopBack   func() interface{}
+	fnPopFront  func() interface{}
 	values      []interface{}
 	back        int
 	front       int
-	length      int
-	capacity    int
+	len         int
+	cap         int
 }
 
-// Warning: Does not check emptiness
-// Invoking this method on an empty queue leak to undefined behavior.
-func (q *ArrayDeque) backImpl() interface{} {
-	return q.values[q.back]
+func (q *ArrayDeque) backImpl() int {
+	if q.len == 0 {
+		return -1
+	}
+	return q.back
 }
 
-// Warning: Does not check emptiness
-// Invoking this method on an empty queue leak to undefined behavior.
-func (q *ArrayDeque) frontImpl() interface{} {
-	return q.values[q.front]
+func (q *ArrayDeque) frontImpl() int {
+	if q.len == 0 {
+		return -1
+	}
+	return q.front
 }
 
-func (q *ArrayDeque) pushBackImpl(x interface{}) {
-	if q.length == q.capacity {
+func (q *ArrayDeque) pushBackImpl(v interface{}) int {
+	// Full Queue
+	if q.len == q.cap {
 		panic("Full queue")
 	}
-	if q.length != 0 {
+	// Non-Empty Queue
+	if q.len != 0 {
 		q.back++
-		if q.back == q.capacity {
+		if q.back == q.cap {
 			q.back = 0
 		}
 	}
-	q.values[q.back] = x
-	q.length++
+	// Non-Full Queue
+	q.values[q.back] = v
+	q.len++
+	return q.back
 }
 
-func (q *ArrayDeque) pushFrontImpl(x interface{}) {
-	if q.length == q.capacity {
+func (q *ArrayDeque) pushFrontImpl(v interface{}) int {
+	// Full Queue
+	if q.len == q.cap {
 		panic("Full queue")
 	}
-	if q.length != 0 {
+	// Non-Empty Queue
+	if q.len != 0 {
 		q.front--
 		if q.front == -1 {
-			q.front = q.capacity - 1
+			q.front = q.cap - 1
 		}
 	}
-	q.values[q.front] = x
-	q.length++
+	// Non-Full Queue
+	q.values[q.front] = v
+	q.len++
+	return q.front
 }
 
-func (q *ArrayDeque) popBackImpl() {
-	if q.length == 0 {
+func (q *ArrayDeque) popBackImpl() interface{} {
+	// Empty Queue
+	if q.len == 0 {
 		panic("Empty queue")
 	}
 	// More-Than-One-Element Queue
-	if q.length > 1 {
+	i := q.back
+	if q.len > 1 {
 		q.back--
 		if q.back == -1 {
-			q.back = q.capacity - 1
+			q.back = q.cap - 1
 		}
 	}
 	// Non-Empty Queue
-	q.length--
+	q.len--
+	return q.values[i]
 }
 
-func (q *ArrayDeque) popFrontImpl() {
-	if q.length == 0 {
+func (q *ArrayDeque) popFrontImpl() interface{} {
+	// Empty Queue
+	if q.len == 0 {
 		panic("Empty queue")
 	}
 	// More-Than-One-Element Queue
-	if q.length > 1 {
+	i := q.front
+	if q.len > 1 {
 		q.front++
-		if q.front == q.capacity {
+		if q.front == q.cap {
 			q.front = 0
 		}
 	}
 	// Non-Empty Queue
-	q.length--
+	q.len--
+	return q.values[i]
 }
 
 func NewArrayDeque(size int) *ArrayDeque {
 	q := &ArrayDeque{
-		values:   make([]interface{}, size),
-		capacity: size,
+		values: make([]interface{}, size),
+		cap:    size,
 	}
 	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
 	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
@@ -99,28 +116,44 @@ func NewArrayDeque(size int) *ArrayDeque {
 	return q
 }
 
-func (q *ArrayDeque) Back() interface{} {
+func (q *ArrayDeque) Back() int {
 	return q.fnBack()
 }
 
-func (q *ArrayDeque) Front() interface{} {
+func (q *ArrayDeque) Front() int {
 	return q.fnFront()
 }
 
-func (q *ArrayDeque) PushBack(x interface{}) {
-	q.fnPushBack(x)
+func (q *ArrayDeque) PushBack(v interface{}) int {
+	return q.fnPushBack(v)
 }
 
-func (q *ArrayDeque) PushFront(x interface{}) {
-	q.fnPushFront(x)
+func (q *ArrayDeque) PushFront(v interface{}) int {
+	return q.fnPushFront(v)
 }
 
-func (q *ArrayDeque) PopBack() {
-	q.fnPopBack()
+func (q *ArrayDeque) PopBack() interface{} {
+	return q.fnPopBack()
 }
 
-func (q *ArrayDeque) PopFront() {
-	q.fnPopFront()
+func (q *ArrayDeque) PopFront() interface{} {
+	return q.fnPopFront()
+}
+
+func (q *ArrayDeque) BackValue() interface{} {
+	return q.values[q.Back()]
+}
+
+func (q *ArrayDeque) FrontValue() interface{} {
+	return q.values[q.Front()]
+}
+
+func (q *ArrayDeque) PushBackValue(v interface{}) {
+	q.PushBack(v)
+}
+
+func (q *ArrayDeque) PushFrontValue(v interface{}) {
+	q.PushFront(v)
 }
 
 func (q *ArrayDeque) Reverse() {
@@ -130,33 +163,36 @@ func (q *ArrayDeque) Reverse() {
 }
 
 func (q *ArrayDeque) Len() int {
-	return q.length
+	return q.len
 }
 
 func (q *ArrayDeque) Cap() int {
-	return q.capacity
+	return q.cap
 }
 
 func (q *ArrayDeque) IsEmpty() bool {
-	return q.length == 0
+	return q.len == 0
 }
 
 func (q *ArrayDeque) IsFull() bool {
-	return q.length == q.capacity
+	return q.len == q.cap
 }
 
-func (q *ArrayDeque) Print() {
+func (q *ArrayDeque) String() string {
+	var buffer bytes.Buffer
 	sep := ""
-	fmt.Print("[")
+	buffer.WriteString("[")
 	for i := range q.values {
-		fmt.Print(sep, q.values[i])
+		buffer.WriteString(sep)
+		buffer.WriteString(fmt.Sprintf("%v", q.values[i]))
 		if i == q.front {
-			fmt.Print("(F)")
+			buffer.WriteString("(F)")
 		}
 		if i == q.back {
-			fmt.Print("(B)")
+			buffer.WriteString("(B)")
 		}
 		sep = " "
 	}
-	fmt.Println("]")
+	buffer.WriteString("]")
+	return buffer.String()
 }

@@ -1,16 +1,16 @@
 package dsalg
 
 import (
+	"bytes"
 	"fmt"
 )
 
-type dequeNode struct {
-	next  *dequeNode
-	prev  *dequeNode
-	value interface{}
+type DequeNode struct {
+	next, prev *DequeNode
+	Value      interface{}
 }
 
-func (n *dequeNode) Reattach(next, prev *dequeNode, value interface{}) {
+func (n *DequeNode) reattach(next, prev *DequeNode, v interface{}) {
 	// Detach from Non-Nil Next Node
 	if n.next != nil {
 		n.next.prev = n.prev
@@ -20,124 +20,132 @@ func (n *dequeNode) Reattach(next, prev *dequeNode, value interface{}) {
 		n.prev.next = n.next
 	}
 	// Update Current Node
-	n.next, n.prev, n.value = next, prev, value
+	n.next, n.prev, n.Value = next, prev, v
 }
 
 type LinkedDeque struct {
-	fnBack      func() interface{}
-	fnFront     func() interface{}
-	fnPushBack  func(interface{})
-	fnPushFront func(interface{})
-	fnPopBack   func()
-	fnPopFront  func()
-	back        *dequeNode
-	front       *dequeNode
-	length      int
-	capacity    int
+	fnBack      func() *DequeNode
+	fnFront     func() *DequeNode
+	fnPushBack  func(interface{}) *DequeNode
+	fnPushFront func(interface{}) *DequeNode
+	fnPopBack   func() interface{}
+	fnPopFront  func() interface{}
+	back        *DequeNode
+	front       *DequeNode
+	len         int
+	cap         int
 }
 
-// Warning: Does not check emptiness!
-// Invoking this method on an empty queue leak to undefined behavior.
-func (q *LinkedDeque) backImpl() interface{} {
-	return q.back.value
+func (q *LinkedDeque) backImpl() *DequeNode {
+	if q.len == 0 {
+		return nil
+	}
+	return q.back
 }
 
-// Warning: Does not check emptiness
-// Invoking this method on an empty queue leak to undefined behavior.
-func (q *LinkedDeque) frontImpl() interface{} {
-	return q.front.value
+func (q *LinkedDeque) frontImpl() *DequeNode {
+	if q.len == 0 {
+		return nil
+	}
+	return q.front
 }
 
-func (q *LinkedDeque) pushBackImpl(x interface{}) {
+func (q *LinkedDeque) pushBackImpl(v interface{}) *DequeNode {
 	// Empty Queue
-	if q.length == 0 {
-		q.back.value = x
-		q.length++
-		return
+	if q.len == 0 {
+		q.back.Value = v
+		q.len++
+		return q.back
 	}
 	// Back Does Not Point to Edge Node
 	if q.back.next != nil {
 		q.back = q.back.next
-		q.back.value = x
-		q.length++
-		return
+		q.back.Value = v
+		q.len++
+		return q.back
 	}
 	// Back Points to Edge Node
 	// Reuse a node from before the front or create a new one
 	newBack := q.front.prev
 	if newBack == nil {
-		newBack = &dequeNode{nil, q.back, x}
-		q.capacity++
+		newBack = &DequeNode{nil, q.back, v}
+		q.cap++
 	} else {
-		newBack.Reattach(nil, q.back, x)
+		newBack.reattach(nil, q.back, v)
 	}
 	// Update Back Node
 	q.back.next = newBack
 	q.back = newBack
-	q.length++
+	q.len++
+	return q.back
 }
 
-func (q *LinkedDeque) pushFrontImpl(x interface{}) {
+func (q *LinkedDeque) pushFrontImpl(v interface{}) *DequeNode {
 	// Empty Queue
-	if q.length == 0 {
-		q.front.value = x
-		q.length++
-		return
+	if q.len == 0 {
+		q.front.Value = v
+		q.len++
+		return q.front
 	}
 	// Front Does Not Point to Edge Node
 	if q.front.prev != nil {
 		q.front = q.front.prev
-		q.front.value = x
-		q.length++
-		return
+		q.front.Value = v
+		q.len++
+		return q.front
 	}
 	// Front Points to Edge Node
 	// Reuse a node from after the back or create a new one
 	newFront := q.back.next
 	if newFront == nil {
-		newFront = &dequeNode{q.front, nil, x}
-		q.capacity++
+		newFront = &DequeNode{q.front, nil, v}
+		q.cap++
 	} else {
-		newFront.Reattach(q.front, nil, x)
+		newFront.reattach(q.front, nil, v)
 	}
 	// Update Front Node
 	q.front.prev = newFront
 	q.front = newFront
-	q.length++
+	q.len++
+	return q.front
 }
 
-func (q *LinkedDeque) popBackImpl() {
+func (q *LinkedDeque) popBackImpl() interface{} {
 	// Empty Queue
-	if q.length == 0 {
+	if q.len == 0 {
 		panic("Empty queue")
 	}
+	n := q.back
 	// More-Than-One-Element Queue
-	if q.length > 1 {
+	if q.len > 1 {
 		q.back = q.back.prev
 	}
 	// Non-Empty Queue
-	q.length--
+	q.len--
+	return n.Value
 }
 
-func (q *LinkedDeque) popFrontImpl() {
+func (q *LinkedDeque) popFrontImpl() interface{} {
 	// Empty Queue
-	if q.length == 0 {
+	if q.len == 0 {
 		panic("Empty queue")
 	}
+	n := q.front
 	// More-Than-One-Element Queue
-	if q.length > 1 {
+	if q.len > 1 {
 		q.front = q.front.next
 	}
 	// Non-Empty Queue
-	q.length--
+	q.len--
+	return n.Value
 }
 
 func NewLinkedDeque() *LinkedDeque {
-	node := &dequeNode{}
+	n := &DequeNode{}
 	q := &LinkedDeque{
-		back:     node,
-		front:    node,
-		capacity: 1,
+		back:  n,
+		front: n,
+		cap:   1,
 	}
 	q.fnBack, q.fnFront = q.backImpl, q.frontImpl
 	q.fnPushBack, q.fnPushFront = q.pushBackImpl, q.pushFrontImpl
@@ -145,28 +153,44 @@ func NewLinkedDeque() *LinkedDeque {
 	return q
 }
 
-func (q *LinkedDeque) Back() interface{} {
+func (q *LinkedDeque) Back() *DequeNode {
 	return q.fnBack()
 }
 
-func (q *LinkedDeque) Front() interface{} {
+func (q *LinkedDeque) Front() *DequeNode {
 	return q.fnFront()
 }
 
-func (q *LinkedDeque) PushBack(x interface{}) {
-	q.fnPushBack(x)
+func (q *LinkedDeque) PushBack(v interface{}) *DequeNode {
+	return q.fnPushBack(v)
 }
 
-func (q *LinkedDeque) PushFront(x interface{}) {
-	q.fnPushFront(x)
+func (q *LinkedDeque) PushFront(v interface{}) *DequeNode {
+	return q.fnPushFront(v)
 }
 
-func (q *LinkedDeque) PopBack() {
-	q.fnPopBack()
+func (q *LinkedDeque) PopBack() interface{} {
+	return q.fnPopBack()
 }
 
-func (q *LinkedDeque) PopFront() {
-	q.fnPopFront()
+func (q *LinkedDeque) PopFront() interface{} {
+	return q.fnPopFront()
+}
+
+func (q *LinkedDeque) BackValue() interface{} {
+	return q.Back().Value
+}
+
+func (q *LinkedDeque) FrontValue() interface{} {
+	return q.Front().Value
+}
+
+func (q *LinkedDeque) PushBackValue(v interface{}) {
+	q.PushBack(v)
+}
+
+func (q *LinkedDeque) PushFrontValue(v interface{}) {
+	q.PushFront(v)
 }
 
 func (q *LinkedDeque) Reverse() {
@@ -176,41 +200,43 @@ func (q *LinkedDeque) Reverse() {
 }
 
 func (q *LinkedDeque) Len() int {
-	return q.length
+	return q.len
 }
 
 func (q *LinkedDeque) Cap() int {
-	return q.capacity
+	return q.cap
 }
 
 func (q *LinkedDeque) IsEmpty() bool {
-	return q.length == 0
+	return q.len == 0
 }
 
 func (q *LinkedDeque) IsFull() bool {
 	return false
 }
 
-func (q *LinkedDeque) Print() {
+func (q *LinkedDeque) String() string {
+	var buffer bytes.Buffer
 	ptr := q.front
 	if ptr != nil {
 		for ptr.prev != nil {
 			ptr = ptr.prev
 		}
 	}
-	fmt.Print("<- ")
+	buffer.WriteString("<- ")
 	for ptr != nil {
-		fmt.Print(ptr.value)
+		buffer.WriteString(fmt.Sprintf("%v", ptr.Value))
 		if ptr == q.front {
-			fmt.Print("(F)")
+			buffer.WriteString("(F)")
 		}
 		if ptr == q.back {
-			fmt.Print("(B)")
+			buffer.WriteString("(B)")
 		}
 		if ptr.next != nil {
-			fmt.Print(" <-> ")
+			buffer.WriteString(" <-> ")
 		}
 		ptr = ptr.next
 	}
-	fmt.Println(" ->")
+	buffer.WriteString(" ->")
+	return buffer.String()
 }
