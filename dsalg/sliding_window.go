@@ -36,24 +36,24 @@ func SlidingWindowMaximum(values []int, w int) []int {
 		w = n
 	}
 	maxima := make([]int, n-w+1)
-	q := NewIntLinkedDeque()
+	q := NewArrayDeque(w)
 	for i := 0; i < w; i++ {
-		for !q.IsEmpty() && values[i] >= values[q.Back()] {
+		for !q.IsEmpty() && values[i] >= values[q.BackValue().(int)] {
 			q.PopBack()
 		}
 		q.PushBack(i)
 	}
 	for i := w; i < n; i++ {
-		maxima[i-w] = values[q.Front()]
-		for !q.IsEmpty() && values[i] >= values[q.Back()] {
+		maxima[i-w] = values[q.FrontValue().(int)]
+		for !q.IsEmpty() && values[i] >= values[q.BackValue().(int)] {
 			q.PopBack()
 		}
-		for !q.IsEmpty() && q.Front() <= i-w {
+		for !q.IsEmpty() && q.FrontValue().(int) <= i-w {
 			q.PopFront()
 		}
 		q.PushBack(i)
 	}
-	maxima[n-w] = values[q.Front()]
+	maxima[n-w] = values[q.FrontValue().(int)]
 	return maxima
 }
 
@@ -68,24 +68,24 @@ func SlidingWindowMinimum(values []int, w int) []int {
 		w = n
 	}
 	minima := make([]int, n-w+1)
-	q := NewIntLinkedDeque()
+	q := NewArrayDeque(w)
 	for i := 0; i < w; i++ {
-		for !q.IsEmpty() && values[i] <= values[q.Back()] {
+		for !q.IsEmpty() && values[i] <= values[q.BackValue().(int)] {
 			q.PopBack()
 		}
 		q.PushBack(i)
 	}
 	for i := w; i < n; i++ {
-		minima[i-w] = values[q.Front()]
-		for !q.IsEmpty() && values[i] <= values[q.Back()] {
+		minima[i-w] = values[q.FrontValue().(int)]
+		for !q.IsEmpty() && values[i] <= values[q.BackValue().(int)] {
 			q.PopBack()
 		}
-		for !q.IsEmpty() && q.Front() <= i-w {
+		for !q.IsEmpty() && q.FrontValue().(int) <= i-w {
 			q.PopFront()
 		}
 		q.PushBack(i)
 	}
-	minima[n-w] = values[q.Front()]
+	minima[n-w] = values[q.FrontValue().(int)]
 	return minima
 }
 
@@ -100,35 +100,35 @@ func SlidingWindowMaxDiff(values []int, w int) []int {
 		w = n
 	}
 	maxDiffs := make([]int, n-w+1)
-	qMax := NewIntLinkedDeque()
-	qMin := NewIntLinkedDeque()
+	qMax := NewArrayDeque(w)
+	qMin := NewArrayDeque(w)
 	for i := 0; i < w; i++ {
-		for !qMax.IsEmpty() && values[i] >= values[qMax.Back()] {
+		for !qMax.IsEmpty() && values[i] >= values[qMax.BackValue().(int)] {
 			qMax.PopBack()
 		}
 		qMax.PushBack(i)
-		for !qMin.IsEmpty() && values[i] <= values[qMin.Back()] {
+		for !qMin.IsEmpty() && values[i] <= values[qMin.BackValue().(int)] {
 			qMin.PopBack()
 		}
 		qMin.PushBack(i)
 	}
 	for i := w; i < n; i++ {
-		maxDiffs[i-w] = values[qMax.Front()] - values[qMin.Front()]
-		for !qMax.IsEmpty() && values[i] >= values[qMax.Back()] {
+		maxDiffs[i-w] = values[qMax.FrontValue().(int)] - values[qMin.FrontValue().(int)]
+		for !qMax.IsEmpty() && values[i] >= values[qMax.BackValue().(int)] {
 			qMax.PopBack()
 		}
-		for !qMax.IsEmpty() && qMax.Front() <= i-w {
+		for !qMax.IsEmpty() && qMax.FrontValue().(int) <= i-w {
 			qMax.PopFront()
 		}
 		qMax.PushBack(i)
-		for !qMin.IsEmpty() && values[i] <= values[qMin.Back()] {
+		for !qMin.IsEmpty() && values[i] <= values[qMin.BackValue().(int)] {
 			qMin.PopBack()
 		}
-		for !qMin.IsEmpty() && qMin.Front() <= i-w {
+		for !qMin.IsEmpty() && qMin.FrontValue().(int) <= i-w {
 			qMin.PopFront()
 		}
 		qMin.PushBack(i)
 	}
-	maxDiffs[n-w] = values[qMax.Front()] - values[qMin.Front()]
+	maxDiffs[n-w] = values[qMax.FrontValue().(int)] - values[qMin.FrontValue().(int)]
 	return maxDiffs
 }
