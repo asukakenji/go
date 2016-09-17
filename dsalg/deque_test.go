@@ -4,21 +4,6 @@ import (
 	"testing"
 )
 
-type Deque interface {
-	BackValue() interface{}
-	FrontValue() interface{}
-	PushBackValue(v interface{})
-	PushFrontValue(v interface{})
-	PopBack() interface{}
-	PopFront() interface{}
-	Reverse()
-	Len() int
-	Cap() int
-	IsEmpty() bool
-	IsFull() bool
-	String() string
-}
-
 func checkLC(t *testing.T, q Deque, expectedL, expectedC int, isCapChecked bool) {
 	l := q.Len()
 	if l != expectedL {
