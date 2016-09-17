@@ -1,10 +1,10 @@
 package dsalg
 
-type intAVLTreeNode struct {
-	leftChild, rightChild   *intAVLTreeNode
-	value                   int
-	count                   int
-	leftHeight, rightHeight int
+type IntAVLTreeNode struct {
+	LeftChild, RightChild   *IntAVLTreeNode
+	Value                   int
+	Count                   int
+	LeftHeight, RightHeight int
 }
 
 func max(a, b int) int {
@@ -14,47 +14,47 @@ func max(a, b int) int {
 	return a
 }
 
-func (node *intAVLTreeNode) height() int {
+func (node *IntAVLTreeNode) Height() int {
 	if node == nil {
 		return -1
 	}
-	return max(node.leftHeight, node.rightHeight)
+	return max(node.LeftHeight, node.RightHeight)
 }
 
 // LL Single Rotation
-func (node *intAVLTreeNode) rotateLL(ptrParent **intAVLTreeNode) {
-	*ptrParent = node.leftChild
-	node.leftChild, node.leftChild.rightChild = node.leftChild.rightChild, node
-	node.leftHeight = node.leftChild.height() + 1
-	(*ptrParent).rightHeight = (*ptrParent).rightChild.height() + 1
+func (node *IntAVLTreeNode) RotateLL(ptrParent **IntAVLTreeNode) {
+	*ptrParent = node.LeftChild
+	node.LeftChild, node.LeftChild.RightChild = node.LeftChild.RightChild, node
+	node.LeftHeight = node.LeftChild.Height() + 1
+	(*ptrParent).RightHeight = (*ptrParent).RightChild.Height() + 1
 }
 
 // RR Single Rotation
-func (node *intAVLTreeNode) rotateRR(ptrParent **intAVLTreeNode) {
-	*ptrParent = node.rightChild
-	node.rightChild, node.rightChild.leftChild = node.rightChild.leftChild, node
-	node.rightHeight = node.rightChild.height() + 1
-	(*ptrParent).leftHeight = (*ptrParent).leftChild.height() + 1
+func (node *IntAVLTreeNode) RotateRR(ptrParent **IntAVLTreeNode) {
+	*ptrParent = node.RightChild
+	node.RightChild, node.RightChild.LeftChild = node.RightChild.LeftChild, node
+	node.RightHeight = node.RightChild.Height() + 1
+	(*ptrParent).LeftHeight = (*ptrParent).LeftChild.Height() + 1
 }
 
 // LR Double Rotation
-func (node *intAVLTreeNode) rotateLR(ptrParent **intAVLTreeNode) {
-	*ptrParent = node.leftChild.rightChild
-	node.leftChild, node.leftChild.rightChild, node.leftChild.rightChild.leftChild, node.leftChild.rightChild.rightChild = node.leftChild.rightChild.rightChild, node.leftChild.rightChild.leftChild, node.leftChild, node
-	node.leftHeight = node.leftChild.height() + 1
-	(*ptrParent).leftChild.rightHeight = (*ptrParent).leftChild.rightChild.height() + 1
-	(*ptrParent).leftHeight = (*ptrParent).leftChild.height() + 1
-	(*ptrParent).rightHeight = (*ptrParent).rightChild.height() + 1
+func (node *IntAVLTreeNode) RotateLR(ptrParent **IntAVLTreeNode) {
+	*ptrParent = node.LeftChild.RightChild
+	node.LeftChild, node.LeftChild.RightChild, node.LeftChild.RightChild.LeftChild, node.LeftChild.RightChild.RightChild = node.LeftChild.RightChild.RightChild, node.LeftChild.RightChild.LeftChild, node.LeftChild, node
+	node.LeftHeight = node.LeftChild.Height() + 1
+	(*ptrParent).LeftChild.RightHeight = (*ptrParent).LeftChild.RightChild.Height() + 1
+	(*ptrParent).LeftHeight = (*ptrParent).LeftChild.Height() + 1
+	(*ptrParent).RightHeight = (*ptrParent).RightChild.Height() + 1
 }
 
 // RL Double Rotation
-func (node *intAVLTreeNode) rotateRL(ptrParent **intAVLTreeNode) {
-	*ptrParent = node.rightChild.leftChild
-	node.rightChild, node.rightChild.leftChild, node.rightChild.leftChild.leftChild, node.rightChild.leftChild.rightChild = node.rightChild.leftChild.leftChild, node.rightChild.leftChild.rightChild, node, node.rightChild
-	node.rightHeight = node.rightChild.height() + 1
-	(*ptrParent).rightChild.leftHeight = (*ptrParent).rightChild.leftChild.height() + 1
-	(*ptrParent).leftHeight = (*ptrParent).leftChild.height() + 1
-	(*ptrParent).rightHeight = (*ptrParent).rightChild.height() + 1
+func (node *IntAVLTreeNode) RotateRL(ptrParent **IntAVLTreeNode) {
+	*ptrParent = node.RightChild.LeftChild
+	node.RightChild, node.RightChild.LeftChild, node.RightChild.LeftChild.LeftChild, node.RightChild.LeftChild.RightChild = node.RightChild.LeftChild.LeftChild, node.RightChild.LeftChild.RightChild, node, node.RightChild
+	node.RightHeight = node.RightChild.Height() + 1
+	(*ptrParent).RightChild.LeftHeight = (*ptrParent).RightChild.LeftChild.Height() + 1
+	(*ptrParent).LeftHeight = (*ptrParent).LeftChild.Height() + 1
+	(*ptrParent).RightHeight = (*ptrParent).RightChild.Height() + 1
 }
 
 // ptrParent: The pointer to the pointer from the parent node pointing to the "this" node
@@ -62,87 +62,101 @@ func (node *intAVLTreeNode) rotateRL(ptrParent **intAVLTreeNode) {
 // Returns:
 // (1) whether a new node is allocated
 // (2) whether the balance factor of the caller should be updated
-// (3) whether the recursive call to insert is on the leftChild or the rightChild of "this" node
-func (node *intAVLTreeNode) insert(ptrParent **intAVLTreeNode, x int) (bool, direction) {
+// (3) whether the recursive call to insert is on the LeftChild or the RightChild of "this" node
+func (node *IntAVLTreeNode) Insert(ptrParent **IntAVLTreeNode, x int) (bool, direction) {
 	if node == nil {
-		*ptrParent = &intAVLTreeNode{value: x, count: 1}
+		*ptrParent = &IntAVLTreeNode{Value: x, Count: 1}
 		return true, nil
 	}
-	if x < node.value {
-		isNewNodeCreated, d := node.leftChild.insert(&node.leftChild, x)
+	if x < node.Value {
+		isNewNodeCreated, d := node.LeftChild.Insert(&node.LeftChild, x)
 		if !isNewNodeCreated {
 			return false, left
 		}
-		node.leftHeight = node.leftChild.height() + 1
-		if node.leftHeight-node.rightHeight <= 1 {
+		node.LeftHeight = node.LeftChild.Height() + 1
+		if node.LeftHeight-node.RightHeight <= 1 {
 			return true, left
 		}
 		if d == left {
-			node.rotateLL(ptrParent)
+			node.RotateLL(ptrParent)
 		} else if d == right {
-			node.rotateLR(ptrParent)
+			node.RotateLR(ptrParent)
 		} else {
 			panic("")
 		}
 		return true, left
-	} else if x > node.value {
-		isNewNodeCreated, d := node.rightChild.insert(&node.rightChild, x)
+	} else if x > node.Value {
+		isNewNodeCreated, d := node.RightChild.Insert(&node.RightChild, x)
 		if !isNewNodeCreated {
 			return false, right
 		}
-		node.rightHeight = node.rightChild.height() + 1
-		if node.rightHeight-node.leftHeight <= 1 {
+		node.RightHeight = node.RightChild.Height() + 1
+		if node.RightHeight-node.LeftHeight <= 1 {
 			return true, right
 		}
 		if d == left {
-			node.rotateRL(ptrParent)
+			node.RotateRL(ptrParent)
 		} else if d == right {
-			node.rotateRR(ptrParent)
+			node.RotateRR(ptrParent)
 		} else {
 			panic("")
 		}
 		return true, right
 	} else {
-		node.count++
+		node.Count++
 		return false, nil
 	}
 }
 
-func (node *intAVLTreeNode) traversePreOrder(consumer func(int)) {
+func (node *IntAVLTreeNode) TraversePreOrder(consumer func(int)) {
 	if node == nil {
 		return
 	}
-	for i := 0; i < node.count; i++ {
-		consumer(node.value)
+	for i := 0; i < node.Count; i++ {
+		consumer(node.Value)
 	}
-	node.leftChild.traversePreOrder(consumer)
-	node.rightChild.traversePreOrder(consumer)
+	node.LeftChild.TraversePreOrder(consumer)
+	node.RightChild.TraversePreOrder(consumer)
 }
 
-func (node *intAVLTreeNode) traverseInOrder(consumer func(int)) {
+func (node *IntAVLTreeNode) TraverseInOrder(consumer func(int)) {
 	if node == nil {
 		return
 	}
-	node.leftChild.traverseInOrder(consumer)
-	for i := 0; i < node.count; i++ {
-		consumer(node.value)
+	node.LeftChild.TraverseInOrder(consumer)
+	for i := 0; i < node.Count; i++ {
+		consumer(node.Value)
 	}
-	node.rightChild.traverseInOrder(consumer)
+	node.RightChild.TraverseInOrder(consumer)
 }
 
-func (node *intAVLTreeNode) traversePostOrder(consumer func(int)) {
+func (node *IntAVLTreeNode) TraversePostOrder(consumer func(int)) {
 	if node == nil {
 		return
 	}
-	node.leftChild.traversePostOrder(consumer)
-	node.rightChild.traversePostOrder(consumer)
-	for i := 0; i < node.count; i++ {
-		consumer(node.value)
+	node.LeftChild.TraversePostOrder(consumer)
+	node.RightChild.TraversePostOrder(consumer)
+	for i := 0; i < node.Count; i++ {
+		consumer(node.Value)
+	}
+}
+
+func (node *IntAVLTreeNode) Clone() *IntAVLTreeNode {
+	if node == nil {
+		return nil
+	}
+	return &IntAVLTreeNode{
+		node.LeftChild.Clone(),
+		node.RightChild.Clone(),
+		node.Value,
+		node.Count,
+		node.LeftHeight,
+		node.RightHeight,
 	}
 }
 
 type IntAVLTree struct {
-	root     *intAVLTreeNode
+	root     *IntAVLTreeNode
 	length   int
 	capacity int
 }
@@ -152,22 +166,30 @@ func NewIntAVLTree() *IntAVLTree {
 }
 
 func (tree *IntAVLTree) Insert(x int) {
-	if isNewNodeCreated, _ := tree.root.insert(&tree.root, x); isNewNodeCreated {
+	if isNewNodeCreated, _ := tree.root.Insert(&tree.root, x); isNewNodeCreated {
 		tree.capacity++
 	}
 	tree.length++
 }
 
 func (tree *IntAVLTree) TraversePreOrder(consumer func(int)) {
-	tree.root.traversePreOrder(consumer)
+	tree.root.TraversePreOrder(consumer)
 }
 
 func (tree *IntAVLTree) TraverseInOrder(consumer func(int)) {
-	tree.root.traverseInOrder(consumer)
+	tree.root.TraverseInOrder(consumer)
 }
 
 func (tree *IntAVLTree) TraversePostOrder(consumer func(int)) {
-	tree.root.traversePostOrder(consumer)
+	tree.root.TraversePostOrder(consumer)
+}
+
+func (tree *IntAVLTree) Clone() *IntAVLTree {
+	return &IntAVLTree{
+		tree.root.Clone(),
+		tree.length,
+		tree.capacity,
+	}
 }
 
 func (tree *IntAVLTree) Len() int {
