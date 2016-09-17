@@ -7,13 +7,6 @@ type IntAVLTreeNode struct {
 	LeftHeight, RightHeight int
 }
 
-func max(a, b int) int {
-	if a < b {
-		return b
-	}
-	return a
-}
-
 func (node *IntAVLTreeNode) Height() int {
 	if node == nil {
 		return -1
