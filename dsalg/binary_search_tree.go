@@ -22,9 +22,9 @@ type BinarySearchTreeNode struct {
 }
 
 // Returns whether a new node is allocated
-func (node *BinarySearchTreeNode) insert(ptrParent **BinarySearchTreeNode, less func(interface{}, interface{}) bool, v interface{}) bool {
+func (node *BinarySearchTreeNode) insert(ptrFromParent **BinarySearchTreeNode, less func(interface{}, interface{}) bool, v interface{}) bool {
 	if node == nil {
-		*ptrParent = &BinarySearchTreeNode{value: v, count: 1}
+		*ptrFromParent = &BinarySearchTreeNode{value: v, count: 1}
 		return true
 	}
 	if less(v, node.value) {
@@ -71,10 +71,10 @@ func (node *BinarySearchTreeNode) TraversePostOrder(consumer func(interface{})) 
 }
 
 type BinarySearchTree struct {
-	less     func(interface{}, interface{}) bool
-	root     *BinarySearchTreeNode
-	length   int
-	capacity int
+	less func(interface{}, interface{}) bool
+	root *BinarySearchTreeNode
+	len  int
+	cap  int
 }
 
 func NewBinarySearchTree(less func(interface{}, interface{}) bool) *BinarySearchTree {
@@ -95,9 +95,9 @@ func NewStringBinarySearchTree() *BinarySearchTree {
 
 func (tree *BinarySearchTree) Insert(v interface{}) {
 	if tree.root.insert(&tree.root, tree.less, v) {
-		tree.capacity++
+		tree.cap++
 	}
-	tree.length++
+	tree.len++
 }
 
 func (tree *BinarySearchTree) TraversePreOrder(consumer func(interface{})) {
@@ -113,15 +113,15 @@ func (tree *BinarySearchTree) TraversePostOrder(consumer func(interface{})) {
 }
 
 func (tree *BinarySearchTree) Len() int {
-	return tree.length
+	return tree.len
 }
 
 func (tree *BinarySearchTree) Cap() int {
-	return tree.capacity
+	return tree.cap
 }
 
 func (tree *BinarySearchTree) IsEmpty() bool {
-	return tree.length == 0
+	return tree.len == 0
 }
 
 func (tree *BinarySearchTree) IsFull() bool {
