@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func checkLRV(t *testing.T, n, expectedL, expectedR *intBinarySearchTreeNode, expectedV int) {
+func checkLRV(t *testing.T, n, expectedL, expectedR *BinarySearchTreeNode, expectedV int) {
 	l := n.leftChild
 	if l != expectedL {
 		t.Errorf("n.leftChild == %v; expected %v", l, expectedL)
@@ -22,7 +22,7 @@ func checkLRV(t *testing.T, n, expectedL, expectedR *intBinarySearchTreeNode, ex
 	}
 }
 
-func checkLen(t *testing.T, tree *IntBinarySearchTree, expectedLength int) {
+func checkLen(t *testing.T, tree *BinarySearchTree, expectedLength int) {
 	length := tree.Len()
 	if length != expectedLength {
 		t.Errorf("n.Len() == %d; expected %d", length, expectedLength)
@@ -67,42 +67,42 @@ func TestInsert(t *testing.T) {
 
 func TestTraverseBST(t *testing.T) {
 	tree := NewIntBinarySearchTree()
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{})
 
 	tree.Insert(4)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{4})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{4})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{4})
 
 	tree.Insert(2)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4, 2})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{2, 4})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{2, 4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4, 2})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{2, 4})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{2, 4})
 
 	tree.Insert(6)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4, 2, 6})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{2, 4, 6})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{2, 6, 4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4, 2, 6})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{2, 4, 6})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{2, 6, 4})
 
 	tree.Insert(1)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4, 2, 1, 6})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{1, 2, 4, 6})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{1, 2, 6, 4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4, 2, 1, 6})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{1, 2, 4, 6})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{1, 2, 6, 4})
 
 	tree.Insert(3)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4, 2, 1, 3, 6})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{1, 2, 3, 4, 6})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{1, 3, 2, 6, 4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4, 2, 1, 3, 6})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{1, 2, 3, 4, 6})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{1, 3, 2, 6, 4})
 
 	tree.Insert(5)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4, 2, 1, 3, 6, 5})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{1, 2, 3, 4, 5, 6})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{1, 3, 2, 5, 6, 4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4, 2, 1, 3, 6, 5})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{1, 2, 3, 4, 5, 6})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{1, 3, 2, 5, 6, 4})
 
 	tree.Insert(7)
-	checkTraverse(t, tree, tree.TraversePreOrder, []int{4, 2, 1, 3, 6, 5, 7})
-	checkTraverse(t, tree, tree.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7})
-	checkTraverse(t, tree, tree.TraversePostOrder, []int{1, 3, 2, 5, 7, 6, 4})
+	checkTraverse(t, tree, tree.TraversePreOrder, []interface{}{4, 2, 1, 3, 6, 5, 7})
+	checkTraverse(t, tree, tree.TraverseInOrder, []interface{}{1, 2, 3, 4, 5, 6, 7})
+	checkTraverse(t, tree, tree.TraversePostOrder, []interface{}{1, 3, 2, 5, 7, 6, 4})
 }
