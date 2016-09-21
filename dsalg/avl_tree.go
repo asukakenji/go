@@ -1,9 +1,9 @@
 package dsalg
 
 type AVLTreeNode struct {
-	leftChild, rightChild   *AVLTreeNode
-	value                   interface{}
-	count                   int
+	leftChild, rightChild *AVLTreeNode
+	value                 interface{}
+	count                 int
 	// The height of **this** node counting from the left / the right.
 	// The height of a non-existing (nil) node is defined to be -1.
 	// The height of a leaf node is 0.
@@ -66,11 +66,11 @@ Left Rotation
 .     B   C   .   A   B     .
 */
 func (node *AVLTreeNode) rotateLeft() *AVLTreeNode {
-    newRoot := node.rightChild
-    node.rightChild, node.rightChild.leftChild = node.rightChild.leftChild, node
-    newRoot.leftChild.UpdateHeight()
-    newRoot.UpdateHeight()
-    return newRoot
+	newRoot := node.rightChild
+	node.rightChild, node.rightChild.leftChild = node.rightChild.leftChild, node
+	newRoot.leftChild.UpdateHeight()
+	newRoot.UpdateHeight()
+	return newRoot
 }
 
 /*
@@ -83,33 +83,33 @@ Right Rotation
 .   A   B     .     B   C   .
 */
 func (node *AVLTreeNode) rotateRight() *AVLTreeNode {
-    newRoot := node.leftChild
-    node.leftChild, node.leftChild.rightChild = node.leftChild.rightChild, node
-    newRoot.rightChild.UpdateHeight()
-    newRoot.UpdateHeight()
-    return newRoot
+	newRoot := node.leftChild
+	node.leftChild, node.leftChild.rightChild = node.leftChild.rightChild, node
+	newRoot.rightChild.UpdateHeight()
+	newRoot.UpdateHeight()
+	return newRoot
 }
 
 // LL Single Rotation
 func (node *AVLTreeNode) rotateLL() *AVLTreeNode {
-    return node.rotateRight()
+	return node.rotateRight()
 }
 
 // RR Single Rotation
 func (node *AVLTreeNode) rotateRR() *AVLTreeNode {
-    return node.rotateLeft()
+	return node.rotateLeft()
 }
 
 // LR Double Rotation
 func (node *AVLTreeNode) rotateLR() *AVLTreeNode {
-    node.leftChild = node.leftChild.rotateLeft()
-    return node.rotateRight()
+	node.leftChild = node.leftChild.rotateLeft()
+	return node.rotateRight()
 }
 
 // RL Double Rotation
 func (node *AVLTreeNode) rotateRL() *AVLTreeNode {
-    node.rightChild = node.rightChild.rotateRight()
-    return node.rotateLeft()
+	node.rightChild = node.rightChild.rotateRight()
+	return node.rotateLeft()
 }
 
 // v: The value to be inserted
