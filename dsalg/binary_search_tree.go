@@ -1,20 +1,6 @@
 package dsalg
 
-// Reference: sort.IntSlice.Less
-func IntLess(a, b interface{}) bool {
-	return a.(int) < b.(int)
-}
-
-// Reference: sort.Float64Slice.Less
-func Float64Less(a, b interface{}) bool {
-	return a.(float64) < b.(float64) || isNaN(a.(float64)) && !isNaN(b.(float64))
-}
-
-// Reference: sort.StringSlice.Less
-func StringLess(a, b interface{}) bool {
-	return a.(string) < b.(string)
-}
-
+// BinarySearchTreeNode is a node of a binary search tree.
 type BinarySearchTreeNode struct {
 	// Left child and right child pointers in the binary search tree.
 	leftChild, rightChild *BinarySearchTreeNode
@@ -39,21 +25,26 @@ func (node *BinarySearchTreeNode) Value() interface{} {
 }
 
 // Returns whether a new node is allocated
-func (node *BinarySearchTreeNode) insert(v interface{}, less func(interface{}, interface{}) bool) (*BinarySearchTreeNode, *BinarySearchTreeNode, bool) {
+func (node *BinarySearchTreeNode) insert(v interface{}, less func(interface{}, interface{}) bool) (*BinarySearchTreeNode, bool) {
 	if node == nil {
-		newNode := &BinarySearchTreeNode{value: v}
-		return newNode, newNode, true
+		return &BinarySearchTreeNode{value: v}, true
 	}
 	if less(v, node.value) {
-		newRoot, targetNode, isCreated := node.leftChild.insert(v, less)
-		node.leftChild = newRoot
-		return node, targetNode, isCreated
+		needsAssignment := (node.leftChild == nil)
+		targetNode, isCreated := node.leftChild.insert(v, less)
+		if needsAssignment {
+			node.leftChild = targetNode
+		}
+		return targetNode, isCreated
 	} else if less(node.value, v) {
-		newRoot, targetNode, isCreated := node.rightChild.insert(v, less)
-		node.rightChild = newRoot
-		return node, targetNode, isCreated
+		needsAssignment := (node.rightChild == nil)
+		targetNode, isCreated := node.rightChild.insert(v, less)
+		if needsAssignment {
+			node.rightChild = targetNode
+		}
+		return targetNode, isCreated
 	} else {
-		return node, node, false
+		return node, false
 	}
 }
 
@@ -108,8 +99,7 @@ func NewStringBinarySearchTree() *BinarySearchTree {
 }
 
 func (tree *BinarySearchTree) Insert(v interface{}) *BinarySearchTreeNode {
-	newRoot, targetNode, isCreated := tree.root.insert(v, tree.less)
-	tree.root = newRoot
+	targetNode, isCreated := tree.root.insert(v, tree.less)
 	tree.len++
 	if isCreated {
 		tree.cap++
