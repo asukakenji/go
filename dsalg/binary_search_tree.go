@@ -5,35 +5,55 @@ func IntLess(a, b interface{}) bool {
 	return a.(int) < b.(int)
 }
 
-// Reference: A copy of sort.Float64Slice.Less
+// Reference: sort.Float64Slice.Less
 func Float64Less(a, b interface{}) bool {
 	return a.(float64) < b.(float64) || isNaN(a.(float64)) && !isNaN(b.(float64))
 }
 
-// Reference: A copy of sort.StringSlice.Less
+// Reference: sort.StringSlice.Less
 func StringLess(a, b interface{}) bool {
 	return a.(string) < b.(string)
 }
 
 type BinarySearchTreeNode struct {
+	// Left child and right child pointers in the binary search tree.
 	leftChild, rightChild *BinarySearchTreeNode
-	value                 interface{}
-	count                 int
+
+	// The value stored with this node.
+	value interface{}
+}
+
+// LeftChild returns the left child of this node or nil.
+func (node *BinarySearchTreeNode) LeftChild() *BinarySearchTreeNode {
+	return node.leftChild
+}
+
+// RightChild returns the right child of this node or nil.
+func (node *BinarySearchTreeNode) RightChild() *BinarySearchTreeNode {
+	return node.rightChild
+}
+
+// Value returns the value stored with this node.
+func (node *BinarySearchTreeNode) Value() interface{} {
+	return node.value
 }
 
 // Returns whether a new node is allocated
-func (node *BinarySearchTreeNode) insert(ptrFromParent **BinarySearchTreeNode, less func(interface{}, interface{}) bool, v interface{}) bool {
+func (node *BinarySearchTreeNode) insert(v interface{}, less func(interface{}, interface{}) bool) (*BinarySearchTreeNode, *BinarySearchTreeNode, bool) {
 	if node == nil {
-		*ptrFromParent = &BinarySearchTreeNode{value: v, count: 1}
-		return true
+		newNode := &BinarySearchTreeNode{value: v}
+		return newNode, newNode, true
 	}
 	if less(v, node.value) {
-		return node.leftChild.insert(&node.leftChild, less, v)
+		newRoot, targetNode, isCreated := node.leftChild.insert(v, less)
+		node.leftChild = newRoot
+		return node, targetNode, isCreated
 	} else if less(node.value, v) {
-		return node.rightChild.insert(&node.rightChild, less, v)
+		newRoot, targetNode, isCreated := node.rightChild.insert(v, less)
+		node.rightChild = newRoot
+		return node, targetNode, isCreated
 	} else {
-		node.count++
-		return false
+		return node, node, false
 	}
 }
 
@@ -41,9 +61,7 @@ func (node *BinarySearchTreeNode) TraversePreOrder(consumer func(interface{})) {
 	if node == nil {
 		return
 	}
-	for i := 0; i < node.count; i++ {
-		consumer(node.value)
-	}
+	consumer(node.value)
 	node.leftChild.TraversePreOrder(consumer)
 	node.rightChild.TraversePreOrder(consumer)
 }
@@ -53,9 +71,7 @@ func (node *BinarySearchTreeNode) TraverseInOrder(consumer func(interface{})) {
 		return
 	}
 	node.leftChild.TraverseInOrder(consumer)
-	for i := 0; i < node.count; i++ {
-		consumer(node.value)
-	}
+	consumer(node.value)
 	node.rightChild.TraverseInOrder(consumer)
 }
 
@@ -65,9 +81,7 @@ func (node *BinarySearchTreeNode) TraversePostOrder(consumer func(interface{})) 
 	}
 	node.leftChild.TraversePostOrder(consumer)
 	node.rightChild.TraversePostOrder(consumer)
-	for i := 0; i < node.count; i++ {
-		consumer(node.value)
-	}
+	consumer(node.value)
 }
 
 type BinarySearchTree struct {
@@ -93,11 +107,14 @@ func NewStringBinarySearchTree() *BinarySearchTree {
 	return &BinarySearchTree{less: StringLess}
 }
 
-func (tree *BinarySearchTree) Insert(v interface{}) {
-	if tree.root.insert(&tree.root, tree.less, v) {
+func (tree *BinarySearchTree) Insert(v interface{}) *BinarySearchTreeNode {
+	newRoot, targetNode, isCreated := tree.root.insert(v, tree.less)
+	tree.root = newRoot
+	tree.len++
+	if isCreated {
 		tree.cap++
 	}
-	tree.len++
+	return targetNode
 }
 
 func (tree *BinarySearchTree) TraversePreOrder(consumer func(interface{})) {
