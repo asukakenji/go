@@ -1,13 +1,5 @@
 package dsalg
 
-type BinaryTreeNodeInterface interface {
-	LeftChild() BinaryTreeNodeInterface
-	RightChild() BinaryTreeNodeInterface
-	Value() interface{}
-	rotateLeft() BinaryTreeNodeInterface
-	rotateRight() BinaryTreeNodeInterface
-}
-
 // BinaryTreeNode is a node of a binary tree.
 type BinaryTreeNode struct {
 	// Left child and right child pointers in the binary tree.
@@ -18,12 +10,12 @@ type BinaryTreeNode struct {
 }
 
 // LeftChild returns the left child of this node or nil.
-func (node *BinaryTreeNode) LeftChild() BinaryTreeNodeInterface {
+func (node *BinaryTreeNode) LeftChild() *BinaryTreeNode {
 	return node.leftChild
 }
 
 // RightChild returns the right child of this node or nil.
-func (node *BinaryTreeNode) RightChild() BinaryTreeNodeInterface {
+func (node *BinaryTreeNode) RightChild() *BinaryTreeNode {
 	return node.rightChild
 }
 
@@ -33,7 +25,8 @@ func (node *BinaryTreeNode) Value() interface{} {
 }
 
 /*
-rotateLeft performs a left rotation with this node being the root of rotation.
+rotateLeft performs a left rotation with this node being the root of the rotation.
+It returns the new root of the subtree (the pivot of the rotation).
 
 Left Rotation
 -------------
@@ -43,14 +36,15 @@ Left Rotation
 .      / \    .    / \      .
 .     B   C   .   A   B     .
 */
-func (root *BinaryTreeNode) rotateLeft() BinaryTreeNodeInterface {
+func (root *BinaryTreeNode) rotateLeft() *BinaryTreeNode {
 	pivot := root.rightChild
 	root.rightChild, pivot.leftChild = pivot.leftChild, root
 	return pivot
 }
 
 /*
-rotateRight performs a right rotation with this node being the root of rotation.
+rotateRight performs a right rotation with this node being the root of the rotation.
+It returns the new root of the subtree (the pivot of the rotation).
 
 Right Rotation
 --------------
@@ -60,7 +54,7 @@ Right Rotation
 .    / \      .      / \    .
 .   A   B     .     B   C   .
 */
-func (root *BinaryTreeNode) rotateRight() BinaryTreeNodeInterface {
+func (root *BinaryTreeNode) rotateRight() *BinaryTreeNode {
 	pivot := root.leftChild
 	root.leftChild, pivot.rightChild = pivot.rightChild, root
 	return pivot
