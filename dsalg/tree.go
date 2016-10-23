@@ -1,8 +1,10 @@
 package dsalg
 
-type direction *bool
+type flags uint8
 
-var (
-	left  = func() direction { b := false; return &b }()
-	right = func() direction { b := true; return &b }()
+const (
+	DirNone     flags = 0x0
+	DirLeft     flags = 0x1
+	DirRight    flags = 0x2
+	NodeCreated flags = 0x10
 )
