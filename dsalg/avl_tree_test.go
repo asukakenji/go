@@ -276,6 +276,44 @@ RL-Rotation: Rotation root being left child
 . 14: (4,3)                     . 14: (4,3)                     . 14: (4,3)                     .
 */
 
+func TestInsertAVLRLa(t *testing.T) {
+	tree := NewIntAVLTree()
+	insertMultiple(tree, 14, 3, 16, 2, 11, 15, 17, 1, 7, 12, 18, 5, 9, 13)
+	checkTraverseInt(t, tree, tree.TraversePreOrder, []int{14, 3, 2, 1, 11, 7, 5, 9, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree, tree.TraverseInOrder, []int{1, 2, 3, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree, tree.TraversePostOrder, []int{1, 2, 5, 9, 7, 13, 12, 11, 3, 15, 18, 17, 16, 14})
+
+	tree1 := tree.Clone()
+	tree1.Insert(4)
+	checkTraverseInt(t, tree1, tree1.TraversePreOrder, []int{14, 7, 3, 2, 1, 5, 4, 11, 9, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree1, tree1.TraverseInOrder, []int{1, 2, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree1, tree1.TraversePostOrder, []int{1, 2, 4, 5, 3, 9, 13, 12, 11, 7, 15, 18, 17, 16, 14})
+
+	tree2 := tree.Clone()
+	tree2.Insert(6)
+	checkTraverseInt(t, tree2, tree2.TraversePreOrder, []int{14, 7, 3, 2, 1, 5, 6, 11, 9, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree2, tree2.TraverseInOrder, []int{1, 2, 3, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree2, tree2.TraversePostOrder, []int{1, 2, 6, 5, 3, 9, 13, 12, 11, 7, 15, 18, 17, 16, 14})
+
+	tree3 := tree.Clone()
+	tree3.Insert(8)
+	checkTraverseInt(t, tree3, tree3.TraversePreOrder, []int{14, 7, 3, 2, 1, 5, 11, 9, 8, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree3, tree3.TraverseInOrder, []int{1, 2, 3, 5, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree3, tree3.TraversePostOrder, []int{1, 2, 5, 3, 8, 9, 13, 12, 11, 7, 15, 18, 17, 16, 14})
+
+	tree4 := tree.Clone()
+	tree4.Insert(10)
+	checkTraverseInt(t, tree4, tree4.TraversePreOrder, []int{14, 7, 3, 2, 1, 5, 11, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree4, tree4.TraverseInOrder, []int{1, 2, 3, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree4, tree4.TraversePostOrder, []int{1, 2, 5, 3, 10, 9, 13, 12, 11, 7, 15, 18, 17, 16, 14})
+
+	tree5 := tree.Clone()
+	insertMultiple(tree5, 4, 6, 8, 10)
+	checkTraverseInt(t, tree5, tree5.TraversePreOrder, []int{14, 7, 3, 2, 1, 5, 4, 6, 11, 9, 8, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree5, tree5.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree5, tree5.TraversePostOrder, []int{1, 2, 4, 6, 5, 3, 8, 10, 9, 13, 12, 11, 7, 15, 18, 17, 16, 14})
+}
+
 /*
 RL-Rotation: Rotation root being right child
 --------------------------------------------
@@ -303,3 +341,41 @@ RL-Rotation: Rotation root being right child
 .  8: (2,3)                     .  8: (2,3) -> (2,4) X          .  8: (2,3) -> (2,4) -> (2,2)   .
 .  5: (3,4)                     .  5: (3,4)                     .  5: (3,4)                     .
 */
+
+func TestInsertAVLRLb(t *testing.T) {
+	tree := NewIntAVLTree()
+	insertMultiple(tree, 5, 3, 8, 2, 4, 7, 16, 1, 6, 12, 17, 10, 14, 18)
+	checkTraverseInt(t, tree, tree.TraversePreOrder, []int{5, 3, 2, 1, 4, 8, 7, 6, 16, 12, 10, 14, 17, 18})
+	checkTraverseInt(t, tree, tree.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 17, 18})
+	checkTraverseInt(t, tree, tree.TraversePostOrder, []int{1, 2, 4, 3, 6, 7, 10, 14, 12, 18, 17, 16, 8, 5})
+
+	tree1 := tree.Clone()
+	tree1.Insert(9)
+	checkTraverseInt(t, tree1, tree1.TraversePreOrder, []int{5, 3, 2, 1, 4, 12, 8, 7, 6, 10, 9, 16, 14, 17, 18})
+	checkTraverseInt(t, tree1, tree1.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 17, 18})
+	checkTraverseInt(t, tree1, tree1.TraversePostOrder, []int{1, 2, 4, 3, 6, 7, 9, 10, 8, 14, 18, 17, 16, 12, 5})
+
+	tree2 := tree.Clone()
+	tree2.Insert(11)
+	checkTraverseInt(t, tree2, tree2.TraversePreOrder, []int{5, 3, 2, 1, 4, 12, 8, 7, 6, 10, 11, 16, 14, 17, 18})
+	checkTraverseInt(t, tree2, tree2.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 14, 16, 17, 18})
+	checkTraverseInt(t, tree2, tree2.TraversePostOrder, []int{1, 2, 4, 3, 6, 7, 11, 10, 8, 14, 18, 17, 16, 12, 5})
+
+	tree3 := tree.Clone()
+	tree3.Insert(13)
+	checkTraverseInt(t, tree3, tree3.TraversePreOrder, []int{5, 3, 2, 1, 4, 12, 8, 7, 6, 10, 16, 14, 13, 17, 18})
+	checkTraverseInt(t, tree3, tree3.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 17, 18})
+	checkTraverseInt(t, tree3, tree3.TraversePostOrder, []int{1, 2, 4, 3, 6, 7, 10, 8, 13, 14, 18, 17, 16, 12, 5})
+
+	tree4 := tree.Clone()
+	tree4.Insert(15)
+	checkTraverseInt(t, tree4, tree4.TraversePreOrder, []int{5, 3, 2, 1, 4, 12, 8, 7, 6, 10, 16, 14, 15, 17, 18})
+	checkTraverseInt(t, tree4, tree4.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree4, tree4.TraversePostOrder, []int{1, 2, 4, 3, 6, 7, 10, 8, 15, 14, 18, 17, 16, 12, 5})
+
+	tree5 := tree.Clone()
+	insertMultiple(tree5, 9, 11, 13, 15)
+	checkTraverseInt(t, tree5, tree5.TraversePreOrder, []int{5, 3, 2, 1, 4, 12, 8, 7, 6, 10, 9, 11, 16, 14, 13, 15, 17, 18})
+	checkTraverseInt(t, tree5, tree5.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree5, tree5.TraversePostOrder, []int{1, 2, 4, 3, 6, 7, 9, 11, 10, 8, 13, 15, 14, 18, 17, 16, 12, 5})
+}
