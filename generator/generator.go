@@ -18,12 +18,13 @@ type Generator struct {
 	stop func()
 }
 
+// makeStart creates the start method of a Generator.
 func makeStart(impl func(yield func(v interface{}) bool), g *Generator) func() <-chan interface{} {
 	return func() <-chan interface{} {
 		g.start = nil
 		chOut := make(chan interface{})
 		chStop := make(chan struct{})
-		g.stop = makeStop(impl, g, &chStop)
+		g.stop = makeStop(impl, g, chStop)
 		go func() {
 			defer close(chOut)
 			yield := func(v interface{}) bool {
@@ -40,9 +41,10 @@ func makeStart(impl func(yield func(v interface{}) bool), g *Generator) func() <
 	}
 }
 
-func makeStop(impl func(yield func(v interface{}) bool), g *Generator, chStop *chan struct{}) func() {
+// makeStop creates the stop method of a Generator.
+func makeStop(impl func(yield func(v interface{}) bool), g *Generator, chStop chan struct{}) func() {
 	return func() {
-		close(*chStop)
+		close(chStop)
 		g.start = makeStart(impl, g)
 	}
 }
