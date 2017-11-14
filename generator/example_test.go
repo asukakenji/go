@@ -8,28 +8,38 @@ import (
 
 func ExampleNewGenerator() {
 	xrange := func(begin, end int) *generator.Generator {
-		return generator.NewGenerator(func(yield func(interface{}) bool) {
+		impl := func(yield func(v interface{}) bool) {
 			for i := begin; i < end; i++ {
 				if !yield(i) {
-					break
+					return
 				}
 			}
-		})
+		}
+		return generator.NewGenerator(impl)
 	}
 
 	g := xrange(10, 20)
-	c := g.Start()
-	for x := range c {
-		if x.(int)%8 == 0 {
-			break
+
+	func() {
+		ch := g.Start()
+		defer g.Stop()
+		for v := range ch {
+			if v.(int)%8 == 0 {
+				break
+			}
+			fmt.Printf("%d,", v)
 		}
-		fmt.Println(x)
-	}
-	g.Stop()
-	// Output: 10
-	// 11
-	// 12
-	// 13
-	// 14
-	// 15
+		fmt.Println()
+	}()
+
+	func() {
+		ch := g.Start()
+		defer g.Stop()
+		for v := range ch {
+			fmt.Printf("%d,", v)
+		}
+		fmt.Println()
+	}()
+	// Output: 10,11,12,13,14,15,
+	// 10,11,12,13,14,15,16,17,18,19,
 }
