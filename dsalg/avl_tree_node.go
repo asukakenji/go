@@ -280,39 +280,13 @@ func (node *AVLTreeNode) insert(v interface{}, less func(interface{}, interface{
 
 // Returns:
 // (1) The new root of the subtree rooted at this node after deletion
-// (2) The node being deleted (containing the maximum value of the subtree)
-func (node *AVLTreeNode) deleteMaximum() (*AVLTreeNode, *AVLTreeNode) {
-	if node == nil {
-		return nil, nil
-	}
-	if node.childR == nil {
-		return node.childL, node
-	}
-	newRoot, targetNode := node.childR.deleteMaximum()
-	node.childR = newRoot
-	node.UpdateHeight()
-	if node.heightL-node.heightR <= 1 {
-		return node, targetNode
-	}
-	if node.childL.heightL > node.childL.heightR {
-		return node.rotateLL(), targetNode
-	} else {
-		return node.rotateLR(), targetNode
-	}
-}
-
-// Returns:
-// (1) The new root of the subtree rooted at this node after deletion
 // (2) The node being deleted (containing the minimum value of the subtree)
 func (node *AVLTreeNode) deleteMinimum() (*AVLTreeNode, *AVLTreeNode) {
-	if node == nil {
-		return nil, nil
-	}
 	if node.childL == nil {
 		return node.childR, node
 	}
-	newRoot, targetNode := node.childL.deleteMinimum()
-	node.childL = newRoot
+	newChild, targetNode := node.childL.deleteMinimum()
+	node.childL = newChild
 	node.UpdateHeight()
 	if node.heightR-node.heightL <= 1 {
 		return node, targetNode
@@ -321,6 +295,26 @@ func (node *AVLTreeNode) deleteMinimum() (*AVLTreeNode, *AVLTreeNode) {
 		return node.rotateRL(), targetNode
 	} else {
 		return node.rotateRR(), targetNode
+	}
+}
+
+// Returns:
+// (1) The new root of the subtree rooted at this node after deletion
+// (2) The node being deleted (containing the maximum value of the subtree)
+func (node *AVLTreeNode) deleteMaximum() (*AVLTreeNode, *AVLTreeNode) {
+	if node.childR == nil {
+		return node.childL, node
+	}
+	newChild, targetNode := node.childR.deleteMaximum()
+	node.childR = newChild
+	node.UpdateHeight()
+	if node.heightL-node.heightR <= 1 {
+		return node, targetNode
+	}
+	if node.childL.heightL > node.childL.heightR {
+		return node.rotateLL(), targetNode
+	} else {
+		return node.rotateLR(), targetNode
 	}
 }
 
@@ -363,36 +357,35 @@ func (node *AVLTreeNode) delete(v interface{}, less func(interface{}, interface{
 		} else {
 			return node.rotateLR(), targetNode, true, true
 		}
-		/*
-			} else if node.count > 1 {
-				node.count--
-				return node, node, true, false
-		*/
-	} else if node.heightL > node.heightR {
-		newRoot, maximumNode := node.childL.deleteMaximum()
-		maximumNode.childL = newRoot
-		maximumNode.childR = node.childR
-		maximumNode.UpdateHeight()
-		if maximumNode.heightR-maximumNode.heightL <= 1 {
-			return maximumNode, node, true, true
-		}
-		if maximumNode.childR.heightL > maximumNode.childR.heightR {
-			return maximumNode.rotateRL(), node, true, true
-		} else {
-			return maximumNode.rotateRR(), node, true, true
-		}
 	} else {
-		newRoot, minimumNode := node.childR.deleteMinimum()
-		minimumNode.childR = newRoot
-		minimumNode.childL = node.childL
-		minimumNode.UpdateHeight()
-		if minimumNode.heightL-minimumNode.heightR <= 1 {
-			return minimumNode, node, true, true
-		}
-		if minimumNode.childL.heightL > minimumNode.childL.heightR {
-			return minimumNode.rotateLL(), node, true, true
+		if node.heightL == 0 && node.heightR == 0 {
+			return nil, node, true, true
+		} else if node.heightL > node.heightR {
+			newRoot, maximumNode := node.childL.deleteMaximum()
+			maximumNode.childL = newRoot
+			maximumNode.childR = node.childR
+			maximumNode.UpdateHeight()
+			if maximumNode.heightR-maximumNode.heightL <= 1 {
+				return maximumNode, node, true, true
+			}
+			if maximumNode.childR.heightL > maximumNode.childR.heightR {
+				return maximumNode.rotateRL(), node, true, true
+			} else {
+				return maximumNode.rotateRR(), node, true, true
+			}
 		} else {
-			return minimumNode.rotateLR(), node, true, true
+			newRoot, minimumNode := node.childR.deleteMinimum()
+			minimumNode.childR = newRoot
+			minimumNode.childL = node.childL
+			minimumNode.UpdateHeight()
+			if minimumNode.heightL-minimumNode.heightR <= 1 {
+				return minimumNode, node, true, true
+			}
+			if minimumNode.childL.heightL > minimumNode.childL.heightR {
+				return minimumNode.rotateLL(), node, true, true
+			} else {
+				return minimumNode.rotateLR(), node, true, true
+			}
 		}
 	}
 }
