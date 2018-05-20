@@ -13,9 +13,9 @@ import "fmt"
 //    / \        / \
 //  T23 T4      T1 T23
 func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
-	q := n.rightChild
-	n.rightChild = q.leftChild
-	q.leftChild = n
+	q := n.childR
+	n.childR = q.childL
+	q.childL = n
 	if q.balanceFactor == 0 {
 		// Example:
 		//   n: height = 7, balanceFactor = 2
@@ -44,10 +44,10 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 //   P  T4  =>  T1  N
 //  / \            / \
 // T1 T23        T23 T4
-func (n *intTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
-	p := n.leftChild
-	n.leftChild = p.rightChild
-	p.rightChild = n
+func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
+	p := n.childL
+	n.childL = p.childR
+	p.childR = n
 	if p.balanceFactor == 0 {
 		// Example:
 		//   n: height = 7, balanceFactor = -2
@@ -75,22 +75,22 @@ func (n *intTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 //    / \            Q
 //   P  T4         /   \
 //  / \     =>    P     N
-// T1   Q        / \   / \
-//     / \      T1 T2 T3 T4
-//    T2 T3
+// T1  Q         / \   / \
+//    / \       T1 T2 T3 T4
+//   T2 T3
 func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
-	p := n.leftChild
-	q := p.rightChild
-	p.rightChild = q.leftChild
-	n.leftChild = q.rightChild
-	q.leftChild = p
-	q.rightChild = n
+	p := n.childL
+	q := p.childR
+	p.childR = q.childL
+	n.childL = q.childR
+	q.childL = p
+	q.childR = n
 	fmt.Printf("LR0: n: %d\n", n.balanceFactor)
 	fmt.Printf("LR0: p: %d\n", p.balanceFactor)
 	fmt.Printf("LR0: q: %d\n", q.balanceFactor)
-	n.balanceFactor = n.rightChild.height() - n.leftChild.height()
-	p.balanceFactor = p.rightChild.height() - p.leftChild.height()
-	q.balanceFactor = q.rightChild.height() - q.leftChild.height()
+	n.balanceFactor = n.childR.height() - n.childL.height()
+	p.balanceFactor = p.childR.height() - p.childL.height()
+	q.balanceFactor = q.childR.height() - q.childL.height()
 	fmt.Printf("LR1: n: %d\n", n.balanceFactor)
 	fmt.Printf("LR1: p: %d\n", p.balanceFactor)
 	fmt.Printf("LR1: q: %d\n", q.balanceFactor)
@@ -108,12 +108,12 @@ func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 //  / \         T1 T2 T3 T4
 // T2 T3
 func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
-	q := n.rightChild
-	p := q.leftChild
-	n.rightChild = p.leftChild
-	q.leftChild = p.rightChild
-	p.leftChild = n
-	p.rightChild = q
+	q := n.childR
+	p := q.childL
+	n.childR = p.childL
+	q.childL = p.childR
+	p.childL = n
+	p.childR = q
 	// if p.balanceFactor == 0 {
 	// 	// Example:
 	// 	//  n: height = 7, balanceFactor = 2
@@ -127,9 +127,9 @@ func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
 	fmt.Printf("RL0: n: %d\n", n.balanceFactor)
 	fmt.Printf("RL0: q: %d\n", q.balanceFactor)
 	fmt.Printf("RL0: p: %d\n", p.balanceFactor)
-	n.balanceFactor = n.rightChild.height() - n.leftChild.height()
-	q.balanceFactor = q.rightChild.height() - q.leftChild.height()
-	p.balanceFactor = p.rightChild.height() - p.leftChild.height()
+	n.balanceFactor = n.childR.height() - n.childL.height()
+	q.balanceFactor = q.childR.height() - q.childL.height()
+	p.balanceFactor = p.childR.height() - p.childL.height()
 	fmt.Printf("RL1: n: %d\n", n.balanceFactor)
 	fmt.Printf("RL1: q: %d\n", q.balanceFactor)
 	fmt.Printf("RL1: p: %d\n", p.balanceFactor)
