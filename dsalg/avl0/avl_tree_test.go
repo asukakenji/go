@@ -1,4 +1,4 @@
-package dsalg
+package avl
 
 import (
 	"testing"

@@ -1,4 +1,6 @@
-package dsalg
+package avl
+
+import "github.com/asukakenji/go/dsalg"
 
 type AVLTree struct {
 	less func(interface{}, interface{}) bool
@@ -12,15 +14,15 @@ func NewAVLTree(less func(interface{}, interface{}) bool) *AVLTree {
 }
 
 func NewIntAVLTree() *AVLTree {
-	return &AVLTree{less: IntLess}
+	return &AVLTree{less: dsalg.IntLess}
 }
 
 func NewFloat64AVLTree() *AVLTree {
-	return &AVLTree{less: Float64Less}
+	return &AVLTree{less: dsalg.Float64Less}
 }
 
 func NewStringAVLTree() *AVLTree {
-	return &AVLTree{less: StringLess}
+	return &AVLTree{less: dsalg.StringLess}
 }
 
 func (tree *AVLTree) Insert(v interface{}) *AVLTreeNode {

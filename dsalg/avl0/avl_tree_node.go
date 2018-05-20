@@ -1,4 +1,4 @@
-package dsalg
+package avl
 
 // AVLTreeNode is a node of an AVL tree.
 type AVLTreeNode struct {

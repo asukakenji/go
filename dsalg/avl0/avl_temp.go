@@ -9,10 +9,10 @@ func max(a, b int) int {
 	return b
 }
 
-type AVLNode struct {
+type AVLNode1 struct {
 	value         int
-	leftChild     *AVLNode
-	rightChild    *AVLNode
+	leftChild     *AVLNode1
+	rightChild    *AVLNode1
 	balanceFactor int
 }
 
@@ -21,7 +21,7 @@ type AVLNode struct {
 // T1  Z  =>  X  T4
 //    / \    / \
 //  T23 T4  T1 T23
-func (x *AVLNode) leftRotate(ptrX **AVLNode) {
+func (x *AVLNode1) leftRotate(ptrX **AVLNode1) {
 	z := x.rightChild
 	x.rightChild = z.leftChild // T23
 	z.leftChild = x
@@ -53,7 +53,7 @@ func (x *AVLNode) leftRotate(ptrX **AVLNode) {
 //   X  T4  =>  T1  Z
 //  / \            / \
 // T1 T23        T23 T4
-func (z *AVLNode) rightRotate(ptrZ **AVLNode) {
+func (z *AVLNode1) rightRotate(ptrZ **AVLNode1) {
 	x := z.leftChild
 	z.leftChild = x.rightChild // T23
 	x.rightChild = z
@@ -80,7 +80,7 @@ func (z *AVLNode) rightRotate(ptrZ **AVLNode) {
 	*ptrZ = x
 }
 
-func (n *AVLNode) height() int {
+func (n *AVLNode1) height() int {
 	if n == nil {
 		return -1
 	}
@@ -89,7 +89,7 @@ func (n *AVLNode) height() int {
 	return max(leftHeight, rightHeight) + 1
 }
 
-func (n *AVLNode) Contains(v int) bool {
+func (n *AVLNode1) Contains(v int) bool {
 	if n == nil {
 		return false
 	}
@@ -102,9 +102,9 @@ func (n *AVLNode) Contains(v int) bool {
 	return true
 }
 
-func (n *AVLNode) Add(v int, ptrN **AVLNode) bool {
+func (n *AVLNode1) Add(v int, ptrN **AVLNode1) bool {
 	if n == nil {
-		*ptrN = &AVLNode{value: v}
+		*ptrN = &AVLNode1{value: v}
 		return true
 	}
 	if v < n.value {
@@ -127,23 +127,20 @@ func (n *AVLNode) Add(v int, ptrN **AVLNode) bool {
 	return false
 }
 
-type AVLTree struct {
-	root *AVLNode
+type AVLTree1 struct {
+	root *AVLNode1
 }
 
-func (t *AVLTree) Contains(v int) bool {
+func (t *AVLTree1) Contains(v int) bool {
 	return t.root.Contains(v)
 }
 
-func (t *AVLTree) Add(v int) {
+func (t *AVLTree1) Add(v int) {
 	t.root.Add(v, &t.root)
 }
 
-func (t *AVLTree) AddAll(vs []int) {
+func (t *AVLTree1) AddAll(vs []int) {
 	for v := range vs {
 		t.Add(v)
 	}
-}
-
-func main() {
 }

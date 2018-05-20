@@ -1,4 +1,4 @@
-package dsalg
+package avl
 
 type flags uint8
 
