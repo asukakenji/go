@@ -1,0 +1,18 @@
+{
+    "go.coverageOptions": "showBothCoveredAndUncoveredCode",
+    "go.coverOnSave": true,
+    "go.editorContextMenuCommands": {
+        "toggleTestFile": true,
+        "addTags": true,
+        "removeTags": false,
+        "testAtCursor": false,
+        "testFile": false,
+        "testPackage": true,
+        "generateTestForFunction": true,
+        "generateTestForFile": false,
+        "generateTestForPackage": false,
+        "addImport": true,
+        "testCoverage": true,
+        "playground": true
+    }
+}
