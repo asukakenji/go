@@ -117,8 +117,9 @@ func TestInsertAVL2(t *testing.T) {
 }
 
 /*
-RR-Rotation: Rotation root being left child
--------------------------------------------
+RR-Rotation (rotateLeft): Rotation root being left child
+(pivot being grandparent before insertion)
+--------------------------------------------------------
 
 . Insert: 14, 3, 16, 2, 6, 15,  . Now insert: 7 (9 / 11 / 13)   . Rotate with: root 3, pivot 6  .
 .         17, 1, 5, 10, 18, 4,  .                               .                               .
@@ -183,8 +184,9 @@ func TestInsertAVLRRa(t *testing.T) {
 }
 
 /*
-RR-Rotation: Rotation root being right child
---------------------------------------------
+RR-Rotation (rotateLeft): Rotation root being right child
+(pivot being grandparent before insertion)
+---------------------------------------------------------
 
 . Insert: 5, 3, 8, 2, 4, 7, 11, . Now insert: 12 (14 / 16 / 18) . Rotate with: root 8, pivot 11 .
 .         1, 6, 10, 15, 9, 13,  .                               .                               .
@@ -249,8 +251,76 @@ func TestInsertAVLRRb(t *testing.T) {
 }
 
 /*
-RL-Rotation: Rotation root being left child
--------------------------------------------
+LL-Rotation (rotateRight): Rotation root being left child
+(pivot being grandparent before insertion)
+---------------------------------------------------------
+
+. Insert: 14, 11, 16, 8, 12,    . Now insert: 1 (3 / 5 / 7)     . Rotate with: root 11, pivot 8 .
+.         15, 17, 4, 9, 13, 18, .                               .                               .
+.         2, 6, 10              .                               .                               .
+.                               .                               .                               .
+.           14                  .                  14           .                   14          .
+.        +-/ \-+                .               +-/ \-+         .              +---/ \---+      .
+.       11      16              .              11      16       .             8           16    .
+.      / \     / \              .            +/ \+     / \      .         +--/ \--+      / \    .
+.     8   12  15  17            .           8     12  15  17    .        4         11   15  17  .
+.    / \   \       \            .         +/ \+    \       \    .     +-/ \-+     / \        \  .
+.   4   9   13      18          .        4     9    13      18  .    2       6   9   12       18.
+.  / \   \                      .     +-/ \-+   \               .   / \     / \   \   \         .
+. 2   6   10                    .    2       6   10             . (1) [3] [5] [7]  10  13       .
+.                               .   / \     / \                 .                               .
+.                               . (1) [3] [5] [7]               .                               .
+.                               .                               .                               .
+.                               .  1: (0,0)                     .  1: (0,0)                     .
+.  2: (0,0)                     .  2: (0,0) -> (1,0)            .  2: (0,0) -> (1,0)            .
+.  4: (1,1)                     .  4: (1,1) -> (2,1)            .  4: (1,1) -> (2,1)            .
+.  8: (2,2)                     .  8: (2,2) -> (3,2)            .  8: (2,2) -> (3,2) -> (3,3)   .
+. 11: (3,2)                     . 11: (3,2) -> (4,2) X          . 11: (3,2) -> (4,2) -> (2,2)   .
+. 14: (4,3)                     . 14: (4,3)                     . 14: (4,3)                     .
+*/
+
+func TestInsertAVLLLa(t *testing.T) {
+	tree := NewIntAVLTree()
+	insertMultiple(tree, 14, 11, 16, 8, 12, 15, 17, 4, 9, 13, 18, 2, 6, 10)
+	checkTraverseInt(t, tree, tree.TraversePreOrder, []int{14, 11, 8, 4, 2, 6, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree, tree.TraverseInOrder, []int{2, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree, tree.TraversePostOrder, []int{2, 6, 4, 10, 9, 8, 13, 12, 11, 15, 18, 17, 16, 14})
+
+	tree1 := tree.Clone()
+	tree1.Insert(1)
+	checkTraverseInt(t, tree1, tree1.TraversePreOrder, []int{14, 8, 4, 2, 1, 6, 11, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree1, tree1.TraverseInOrder, []int{1, 2, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree1, tree1.TraversePostOrder, []int{1, 2, 6, 4, 10, 9, 13, 12, 11, 8, 15, 18, 17, 16, 14})
+
+	tree2 := tree.Clone()
+	tree2.Insert(3)
+	checkTraverseInt(t, tree2, tree2.TraversePreOrder, []int{14, 8, 4, 2, 3, 6, 11, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree2, tree2.TraverseInOrder, []int{2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree2, tree2.TraversePostOrder, []int{3, 2, 6, 4, 10, 9, 13, 12, 11, 8, 15, 18, 17, 16, 14})
+
+	tree3 := tree.Clone()
+	tree3.Insert(5)
+	checkTraverseInt(t, tree3, tree3.TraversePreOrder, []int{14, 8, 4, 2, 6, 5, 11, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree3, tree3.TraverseInOrder, []int{2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree3, tree3.TraversePostOrder, []int{2, 5, 6, 4, 10, 9, 13, 12, 11, 8, 15, 18, 17, 16, 14})
+
+	tree4 := tree.Clone()
+	tree4.Insert(7)
+	checkTraverseInt(t, tree4, tree4.TraversePreOrder, []int{14, 8, 4, 2, 6, 7, 11, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree4, tree4.TraverseInOrder, []int{2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree4, tree4.TraversePostOrder, []int{2, 7, 6, 4, 10, 9, 13, 12, 11, 8, 15, 18, 17, 16, 14})
+
+	tree5 := tree.Clone()
+	insertMultiple(tree5, 1, 3, 5, 7)
+	checkTraverseInt(t, tree5, tree5.TraversePreOrder, []int{14, 8, 4, 2, 1, 3, 6, 5, 7, 11, 9, 10, 12, 13, 16, 15, 17, 18})
+	checkTraverseInt(t, tree5, tree5.TraverseInOrder, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})
+	checkTraverseInt(t, tree5, tree5.TraversePostOrder, []int{1, 3, 2, 5, 7, 6, 4, 10, 9, 13, 12, 11, 8, 15, 18, 17, 16, 14})
+}
+
+/*
+RL-Rotation (rotateRightLeft): Rotation root being left child
+(pivot being grandparent before insertion)
+-------------------------------------------------------------
 
 . Insert: 14, 3, 16, 2, 11, 15, . Now insert: 4 (6 / 8 / 10)    . Rotate with: root 3, pivot 7  .
 .         17, 1, 7, 12, 18, 5,  .                               .                               .
@@ -315,8 +385,9 @@ func TestInsertAVLRLa(t *testing.T) {
 }
 
 /*
-RL-Rotation: Rotation root being right child
---------------------------------------------
+RL-Rotation (rotateRightLeft): Rotation root being right child
+(pivot being grandparent before insertion)
+--------------------------------------------------------------
 
 . Insert: 5, 3, 8, 2, 4, 7, 16, . Now insert: 9 (11 / 13 / 15)  . Rotate with: root 8, pivot 12 .
 .         1, 6, 12, 17, 10, 14, .                               .                               .
