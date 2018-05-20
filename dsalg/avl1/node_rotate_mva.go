@@ -11,7 +11,7 @@ import "fmt"
 // T1  Q    =>    N  T4
 //    / \        / \
 //  T23 T4      T1 T23
-func (n *node) rotateLeft(ptrN **node) {
+func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 	q := n.rightChild
 	if q.balanceFactor == 0 {
 		// Example:
@@ -39,7 +39,7 @@ func (n *node) rotateLeft(ptrN **node) {
 //   P  T4  =>  T1  N
 //  / \            / \
 // T1 T23        T23 T4
-func (n *node) rotateRight(ptrN **node) {
+func (n *node) rotateRight(ptrN **IntTreeSetNode) {
 	p := n.leftChild
 	if p.balanceFactor == 0 {
 		// Example:

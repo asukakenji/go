@@ -2,7 +2,20 @@ package avl
 
 // IntTreeSet implements a tree set based on AVL tree.
 type IntTreeSet struct {
-	root *intTreeSetNode
+	root *IntTreeSetNode
+	len  int
+}
+
+func (t *IntTreeSet) TraversePreOrder(consumer func(*IntTreeSetNode)) {
+	t.root.TraversePreOrder(consumer)
+}
+
+func (t *IntTreeSet) TraverseInOrder(consumer func(*IntTreeSetNode)) {
+	t.root.TraverseInOrder(consumer)
+}
+
+func (t *IntTreeSet) TraversePostOrder(consumer func(*IntTreeSetNode)) {
+	t.root.TraversePostOrder(consumer)
 }
 
 func (t *IntTreeSet) String() string {
@@ -21,10 +34,30 @@ func (t *IntTreeSet) Contains(v int) bool {
 
 // Add adds v to the set.
 func (t *IntTreeSet) Add(v int) {
-	t.root.Add(v, &t.root)
+	if t.root.Add(v, &t.root) {
+		t.len++
+	}
 }
 
 // Remove removes v from the set.
 func (t *IntTreeSet) Remove(v int) {
-	t.root.Remove(v, &t.root)
+	if t.root.Remove(v, &t.root) {
+		t.len--
+	}
+}
+
+func (t *IntTreeSet) Len() int {
+	return t.len
+}
+
+func (t *IntTreeSet) Cap() int {
+	return t.len
+}
+
+func (t *IntTreeSet) IsEmpty() bool {
+	return t.len == 0
+}
+
+func (t *IntTreeSet) IsFull() bool {
+	return false
 }

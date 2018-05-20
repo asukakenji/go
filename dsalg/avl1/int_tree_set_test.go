@@ -1,9 +1,10 @@
 package avl_test
 
 import (
-	avl "avl1"
 	"math/rand"
 	"testing"
+
+	avl "github.com/asukakenji/go/dsalg/avl1"
 )
 
 func TestTreePrint(t *testing.T) {

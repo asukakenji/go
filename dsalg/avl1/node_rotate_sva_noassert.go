@@ -12,7 +12,7 @@ import "fmt"
 // T1  Q    =>    N  T4
 //    / \        / \
 //  T23 T4      T1 T23
-func (n *intTreeSetNode) rotateLeft(ptrN **intTreeSetNode) {
+func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 	q := n.rightChild
 	n.rightChild = q.leftChild
 	q.leftChild = n
@@ -43,7 +43,7 @@ func (n *intTreeSetNode) rotateLeft(ptrN **intTreeSetNode) {
 //   P  T4  =>  T1  N
 //  / \            / \
 // T1 T23        T23 T4
-func (n *intTreeSetNode) rotateRight(ptrN **intTreeSetNode) {
+func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 	p := n.leftChild
 	n.leftChild = p.rightChild
 	p.rightChild = n
@@ -76,7 +76,7 @@ func (n *intTreeSetNode) rotateRight(ptrN **intTreeSetNode) {
 // T1   Q        / \   / \
 //     / \      T1 T2 T3 T4
 //    T2 T3
-func (n *intTreeSetNode) rotateLeftRight(ptrN **intTreeSetNode) {
+func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 	p := n.leftChild
 	q := p.rightChild
 	p.rightChild = q.leftChild
@@ -105,7 +105,7 @@ func (n *intTreeSetNode) rotateLeftRight(ptrN **intTreeSetNode) {
 //   P  T4       / \   / \
 //  / \         T1 T2 T3 T4
 // T2 T3
-func (n *intTreeSetNode) rotateRightLeft(ptrN **intTreeSetNode) {
+func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
 	q := n.rightChild
 	p := q.leftChild
 	n.rightChild = p.leftChild

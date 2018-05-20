@@ -2,22 +2,52 @@ package avl
 
 import "fmt"
 
-// intTreeSetNode is a node of IntTreeSet.
-type intTreeSetNode struct {
+// IntTreeSetNode is a node of IntTreeSet.
+type IntTreeSetNode struct {
 	value         int
-	leftChild     *intTreeSetNode
-	rightChild    *intTreeSetNode
+	leftChild     *IntTreeSetNode
+	rightChild    *IntTreeSetNode
 	balanceFactor int
 }
 
-func (n *intTreeSetNode) height() int {
+// TraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
+func (n *IntTreeSetNode) TraversePreOrder(consumer func(*IntTreeSetNode)) {
+	if n == nil {
+		return
+	}
+	consumer(n)
+	n.leftChild.TraversePreOrder(consumer)
+	n.rightChild.TraversePreOrder(consumer)
+}
+
+// TraversePreOrder traverses the subtree rooted at n in in-order (LNR).
+func (n *IntTreeSetNode) TraverseInOrder(consumer func(*IntTreeSetNode)) {
+	if n == nil {
+		return
+	}
+	n.leftChild.TraversePreOrder(consumer)
+	consumer(n)
+	n.rightChild.TraversePreOrder(consumer)
+}
+
+// TraversePreOrder traverses the subtree rooted at n in post-order (LRN).
+func (n *IntTreeSetNode) TraversePostOrder(consumer func(*IntTreeSetNode)) {
+	if n == nil {
+		return
+	}
+	n.leftChild.TraversePreOrder(consumer)
+	n.rightChild.TraversePreOrder(consumer)
+	consumer(n)
+}
+
+func (n *IntTreeSetNode) height() int {
 	if n == nil {
 		return -1
 	}
 	return max(n.leftChild.height(), n.rightChild.height()) + 1
 }
 
-func (n *intTreeSetNode) String() string {
+func (n *IntTreeSetNode) String() string {
 	if n == nil {
 		return "/"
 	}
@@ -25,7 +55,7 @@ func (n *intTreeSetNode) String() string {
 }
 
 // Print prints the subtree rooted at n.
-func (n *intTreeSetNode) Print(indentString string, indentLevel int) {
+func (n *IntTreeSetNode) Print(indentString string, indentLevel int) {
 	for i := 0; i < indentLevel; i++ {
 		fmt.Print(indentString)
 	}
@@ -39,7 +69,7 @@ func (n *intTreeSetNode) Print(indentString string, indentLevel int) {
 }
 
 // Contains returns whether the subtree rooted at n contains v.
-func (n *intTreeSetNode) Contains(v int) bool {
+func (n *IntTreeSetNode) Contains(v int) bool {
 	if n == nil {
 		return false
 	}
@@ -53,9 +83,9 @@ func (n *intTreeSetNode) Contains(v int) bool {
 }
 
 // Add adds v to the subtree rooted at n.
-func (n *intTreeSetNode) Add(v int, ptrN **intTreeSetNode) bool {
+func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 	if n == nil {
-		*ptrN = &intTreeSetNode{value: v}
+		*ptrN = &IntTreeSetNode{value: v}
 		return true
 	}
 	if v < n.value {
@@ -96,7 +126,7 @@ func (n *intTreeSetNode) Add(v int, ptrN **intTreeSetNode) bool {
 	return false
 }
 
-func (n *intTreeSetNode) Remove(v int, ptrN **intTreeSetNode) {
+func (n *IntTreeSetNode) Remove(v int, ptrN **IntTreeSetNode) bool {
 	// TODO: Write this!
 	panic("Not implemented!")
 }
