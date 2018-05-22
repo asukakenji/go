@@ -1,6 +1,6 @@
 = AVL Tree =
 
-== Simple Illustration ==
+== Simple Illustration (All Cases in One Tree) ==
 
 # <code>7</code> is inserted into the tree. <code>7</code> becomes the root of the tree. <br/> [[File:7648901352-A.png]]
 # <code>6</code> is inserted into the tree. Since <code>6</code> is less than <code>7</code>, it becomes the left child of <code>7</code>. <br/> [[File:7648901352-B.png]]
@@ -9,6 +9,6 @@
 # '''Case RR:''' <code>9</code> is inserted into the tree. Since <code>9</code> is greater than <code>6</code>, <code>7</code> and <code>8</code>, it becomes the right child of <code>8</code>. Since the right height of <code>7</code> becomes <code>2</code>, and the left height remains <code>0</code>, the balance factor of it becomes <code>+2</code> and this violates the properties of an AVL tree. A left rotation with <code>7</code> being the root and <code>8</code> being the pivot is performed to fix the problem. <code>8</code> becomes the root of the subtree after the rotation. <br/> [[File:7648901352-E.png]]
 # <code>0</code> is inserted into the tree. Since <code>0</code> is less than <code>6</code> and <code>4</code>, it becomes the left child of <code>4</code>. <br/> [[File:7648901352-F.png]]
 # '''Case LR:''' <code>1</code> is inserted into the tree. Since <code>1</code> is less than <code>6</code> and <code>4</code>, and greater than <code>0</code>, it becomes the right child of <code>0</code>. Since the left height of <code>4</code> becomes <code>2</code>, and the right height remains <code>0</code>, the balance factor of it becomes <code>-2</code> and this violates the properties of an AVL tree. A left rotation with <code>0</code> being the root and <code>1</code> being the pivot, followed by a right rotation with <code>4</code> being the root and <code>1</code> being the pivot is performed to fix the problem. <code>1</code> becomes the root of the subtree after the rotation. <br/> [[File:7648901352-G.png]]
-# <code>3</code> is inserted into the tree. <br/> [[File:7648901352-H.png]]
-# <code>5</code> is inserted into the tree. <br/> [[File:7648901352-I.png]]
-# '''Case RL:''' <code>2</code> is inserted into the tree. <br/> [[File:7648901352-J.png]]
+# <code>3</code> is inserted into the tree. Since <code>3</code> is less than <code>6</code>, greater than <code>1</code>, and less than <code>4</code>, it becomes the left child of <code>4</code>. <br/> [[File:7648901352-H.png]]
+# <code>5</code> is inserted into the tree. Since <code>5</code> is less than <code>6</code>, and greater than <code>1</code> and <code>4</code>, it becomes the right child of <code>4</code>. <br/> [[File:7648901352-I.png]]
+# '''Case RL:''' <code>2</code> is inserted into the tree. Since <code>2</code> is less than <code>6</code>, and greater than <code>1</code>, and less than <code>4</code> and <code>3</code>, it becomes the left child of <code>3</code>. Since the right height of <code>1</code> becomes <code>3</code>, and the left height remains <code>1</code>, the balance factor of it becomes <code>+2</code> and this violates the properties of an AVL tree. A right rotation with <code>4</code> being the root and <code>3</code> being the pivot, followed by a left rotation with <code>1</code> being the root and <code>3</code> being the pivot is performed to fix the problem. <code>3</code> becomes the root of the subtree after the rotation. <br/> [[File:7648901352-J.png]]
