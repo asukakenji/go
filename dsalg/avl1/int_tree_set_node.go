@@ -94,10 +94,32 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 				// Rotate
 				if v > n.childL.value {
 					// LR Case
-					n.rotateLeftRight(ptrN)
+					p := n.childL
+					q := p.childR
+					p.childR = q.childL
+					n.childL = q.childR
+					q.childL = p
+					q.childR = n
+					*ptrN = q
+					if q.balanceFactor < 0 {
+						n.balanceFactor = 1
+						p.balanceFactor = 0
+					} else if q.balanceFactor > 0 {
+						n.balanceFactor = 0
+						p.balanceFactor = -1
+					} else {
+						n.balanceFactor = 0
+						p.balanceFactor = 0
+					}
+					q.balanceFactor = 0
 				} else {
 					// LL Case
-					n.rotateRight(ptrN)
+					p := n.childL
+					n.childL = p.childR
+					p.childR = n
+					*ptrN = p
+					n.balanceFactor = 0
+					p.balanceFactor = 0
 				}
 				return false
 			}
@@ -111,10 +133,32 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 				// Rotate
 				if v < n.childR.value {
 					// RL Case
-					n.rotateRightLeft(ptrN)
+					p := n.childR
+					q := p.childL
+					p.childL = q.childR
+					n.childR = q.childL
+					q.childR = p
+					q.childL = n
+					*ptrN = q
+					if q.balanceFactor < 0 {
+						n.balanceFactor = 1
+						p.balanceFactor = 0
+					} else if q.balanceFactor > 0 {
+						n.balanceFactor = 0
+						p.balanceFactor = -1
+					} else {
+						n.balanceFactor = 0
+						p.balanceFactor = 0
+					}
+					q.balanceFactor = 0
 				} else {
 					// RR Case
-					n.rotateLeft(ptrN)
+					p := n.childR
+					n.childR = p.childL
+					p.childL = n
+					*ptrN = p
+					n.balanceFactor = 0
+					p.balanceFactor = 0
 				}
 				return false
 			}
