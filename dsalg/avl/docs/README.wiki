@@ -12,3 +12,44 @@
 # <code>3</code> is inserted into the tree. Since <code>3</code> is less than <code>6</code>, greater than <code>1</code>, and less than <code>4</code>, it becomes the left child of <code>4</code>. <br/> [[File:7648901352-H.png]]
 # <code>5</code> is inserted into the tree. Since <code>5</code> is less than <code>6</code>, and greater than <code>1</code> and <code>4</code>, it becomes the right child of <code>4</code>. <br/> [[File:7648901352-I.png]]
 # '''Case RL:''' <code>2</code> is inserted into the tree. Since <code>2</code> is less than <code>6</code>, and greater than <code>1</code>, and less than <code>4</code> and <code>3</code>, it becomes the left child of <code>3</code>. Since the right height of <code>1</code> becomes <code>3</code>, and the left height remains <code>1</code>, the balance factor of it becomes <code>+2</code> and this violates the properties of an AVL tree. A right rotation with <code>4</code> being the root and <code>3</code> being the pivot, followed by a left rotation with <code>1</code> being the root and <code>3</code> being the pivot is performed to fix the problem. <code>3</code> becomes the root of the subtree after the rotation. <br/> [[File:7648901352-J.png]]
+
+== Rotations ==
+
+=== Case LL: Zero Balance Factor ===
+
+# [[File:L0-A.png]]
+# [[File:LL0-B.png]]
+# [[File:LL0-C.png]]
+
+=== Case LL: Negative Balance Factor ===
+
+# [[File:LL1-A.png]]
+# [[File:LL1a-B.png]]
+# [[File:LL1a-C.png]]
+
+=== Case LL: Positive Balance Factor ===
+
+# [[File:LL1-A.png]]
+# [[File:LL1b-B.png]]
+# [[File:LL1b-C.png]]
+
+=== Case LR: Zero Balance Factor ===
+
+# [[File:L0-A.png]]
+# [[File:LR0-B.png]]
+# [[File:LR0-C.png]]
+# [[File:LR0-D.png]]
+
+=== Case LR: Negative Balance Factor ===
+
+# [[File:LR1-A.png]]
+# [[File:LR1a-B.png]]
+# [[File:LR1a-C.png]]
+# [[File:LR1a-D.png]]
+
+=== Case LR: Positive Balance Factor ===
+
+# [[File:LR1-A.png]]
+# [[File:LR1b-B.png]]
+# [[File:LR1b-C.png]]
+# [[File:LR1b-D.png]]
