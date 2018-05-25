@@ -1,6 +1,9 @@
 package avl
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+)
 
 // IntTreeSetNode is a node of IntTreeSet.
 type IntTreeSetNode struct {
@@ -10,34 +13,98 @@ type IntTreeSetNode struct {
 	balanceFactor int
 }
 
+func (n *IntTreeSetNode) Value() interface{} {
+	if n == nil {
+		return nil
+	}
+	return n.value
+}
+
+func (n *IntTreeSetNode) IntValue() int {
+	if n == nil {
+		return 0
+	}
+	return n.value
+}
+
+func (n *IntTreeSetNode) BalanceFactor() int {
+	if n == nil {
+		return 0
+	}
+	return n.balanceFactor
+}
+
+func (n *IntTreeSetNode) Search1(v int, consumer func(*IntTreeSetNode) (int, interface{})) interface{} {
+	dir, result := consumer(n)
+	if dir < 0 {
+		return n.childL.Search1(v, consumer)
+	}
+	if dir > 0 {
+		return n.childR.Search1(v, consumer)
+	}
+	return result
+}
+
+func (n *IntTreeSetNode) Search2(v int, ptrN **IntTreeSetNode, consumer func(*IntTreeSetNode, **IntTreeSetNode) (int, interface{})) interface{} {
+	dir, result := consumer(n, ptrN)
+	if dir < 0 {
+		return n.childL.Search2(v, &n.childL, consumer)
+	}
+	if dir > 0 {
+		return n.childR.Search2(v, &n.childR, consumer)
+	}
+	return result
+}
+
 // TraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
-func (n *IntTreeSetNode) TraversePreOrder(consumer func(*IntTreeSetNode)) {
+func (n *IntTreeSetNode) TraversePreOrder(consumer func(*IntTreeSetNode) bool) bool {
 	if n == nil {
-		return
+		return consumer(nil)
 	}
-	consumer(n)
-	n.childL.TraversePreOrder(consumer)
-	n.childR.TraversePreOrder(consumer)
+	if !consumer(n) {
+		return false
+	}
+	if !n.childL.TraversePreOrder(consumer) {
+		return false
+	}
+	if !n.childR.TraversePreOrder(consumer) {
+		return false
+	}
+	return true
 }
 
-// TraversePreOrder traverses the subtree rooted at n in in-order (LNR).
-func (n *IntTreeSetNode) TraverseInOrder(consumer func(*IntTreeSetNode)) {
+// TraverseInOrder traverses the subtree rooted at n in in-order (LNR).
+func (n *IntTreeSetNode) TraverseInOrder(consumer func(*IntTreeSetNode) bool) bool {
 	if n == nil {
-		return
+		return consumer(nil)
 	}
-	n.childL.TraversePreOrder(consumer)
-	consumer(n)
-	n.childR.TraversePreOrder(consumer)
+	if !n.childL.TraversePreOrder(consumer) {
+		return false
+	}
+	if !consumer(n) {
+		return false
+	}
+	if !n.childR.TraversePreOrder(consumer) {
+		return false
+	}
+	return true
 }
 
-// TraversePreOrder traverses the subtree rooted at n in post-order (LRN).
-func (n *IntTreeSetNode) TraversePostOrder(consumer func(*IntTreeSetNode)) {
+// TraversePostOrder traverses the subtree rooted at n in post-order (LRN).
+func (n *IntTreeSetNode) TraversePostOrder(consumer func(*IntTreeSetNode) bool) bool {
 	if n == nil {
-		return
+		return consumer(nil)
 	}
-	n.childL.TraversePreOrder(consumer)
-	n.childR.TraversePreOrder(consumer)
-	consumer(n)
+	if !n.childL.TraversePreOrder(consumer) {
+		return false
+	}
+	if !n.childR.TraversePreOrder(consumer) {
+		return false
+	}
+	if !consumer(n) {
+		return false
+	}
+	return true
 }
 
 func (n *IntTreeSetNode) height() int {
@@ -55,16 +122,16 @@ func (n *IntTreeSetNode) String() string {
 }
 
 // Print prints the subtree rooted at n.
-func (n *IntTreeSetNode) Print(indentString string, indentLevel int) {
+func (n *IntTreeSetNode) Print(buffer *bytes.Buffer, indentString string, indentLevel int) {
 	for i := 0; i < indentLevel; i++ {
-		fmt.Print(indentString)
+		buffer.WriteString(indentString)
 	}
 	if n == nil {
-		fmt.Println("nil")
+		buffer.WriteString("nil\n")
 	} else {
-		fmt.Printf("%d (height: %d, balance factor: %d)\n", n.value, n.height(), n.balanceFactor)
-		n.childL.Print(indentString, indentLevel+1)
-		n.childR.Print(indentString, indentLevel+1)
+		buffer.WriteString(fmt.Sprintf("%d (height: %d, balance factor: %d)\n", n.value, n.height(), n.balanceFactor))
+		n.childL.Print(buffer, indentString, indentLevel+1)
+		n.childR.Print(buffer, indentString, indentLevel+1)
 	}
 }
 
@@ -90,7 +157,13 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 	}
 	if v < n.value {
 		if n.childL.Add(v, &n.childL) {
-			if n.balanceFactor < 0 {
+			if n.balanceFactor > 0 {
+				n.balanceFactor--
+				return false
+			} else if n.balanceFactor == 0 {
+				n.balanceFactor--
+				return true
+			} else {
 				// Rotate
 				if v > n.childL.value {
 					// LR Case
@@ -123,13 +196,17 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 				}
 				return false
 			}
-			n.balanceFactor--
-			return true
 		}
 	}
 	if v > n.value {
 		if n.childR.Add(v, &n.childR) {
-			if n.balanceFactor > 0 {
+			if n.balanceFactor < 0 {
+				n.balanceFactor++
+				return false
+			} else if n.balanceFactor == 0 {
+				n.balanceFactor++
+				return true
+			} else {
 				// Rotate
 				if v < n.childR.value {
 					// RL Case
@@ -141,11 +218,11 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 					q.childL = n
 					*ptrN = q
 					if q.balanceFactor < 0 {
-						n.balanceFactor = 1
-						p.balanceFactor = 0
-					} else if q.balanceFactor > 0 {
 						n.balanceFactor = 0
-						p.balanceFactor = -1
+						p.balanceFactor = 1
+					} else if q.balanceFactor > 0 {
+						n.balanceFactor = -1
+						p.balanceFactor = 0
 					} else {
 						n.balanceFactor = 0
 						p.balanceFactor = 0
@@ -162,8 +239,6 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) bool {
 				}
 				return false
 			}
-			n.balanceFactor++
-			return true
 		}
 	}
 	// v already existed, nothing to be done

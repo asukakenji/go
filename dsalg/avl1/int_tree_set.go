@@ -1,20 +1,22 @@
 package avl
 
+import "bytes"
+
 // IntTreeSet implements a tree set based on AVL tree.
 type IntTreeSet struct {
 	root *IntTreeSetNode
 	len  int
 }
 
-func (t *IntTreeSet) TraversePreOrder(consumer func(*IntTreeSetNode)) {
+func (t *IntTreeSet) TraversePreOrder(consumer func(*IntTreeSetNode) bool) {
 	t.root.TraversePreOrder(consumer)
 }
 
-func (t *IntTreeSet) TraverseInOrder(consumer func(*IntTreeSetNode)) {
+func (t *IntTreeSet) TraverseInOrder(consumer func(*IntTreeSetNode) bool) {
 	t.root.TraverseInOrder(consumer)
 }
 
-func (t *IntTreeSet) TraversePostOrder(consumer func(*IntTreeSetNode)) {
+func (t *IntTreeSet) TraversePostOrder(consumer func(*IntTreeSetNode) bool) {
 	t.root.TraversePostOrder(consumer)
 }
 
@@ -23,8 +25,11 @@ func (t *IntTreeSet) String() string {
 }
 
 // Print prints the set.
-func (t *IntTreeSet) Print(indentString string) {
-	t.root.Print(indentString, 0)
+func (t *IntTreeSet) Print(indentString string) string {
+	var buffer bytes.Buffer
+	buffer.WriteRune('\n')
+	t.root.Print(&buffer, indentString, 0)
+	return buffer.String()
 }
 
 // Contains returns whether the set contains v.
