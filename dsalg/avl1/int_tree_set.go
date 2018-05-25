@@ -10,23 +10,63 @@ type IntTreeSet struct {
 	len  int
 }
 
-func (t *IntTreeSet) TraversePreOrder(consumer func(*IntTreeSetNode) bool) {
-	t.root.TraversePreOrder(consumer)
+// Len TODO: Write this comment!
+func (t *IntTreeSet) Len() int {
+	return t.len
 }
 
-func (t *IntTreeSet) TraverseInOrder(consumer func(*IntTreeSetNode) bool) {
-	t.root.TraverseInOrder(consumer)
+// Cap TODO: Write this comment!
+func (t *IntTreeSet) Cap() int {
+	return t.len
 }
 
-func (t *IntTreeSet) TraversePostOrder(consumer func(*IntTreeSetNode) bool) {
-	t.root.TraversePostOrder(consumer)
+// IsEmpty TODO: Write this comment!
+func (t *IntTreeSet) IsEmpty() bool {
+	return t.len == 0
 }
 
+// IsFull TODO: Write this comment!
+func (t *IntTreeSet) IsFull() bool {
+	return false
+}
+
+// TraversePreOrder TODO: Write this comment!
+// NOTE: This should move to ConditionalFold
+// NOTE: Traverse should have no bool and no interface{}
+// NOTE: ConditionalTraverse should have bool but no interface{}
+// NOTE: Fold should have no bool but have interface{}
+// NOTE: ConditionalFold should have both bool and interface{}
+// NOTE: ConditionalFold should be a HOF that accepts either traverse order
+func (t *IntTreeSet) TraversePreOrder(
+	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
+	acc0 interface{},
+) (bool, interface{}) {
+	return t.root.TraversePreOrder(f, acc0)
+}
+
+// TraverseInOrder TODO: Write this comment!
+func (t *IntTreeSet) TraverseInOrder(
+	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
+	acc0 interface{},
+) (bool, interface{}) {
+	return t.root.TraverseInOrder(f, acc0)
+}
+
+// TraversePostOrder TODO: Write this comment!
+func (t *IntTreeSet) TraversePostOrder(
+	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
+	acc0 interface{},
+) (bool, interface{}) {
+	return t.root.TraversePostOrder(f, acc0)
+}
+
+// String TODO: Write this comment!
 func (t *IntTreeSet) String() string {
 	return t.root.String()
 }
 
 // Print prints the set.
+// TODO: Delete this in production
 func (t *IntTreeSet) Print(indentString string) string {
 	var buffer bytes.Buffer
 	buffer.WriteRune('\n')
@@ -51,20 +91,4 @@ func (t *IntTreeSet) Remove(v int) {
 	if t.root.Remove(v, &t.root) {
 		t.len--
 	}
-}
-
-func (t *IntTreeSet) Len() int {
-	return t.len
-}
-
-func (t *IntTreeSet) Cap() int {
-	return t.len
-}
-
-func (t *IntTreeSet) IsEmpty() bool {
-	return t.len == 0
-}
-
-func (t *IntTreeSet) IsFull() bool {
-	return false
 }
