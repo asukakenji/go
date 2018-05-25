@@ -7,6 +7,44 @@ import (
 	avl "github.com/asukakenji/go/dsalg/avl1"
 )
 
+func TestTreeLenCapIsEmptyIsFull(t *testing.T) {
+	values := rand.Perm(255)
+	length := 0
+
+	tree := new(avl.IntTreeSet)
+
+	check := func() {
+		expectedLen := length
+		gotLen := tree.Len()
+		if gotLen != expectedLen {
+			t.Errorf("tree.Len() = %d, Expected: %d", gotLen, expectedLen)
+		}
+
+		expectedCap := length
+		gotCap := tree.Cap()
+		if gotCap != expectedCap {
+			t.Errorf("tree.Cap() = %d, Expected: %d", gotCap, expectedCap)
+		}
+
+		expectedIsEmpty := (length == 0)
+		gotIsEmpty := tree.IsEmpty()
+		if gotIsEmpty != expectedIsEmpty {
+			t.Errorf("tree.IsEmpty() = %t, Expected: %t", gotIsEmpty, expectedIsEmpty)
+		}
+
+		if tree.IsFull() {
+			t.Errorf("tree.IsFull() = true, Expected: false")
+		}
+	}
+
+	check()
+	for _, value := range values {
+		tree.Add(value)
+		length++
+		check()
+	}
+}
+
 func TestString(t *testing.T) {
 	cases := []struct {
 		value int
@@ -157,17 +195,17 @@ func TestTreeAdd_1(t *testing.T) {
 		{
 			5,
 			"(2 (1 (0 / /) /) (7 (4 (3 / /) (5 / /)) (8 / (9 / /))))",
-			nil, // TODO: Write this!
+			[]*ValueAndBalanceFactor{{2, 1}, {1, -1}, {0, 0}, nil, nil, nil, {7, 0}, {4, 0}, {3, 0}, nil, nil, {5, 0}, nil, nil, {8, 1}, nil, {9, 0}, nil, nil},
 		},
 		{
 			6,
 			"(4 (2 (1 (0 / /) /) (3 / /)) (7 (5 / (6 / /)) (8 / (9 / /))))",
-			nil, // TODO: Write this!
+			[]*ValueAndBalanceFactor{{4, 0}, {2, -1}, {1, -1}, {0, 0}, nil, nil, nil, {3, 0}, nil, nil, {7, 0}, {5, 1}, nil, {6, 0}, nil, nil, {8, 1}, nil, {9, 0}, nil, nil},
 		},
 		{
 			-1,
 			"(4 (2 (0 (-1 / /) (1 / /)) (3 / /)) (7 (5 / (6 / /)) (8 / (9 / /))))",
-			nil, // TODO: Write this!
+			[]*ValueAndBalanceFactor{{4, 0}, {2, -1}, {0, 0}, {-1, 0}, nil, nil, {1, 0}, nil, nil, {3, 0}, nil, nil, {7, 0}, {5, 1}, nil, {6, 0}, nil, nil, {8, 1}, nil, {9, 0}, nil, nil},
 		},
 	}
 

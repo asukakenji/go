@@ -10,22 +10,25 @@ type IntTreeSet struct {
 	len  int
 }
 
-// Len TODO: Write this comment!
+// Len returns the number of elements of tree t.
+// The time complexity is O(1).
 func (t *IntTreeSet) Len() int {
 	return t.len
 }
 
-// Cap TODO: Write this comment!
+// Cap returns the capacity of tree t.
+// It is always the same as t.Len().
 func (t *IntTreeSet) Cap() int {
 	return t.len
 }
 
-// IsEmpty TODO: Write this comment!
+// IsEmpty returns whether tree t is empty.
 func (t *IntTreeSet) IsEmpty() bool {
 	return t.len == 0
 }
 
-// IsFull TODO: Write this comment!
+// IsFull returns whether tree t is full.
+// It always returns false.
 func (t *IntTreeSet) IsFull() bool {
 	return false
 }
@@ -81,7 +84,7 @@ func (t *IntTreeSet) Contains(v int) bool {
 
 // Add adds v to the set.
 func (t *IntTreeSet) Add(v int) {
-	if t.root.Add(v, &t.root) {
+	if isAdded, _ := t.root.Add(v, &t.root); isAdded {
 		t.len++
 	}
 }
