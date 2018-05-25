@@ -66,37 +66,49 @@ func TestTreeAdd0(t *testing.T) {
 	}
 }
 
+type ValueAndBalanceFactor struct {
+	value         interface{}
+	balanceFactor int
+}
+
 type TreeChecker struct {
-	t   *testing.T
-	cid int
-	n   []*struct {
-		value         interface{}
-		balanceFactor int
-	}
+	t     *testing.T
+	cid   int
+	vabf  []*ValueAndBalanceFactor
 	index int
 }
 
+func NewTreeChecker(t *testing.T, cid int, vabf []*ValueAndBalanceFactor) *TreeChecker {
+	return &TreeChecker{t, cid, vabf, 0}
+}
+
 func (tc *TreeChecker) Consume(n *avl.IntTreeSetNode) bool {
-	if n == nil {
-		if tc.n[tc.index] != nil {
-			expectedValue := tc.n[tc.index].value
-			expectedBalanceFactor := tc.n[tc.index].balanceFactor
-			tc.t.Errorf("Case %d: n == nil, Expected: (%v, %d)", tc.cid, expectedValue, expectedBalanceFactor)
-			return false
-		}
-	} else {
-		gotValue := n.Value()
-		expectedValue := tc.n[tc.index].value
-		if gotValue != expectedValue {
-			tc.t.Errorf("Case %d: n.Value() = %v, Expected: %v", tc.cid, gotValue, expectedValue)
-			return false
-		}
-		gotBalanceFactor := n.BalanceFactor()
-		expectedBalanceFactor := tc.n[tc.index].balanceFactor
-		if gotBalanceFactor != expectedBalanceFactor {
-			tc.t.Errorf("Case %d: n.Value() = %v: n.BalanceFactor() = %d, Expected: %d", tc.cid, gotValue, gotBalanceFactor, expectedBalanceFactor)
-			return false
-		}
+	var (
+		expectedValue         interface{}
+		expectedBalanceFactor int
+		gotValue              interface{}
+		gotBalanceFactor      int
+	)
+	expectedN := tc.vabf[tc.index]
+	if expectedN != nil {
+		expectedValue = expectedN.value
+		expectedBalanceFactor = expectedN.balanceFactor
+	}
+	if n != nil {
+		gotValue = n.Value()
+		gotBalanceFactor = n.BalanceFactor()
+	}
+	if expectedN == nil && n != nil {
+		tc.t.Errorf("Case %d: n = (%v, %d), Expected: nil", tc.cid, gotValue, gotBalanceFactor)
+		return false
+	}
+	if expectedN != nil && n == nil {
+		tc.t.Errorf("Case %d: n == nil, Expected: (%v, %d)", tc.cid, expectedValue, expectedBalanceFactor)
+		return false
+	}
+	if gotValue != expectedValue || gotBalanceFactor != expectedBalanceFactor {
+		tc.t.Errorf("Case %d: n = (%v, %d), Expected: (%v, %d)", tc.cid, gotValue, gotBalanceFactor, expectedValue, expectedBalanceFactor)
+		return false
 	}
 	tc.index++
 	return true
@@ -105,42 +117,20 @@ func (tc *TreeChecker) Consume(n *avl.IntTreeSetNode) bool {
 func TestTreeAdd(t *testing.T) {
 	cases := []struct {
 		value int
-		n     []*struct {
-			value         interface{}
-			balanceFactor int
-		}
+		vabf  []*ValueAndBalanceFactor
 	}{
-		{1, []*struct {
-			value         interface{}
-			balanceFactor int
-		}{{1, 0}, nil, nil}},
-		{2, []*struct {
-			value         interface{}
-			balanceFactor int
-		}{{1, 1}, nil, {2, 0}, nil, nil}},
-		{0, []*struct {
-			value         interface{}
-			balanceFactor int
-		}{{1, 0}, {0, 0}, nil, nil, {2, 0}, nil, nil}},
-		{9, []*struct {
-			value         interface{}
-			balanceFactor int
-		}{{1, 1}, {0, 0}, nil, nil, {2, 1}, nil, {9, 0}, nil, nil}},
-		{8, []*struct {
-			value         interface{}
-			balanceFactor int
-		}{{1, 1}, {0, 0}, nil, nil, {8, 0}, {2, 0}, nil, nil, {9, 0}, nil, nil}},
-		{3, []*struct {
-			value         interface{}
-			balanceFactor int
-		}{{2, 0}, {1, -1}, {0, 0}, nil, nil, nil, {8, 0}, {3, 0}, nil, nil, {9, 0}, nil, nil}},
+		{1, []*ValueAndBalanceFactor{{1, 0}, nil, nil}},
+		{2, []*ValueAndBalanceFactor{{1, 1}, nil, {2, 0}, nil, nil}},
+		{0, []*ValueAndBalanceFactor{{1, 0}, {0, 0}, nil, nil, {2, 0}, nil, nil}},
+		{9, []*ValueAndBalanceFactor{{1, 1}, {0, 0}, nil, nil, {2, 1}, nil, {9, 0}, nil, nil}},
+		{8, []*ValueAndBalanceFactor{{1, 1}, {0, 0}, nil, nil, {8, 0}, {2, 0}, nil, nil, {9, 0}, nil, nil}},
+		{3, []*ValueAndBalanceFactor{{2, 0}, {1, -1}, {0, 0}, nil, nil, nil, {8, 0}, {3, 0}, nil, nil, {9, 0}, nil, nil}},
 	}
 
 	tree := new(avl.IntTreeSet)
 	for cid, c := range cases {
 		tree.Add(c.value)
-		tc := &TreeChecker{t, cid, c.n, 0}
-		tree.TraversePreOrder(tc.Consume)
+		tree.TraversePreOrder(NewTreeChecker(t, cid, c.vabf).Consume)
 	}
 }
 

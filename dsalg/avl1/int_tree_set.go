@@ -1,6 +1,8 @@
 package avl
 
-import "bytes"
+import (
+	"bytes"
+)
 
 // IntTreeSet implements a tree set based on AVL tree.
 type IntTreeSet struct {
