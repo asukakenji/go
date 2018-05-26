@@ -31,6 +31,9 @@ func (n *IntTreeSetNode) TraversePostOrder(consumer func(int)) {
 }
 
 // ConditionalTraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
+// The traversal stops when predicate returns false.
+// It returns true if predicate returns true throughout the travesal;
+// it returns false otherwise.
 func (n *IntTreeSetNode) ConditionalTraversePreOrder(predicate func(int) bool) bool {
 	if n == nil {
 		return true
@@ -48,6 +51,9 @@ func (n *IntTreeSetNode) ConditionalTraversePreOrder(predicate func(int) bool) b
 }
 
 // ConditionalTraverseInOrder traverses the subtree rooted at n in in-order (LNR).
+// The traversal stops when predicate returns false.
+// It returns true if predicate returns true throughout the travesal;
+// it returns false otherwise.
 func (n *IntTreeSetNode) ConditionalTraverseInOrder(predicate func(int) bool) bool {
 	if n == nil {
 		return true
@@ -65,6 +71,9 @@ func (n *IntTreeSetNode) ConditionalTraverseInOrder(predicate func(int) bool) bo
 }
 
 // ConditionalTraversePostOrder traverses the subtree rooted at n in post-order (LRN).
+// The traversal stops when predicate returns false.
+// It returns true if predicate returns true throughout the travesal;
+// it returns false otherwise.
 func (n *IntTreeSetNode) ConditionalTraversePostOrder(predicate func(int) bool) bool {
 	if n == nil {
 		return true
@@ -82,6 +91,7 @@ func (n *IntTreeSetNode) ConditionalTraversePostOrder(predicate func(int) bool) 
 }
 
 // TraverseNodePreOrder traverses the subtree rooted at n in pre-order (NLR).
+// Any nil children of leaf nodes are also traversed.
 func (n *IntTreeSetNode) TraverseNodePreOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
 		consumer(nil)
@@ -93,6 +103,7 @@ func (n *IntTreeSetNode) TraverseNodePreOrder(consumer func(*IntTreeSetNode)) {
 }
 
 // TraverseNodeInOrder traverses the subtree rooted at n in in-order (LNR).
+// Any nil children of leaf nodes are also traversed.
 func (n *IntTreeSetNode) TraverseNodeInOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
 		consumer(nil)
@@ -104,6 +115,7 @@ func (n *IntTreeSetNode) TraverseNodeInOrder(consumer func(*IntTreeSetNode)) {
 }
 
 // TraverseNodePostOrder traverses the subtree rooted at n in post-order (LRN).
+// Any nil children of leaf nodes are also traversed.
 func (n *IntTreeSetNode) TraverseNodePostOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
 		consumer(nil)
@@ -115,6 +127,10 @@ func (n *IntTreeSetNode) TraverseNodePostOrder(consumer func(*IntTreeSetNode)) {
 }
 
 // ConditionalTraverseNodePreOrder traverses the subtree rooted at n in pre-order (NLR).
+// Any nil children of leaf nodes are also traversed.
+// The traversal stops when predicate returns false.
+// It returns true if predicate returns true throughout the travesal;
+// it returns false otherwise.
 func (n *IntTreeSetNode) ConditionalTraverseNodePreOrder(predicate func(*IntTreeSetNode) bool) bool {
 	if n == nil {
 		return predicate(nil)
@@ -132,6 +148,10 @@ func (n *IntTreeSetNode) ConditionalTraverseNodePreOrder(predicate func(*IntTree
 }
 
 // ConditionalTraverseNodeInOrder traverses the subtree rooted at n in in-order (LNR).
+// Any nil children of leaf nodes are also traversed.
+// The traversal stops when predicate returns false.
+// It returns true if predicate returns true throughout the travesal;
+// it returns false otherwise.
 func (n *IntTreeSetNode) ConditionalTraverseNodeInOrder(predicate func(*IntTreeSetNode) bool) bool {
 	if n == nil {
 		return predicate(nil)
@@ -149,6 +169,10 @@ func (n *IntTreeSetNode) ConditionalTraverseNodeInOrder(predicate func(*IntTreeS
 }
 
 // ConditionalTraverseNodePostOrder traverses the subtree rooted at n in post-order (LRN).
+// Any nil children of leaf nodes are also traversed.
+// The traversal stops when predicate returns false.
+// It returns true if predicate returns true throughout the travesal;
+// it returns false otherwise.
 func (n *IntTreeSetNode) ConditionalTraverseNodePostOrder(predicate func(*IntTreeSetNode) bool) bool {
 	if n == nil {
 		return predicate(nil)
