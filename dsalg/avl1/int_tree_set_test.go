@@ -39,7 +39,7 @@ func TestTreeLenCapIsEmptyIsFull(t *testing.T) {
 
 	check()
 	for _, value := range values {
-		tree.Add(value)
+		tree.Insert(value)
 		length++
 		check()
 	}
@@ -65,7 +65,7 @@ func TestString(t *testing.T) {
 
 	tree := new(avl.IntTreeSet)
 	for _, c := range cases {
-		tree.Add(c.value)
+		tree.Insert(c.value)
 	}
 }
 
@@ -73,7 +73,7 @@ func TestTreePrint(t *testing.T) {
 	numbers := []int{7, 6, 4, 8, 9, 0, 1, 3, 5, 2}
 	tree := new(avl.IntTreeSet)
 	for _, number := range numbers {
-		tree.Add(number)
+		tree.Insert(number)
 	}
 	// t.Log(tree.Print("    "))
 	tree.Print("    ")
@@ -84,8 +84,8 @@ func TestTreeContains(t *testing.T) {
 
 	tree := new(avl.IntTreeSet)
 	for index1, number1 := range numbers {
-		// t.Logf("Adding %d", number1)
-		tree.Add(number1)
+		// t.Logf("Inserting %d", number1)
+		tree.Insert(number1)
 		for index2, number2 := range numbers {
 			contains := tree.Contains(number2)
 			if index2 <= index1 {
@@ -146,7 +146,7 @@ func CheckTree(n *avl.IntTreeSetNode, acc0 interface{}) (bool, interface{}) {
 	return true, params
 }
 
-func TestTreeAdd_1(t *testing.T) {
+func TestTreeInsert_1(t *testing.T) {
 	cases := []struct {
 		value int
 		s     string
@@ -211,7 +211,7 @@ func TestTreeAdd_1(t *testing.T) {
 
 	tree := new(avl.IntTreeSet)
 	for cid, c := range cases {
-		tree.Add(c.value)
+		tree.Insert(c.value)
 		expectedString := c.s
 		gotString := tree.String()
 		if gotString != expectedString {
@@ -221,7 +221,7 @@ func TestTreeAdd_1(t *testing.T) {
 	}
 }
 
-func TestTreeAdd_2(t *testing.T) {
+func TestTreeInsert_2(t *testing.T) {
 	cases := []struct {
 		value int
 		s     string
@@ -241,7 +241,7 @@ func TestTreeAdd_2(t *testing.T) {
 
 	tree := new(avl.IntTreeSet)
 	for cid, c := range cases {
-		tree.Add(c.value)
+		tree.Insert(c.value)
 		expectedString := c.s
 		gotString := tree.String()
 		if gotString != expectedString {

@@ -1,8 +1,8 @@
 package avl
 
-// Add adds v to the set.
-func (t *IntTreeSet) Add(v int) {
-	if isAdded, _ := t.root.Add(v, &t.root); isAdded {
+// Insert inserts v into the tree.
+func (t *IntTreeSet) Insert(v int) {
+	if isInserted, _ := t.root.insert(v, &t.root); isInserted {
 		t.len++
 	}
 }

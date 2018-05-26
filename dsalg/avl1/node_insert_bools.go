@@ -1,13 +1,13 @@
 package avl
 
-// Add adds v to the subtree rooted at n.
-func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) (bool, bool) {
+// insert inserts v into the subtree rooted at n.
+func (n *IntTreeSetNode) insert(v int, ptrN **IntTreeSetNode) (bool, bool) {
 	if n == nil {
 		*ptrN = &IntTreeSetNode{value: v}
 		return true, true
 	}
 	if v < n.value {
-		if isAdded, needsPropagation := n.childL.Add(v, &n.childL); needsPropagation {
+		if isAdded, needsPropagation := n.childL.insert(v, &n.childL); needsPropagation {
 			if n.balanceFactor > 0 {
 				n.balanceFactor--
 				return true, false
@@ -30,7 +30,7 @@ func (n *IntTreeSetNode) Add(v int, ptrN **IntTreeSetNode) (bool, bool) {
 		}
 	}
 	if v > n.value {
-		if isAdded, needsPropagation := n.childR.Add(v, &n.childR); needsPropagation {
+		if isAdded, needsPropagation := n.childR.insert(v, &n.childR); needsPropagation {
 			if n.balanceFactor < 0 {
 				n.balanceFactor++
 				return true, false
