@@ -1,7 +1,7 @@
 // Single-Valued Assignment, without Assertion
 
-// +build sva
-// +build !assert
+// +build avl_rotate_sva
+// +build !avl_assert
 
 package avl
 

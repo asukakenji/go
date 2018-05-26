@@ -1,4 +1,4 @@
-// +build assert
+// +build avl_assert
 
 package avl
 
