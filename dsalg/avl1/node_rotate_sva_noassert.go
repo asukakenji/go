@@ -1,4 +1,4 @@
-// Single-Valued Assignment
+// Single-Valued Assignment, without Assertion
 
 // +build sva
 // +build !assert

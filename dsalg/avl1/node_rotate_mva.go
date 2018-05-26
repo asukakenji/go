@@ -1,4 +1,4 @@
-// Multi-Valued Assignment
+// Multi-Valued Assignment, without Assertion
 
 package avl
 

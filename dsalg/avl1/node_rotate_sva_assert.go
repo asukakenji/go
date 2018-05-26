@@ -1,4 +1,4 @@
-// Single-Valued Assignment
+// Single-Valued Assignment, with Assertion
 
 // +build sva
 // +build assert
@@ -14,6 +14,8 @@ import "fmt"
 //  T23 T4      T1 T23
 func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 	p := n.childR
+	n.childR = p.childL
+	p.childL = n
 	if p.balanceFactor == 0 {
 		// Example:
 		//   n: height = 7, balanceFactor = 2
@@ -34,8 +36,6 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 		n.balanceFactor = 0
 		p.balanceFactor = 0
 	}
-	n.childR = p.childL
-	p.childL = n
 	*ptrN = p
 }
 
@@ -46,6 +46,8 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 // T1 T23        T23 T4
 func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 	p := n.childL
+	n.childL = p.childR
+	p.childR = n
 	if p.balanceFactor == 0 {
 		// Example:
 		//   n: height = 7, balanceFactor = -2
@@ -66,8 +68,6 @@ func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 		n.balanceFactor = 0
 		p.balanceFactor = 0
 	}
-	n.childL = p.childR
-	p.childR = n
 	*ptrN = p
 }
 
@@ -81,6 +81,10 @@ func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 	p := n.childL
 	q := p.childR
+	p.childR = q.childL
+	n.childL = q.childR
+	q.childL = p
+	q.childR = n
 	if q.balanceFactor < 0 {
 		n.balanceFactor = 1
 		p.balanceFactor = 0
@@ -92,10 +96,6 @@ func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 		p.balanceFactor = 0
 	}
 	q.balanceFactor = 0
-	p.childR = q.childL
-	n.childL = q.childR
-	q.childL = p
-	q.childR = n
 	*ptrN = q
 }
 
@@ -109,6 +109,10 @@ func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
 	p := n.childR
 	q := p.childL
+	p.childL = q.childR
+	n.childR = q.childL
+	q.childR = p
+	q.childL = n
 	if q.balanceFactor < 0 {
 		n.balanceFactor = 0
 		p.balanceFactor = 1
@@ -120,9 +124,5 @@ func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
 		p.balanceFactor = 0
 	}
 	q.balanceFactor = 0
-	p.childL = q.childR
-	n.childR = q.childL
-	q.childR = p
-	q.childL = n
 	*ptrN = q
 }
