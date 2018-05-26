@@ -35,62 +35,90 @@ func (n *IntTreeSetNode) BalanceFactor() int {
 }
 
 // TraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
-func (n *IntTreeSetNode) TraversePreOrder(
-	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
-	acc0 interface{},
-) (bool, interface{}) {
+// nil pointers are NOT traversed.
+func (n *IntTreeSetNode) TraversePreOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
-		return f(nil, acc0)
+		return
 	}
-	b, acc1 := f(n, acc0)
-	if !b {
-		return false, acc1
-	}
-	b, acc2 := n.childL.TraversePreOrder(f, acc1)
-	if !b {
-		return false, acc2
-	}
-	return n.childR.TraversePreOrder(f, acc2)
+	consumer(n)
+	n.childL.TraversePreOrder(consumer)
+	n.childR.TraversePreOrder(consumer)
 }
 
 // TraverseInOrder traverses the subtree rooted at n in in-order (LNR).
-func (n *IntTreeSetNode) TraverseInOrder(
-	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
-	acc0 interface{},
-) (bool, interface{}) {
+// nil pointers are NOT traversed.
+func (n *IntTreeSetNode) TraverseInOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
-		return f(nil, acc0)
+		return
 	}
-	b, acc1 := n.childL.TraverseInOrder(f, acc0)
-	if !b {
-		return false, acc1
-	}
-	b, acc2 := f(n, acc1)
-	if !b {
-		return false, acc2
-	}
-	return n.childR.TraverseInOrder(f, acc2)
+	n.childL.TraversePreOrder(consumer)
+	consumer(n)
+	n.childR.TraversePreOrder(consumer)
 }
 
 // TraversePostOrder traverses the subtree rooted at n in post-order (LRN).
-func (n *IntTreeSetNode) TraversePostOrder(
-	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
-	acc0 interface{},
-) (bool, interface{}) {
+// nil pointers are NOT traversed.
+func (n *IntTreeSetNode) TraversePostOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
-		return f(nil, acc0)
+		return
 	}
-	b, acc1 := n.childL.TraversePostOrder(f, acc0)
-	if !b {
-		return false, acc1
-	}
-	b, acc2 := n.childR.TraversePostOrder(f, acc1)
-	if !b {
-		return false, acc2
-	}
-	return f(n, acc0)
+	n.childL.TraversePreOrder(consumer)
+	n.childR.TraversePreOrder(consumer)
+	consumer(n)
 }
 
+// ConditionalTraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
+func (n *IntTreeSetNode) ConditionalTraversePreOrder(predicate func(*IntTreeSetNode) bool) bool {
+	if n == nil {
+		return true
+	}
+	if !predicate(n) {
+		return false
+	}
+	if !n.childL.ConditionalTraversePreOrder(predicate) {
+		return false
+	}
+	if !n.childR.ConditionalTraversePreOrder(predicate) {
+		return false
+	}
+	return true
+}
+
+// ConditionalTraverseInOrder traverses the subtree rooted at n in in-order (LNR).
+func (n *IntTreeSetNode) ConditionalTraverseInOrder(predicate func(*IntTreeSetNode) bool) bool {
+	if n == nil {
+		return true
+	}
+	if !n.childL.ConditionalTraverseInOrder(predicate) {
+		return false
+	}
+	if !predicate(n) {
+		return false
+	}
+	if !n.childR.ConditionalTraverseInOrder(predicate) {
+		return false
+	}
+	return true
+}
+
+// ConditionalTraversePostOrder traverses the subtree rooted at n in post-order (LRN).
+func (n *IntTreeSetNode) ConditionalTraversePostOrder(predicate func(*IntTreeSetNode) bool) bool {
+	if n == nil {
+		return true
+	}
+	if !n.childL.ConditionalTraversePostOrder(predicate) {
+		return false
+	}
+	if !n.childR.ConditionalTraversePostOrder(predicate) {
+		return false
+	}
+	if !predicate(n) {
+		return false
+	}
+	return true
+}
+
+// Search TODO: Write this comment!
 func (n *IntTreeSetNode) Search(v int, consumer func(*IntTreeSetNode) (int, interface{})) interface{} {
 	dir, result := consumer(n)
 	if dir < 0 {
