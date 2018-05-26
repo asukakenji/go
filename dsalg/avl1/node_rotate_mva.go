@@ -1,37 +1,20 @@
 // Multi-Valued Assignment
 
-// +build mva
-
 package avl
 
-import "fmt"
-
-//   N              Q
+//   N              P
 //  / \            / \
-// T1  Q    =>    N  T4
+// T1  P    =>    N  T4
 //    / \        / \
 //  T23 T4      T1 T23
 func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
-	q := n.childR
-	if q.balanceFactor == 0 {
-		// Example:
-		//   n: height = 7, balanceFactor = 2
-		//   q: height = 6, balanceFactor = 0
-		//  t1: height = 4
-		// t23: height = 5
-		//  t4: height = 5
-		n.balanceFactor, q.balanceFactor = 1, -1
+	p := n.childR
+	if p.balanceFactor == 0 {
+		n.balanceFactor, p.balanceFactor = 1, -1
 	} else {
-		// Example:
-		//   n: height = 7, balanceFactor = 2
-		//   q: height = 6, balanceFactor = 1
-		//  t1: height = 4
-		// t23: height = 4
-		//  t4: height = 5
-		assert(q.balanceFactor == 1, fmt.Sprintf("q.balanceFactor = %d, expected 1", q.balanceFactor))
-		n.balanceFactor, q.balanceFactor = 0, 0
+		n.balanceFactor, p.balanceFactor = 0, 0
 	}
-	q.childL, *ptrN, n.childR = n, q, q.childL
+	p.childL, *ptrN, n.childR = n, p, p.childL
 }
 
 //     N          P
@@ -42,21 +25,8 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 	p := n.childL
 	if p.balanceFactor == 0 {
-		// Example:
-		//   n: height = 7, balanceFactor = -2
-		//   p: height = 6, balanceFactor = 0
-		//  t1: height = 5
-		// t23: height = 5
-		//  t4: height = 4
 		n.balanceFactor, p.balanceFactor = -1, 1
 	} else {
-		// Example:
-		//   n: height = 7, balanceFactor = -2
-		//   p: height = 6, balanceFactor = -1
-		//  t1: height = 5
-		// t23: height = 4
-		//  t4: height = 4
-		assert(p.balanceFactor == -1, fmt.Sprintf("p.balanceFactor = %d, expected -1", p.balanceFactor))
 		n.balanceFactor, p.balanceFactor = 0, 0
 	}
 	p.childR, *ptrN, n.childL = n, p, p.childR
@@ -70,16 +40,36 @@ func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 //    / \       T1 T2 T3 T4
 //   T2 T3
 func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
-	// TODO: Write this!
+	p := n.childL
+	q := p.childR
+	if q.balanceFactor < 0 {
+		n.balanceFactor, p.balanceFactor = 1, 0
+	} else if q.balanceFactor > 0 {
+		n.balanceFactor, p.balanceFactor = 0, -1
+	} else {
+		n.balanceFactor, p.balanceFactor = 0, 0
+	}
+	q.balanceFactor = 0
+	q.childR, q.childL, *ptrN, n.childL, p.childR = n, p, q, q.childR, q.childL
 }
 
 //   N
-//  / \              P
-// T1  Q           /   \
-//    / \   =>    N     Q
-//   P  T4       / \   / \
+//  / \              Q
+// T1  P           /   \
+//    / \   =>    N     P
+//   Q  T4       / \   / \
 //  / \         T1 T2 T3 T4
 // T2 T3
 func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
-	// TODO: Write this!
+	p := n.childR
+	q := p.childL
+	if q.balanceFactor < 0 {
+		n.balanceFactor, p.balanceFactor = 0, 1
+	} else if q.balanceFactor > 0 {
+		n.balanceFactor, p.balanceFactor = -1, 0
+	} else {
+		n.balanceFactor, p.balanceFactor = 0, 0
+	}
+	q.balanceFactor = 0
+	q.childL, q.childR, *ptrN, n.childR, p.childL = n, p, q, q.childL, q.childR
 }

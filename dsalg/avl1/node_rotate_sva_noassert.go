@@ -1,39 +1,27 @@
 // Single-Valued Assignment
 
-// +build !mva
+// +build sva
 // +build !assert
 
 package avl
 
-//   N              Q
+//   N              P
 //  / \            / \
-// T1  Q    =>    N  T4
+// T1  P    =>    N  T4
 //    / \        / \
 //  T23 T4      T1 T23
 func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
-	q := n.childR
-	n.childR = q.childL
-	q.childL = n
-	if q.balanceFactor == 0 {
-		// Example:
-		//   n: height = 7, balanceFactor = 2
-		//   q: height = 6, balanceFactor = 0
-		//  t1: height = 4
-		// t23: height = 5
-		//  t4: height = 5
+	p := n.childR
+	if p.balanceFactor == 0 {
 		n.balanceFactor = 1
-		q.balanceFactor = -1
+		p.balanceFactor = -1
 	} else {
-		// Example:
-		//   n: height = 7, balanceFactor = 2
-		//   q: height = 6, balanceFactor = 1
-		//  t1: height = 4
-		// t23: height = 4
-		//  t4: height = 5
 		n.balanceFactor = 0
-		q.balanceFactor = 0
+		p.balanceFactor = 0
 	}
-	*ptrN = q
+	n.childR = p.childL
+	p.childL = n
+	*ptrN = p
 }
 
 //     N          P
@@ -43,27 +31,15 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 // T1 T23        T23 T4
 func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 	p := n.childL
-	n.childL = p.childR
-	p.childR = n
 	if p.balanceFactor == 0 {
-		// Example:
-		//   n: height = 7, balanceFactor = -2
-		//   p: height = 6, balanceFactor = 0
-		//  t1: height = 5
-		// t23: height = 5
-		//  t4: height = 4
 		n.balanceFactor = -1
 		p.balanceFactor = 1
 	} else {
-		// Example:
-		//   n: height = 7, balanceFactor = -2
-		//   p: height = 6, balanceFactor = -1
-		//  t1: height = 5
-		// t23: height = 4
-		//  t4: height = 4
 		n.balanceFactor = 0
 		p.balanceFactor = 0
 	}
+	n.childL = p.childR
+	p.childR = n
 	*ptrN = p
 }
 
@@ -75,16 +51,50 @@ func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 //    / \       T1 T2 T3 T4
 //   T2 T3
 func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
-	panic("Not implemented")
+	p := n.childL
+	q := p.childR
+	if q.balanceFactor < 0 {
+		n.balanceFactor = 1
+		p.balanceFactor = 0
+	} else if q.balanceFactor > 0 {
+		n.balanceFactor = 0
+		p.balanceFactor = -1
+	} else {
+		n.balanceFactor = 0
+		p.balanceFactor = 0
+	}
+	q.balanceFactor = 0
+	p.childR = q.childL
+	n.childL = q.childR
+	q.childL = p
+	q.childR = n
+	*ptrN = q
 }
 
 //   N
-//  / \              P
-// T1  Q           /   \
-//    / \   =>    N     Q
-//   P  T4       / \   / \
+//  / \              Q
+// T1  P           /   \
+//    / \   =>    N     P
+//   Q  T4       / \   / \
 //  / \         T1 T2 T3 T4
 // T2 T3
 func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
-	panic("Not implemented")
+	p := n.childR
+	q := p.childL
+	if q.balanceFactor < 0 {
+		n.balanceFactor = 0
+		p.balanceFactor = 1
+	} else if q.balanceFactor > 0 {
+		n.balanceFactor = -1
+		p.balanceFactor = 0
+	} else {
+		n.balanceFactor = 0
+		p.balanceFactor = 0
+	}
+	q.balanceFactor = 0
+	p.childL = q.childR
+	n.childR = q.childL
+	q.childR = p
+	q.childL = n
+	*ptrN = q
 }
