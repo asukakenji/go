@@ -217,8 +217,7 @@ func TestTreeAdd_1(t *testing.T) {
 		if gotString != expectedString {
 			t.Errorf("Case %d: tree.String() = %s, Expected: %s", cid, gotString, expectedString)
 		}
-		// TODO: Fix this with ConditionalFoldNode
-		avl.ConditionalFold(tree.ConditionalTraversePreOrder, CheckTree, &CheckTreeParams{t, cid, c.vabf, 0})
+		avl.ConditionalFoldNode(tree.ConditionalTraverseNodePreOrder, CheckTree, &CheckTreeParams{t, cid, c.vabf, 0})
 	}
 }
 
