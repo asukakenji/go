@@ -3,17 +3,23 @@ package main
 import (
 	"fmt"
 	"math/rand"
-
-	avl "github.com/asukakenji/go/dsalg/avl1"
+	"os"
+	"strconv"
 )
 
 func main() {
-	numbers := rand.Perm(255)
-
-	t := new(avl.IntTreeSet)
-	for _, number := range numbers {
-		fmt.Printf("Adding %d...\n", number)
-		t.Add(number)
-		fmt.Println()
+	seedString := os.Getenv("SEED")
+	// if seedString == "" {
+	// 	panic("No seed")
+	// }
+	seed, err := strconv.ParseInt(seedString, 10, 64)
+	if err != nil {
+		panic("Invalid seed")
 	}
+	rand.Seed(seed)
+	numbers := rand.Perm(255)
+	fmt.Println(numbers[0])
+	fmt.Println(numbers[1])
+	fmt.Println(numbers[2])
+	fmt.Println(numbers[3])
 }
