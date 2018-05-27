@@ -6,7 +6,7 @@
 //   - [avl_flags_int] Flags using int
 //   - [avl_flags_char] Flags using char
 
-// +build avl_ptrn
+// +build !avl_newn,avl_ptrn
 // +build !avl_flags_int,!avl_flags_char
 
 package avl

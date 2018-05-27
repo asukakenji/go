@@ -8,9 +8,9 @@
 //   - [avl_mva] Multi-Valued Assignment (*)
 //   O [avl_sva] Single-Valued Assignment
 
-// +build avl_ptrn
+// +build !avl_newn,avl_ptrn
 // +build !avl_assert
-// +build avl_sva
+// +build !avl_mva,avl_sva
 
 package avl
 
