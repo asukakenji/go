@@ -1,16 +1,16 @@
+// - New node:
+//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
+//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 // - Assertion:
 //   - [avl_noassert] Without assertion (*)
 //   O [avl_assert] With assertion
 // - Assignment:
 //   - [avl_mva] Multi-Valued Assignment (*)
 //   O [avl_sva] Single-Valued Assignment
-// - New node:
-//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 
+// +build avl_ptrn
 // +build avl_assert
 // +build avl_sva
-// +build avl_ptrn
 
 package avl
 

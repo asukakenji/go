@@ -1,16 +1,16 @@
+// - New node:
+//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
+//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 // - Assertion:
 //   O [avl_noassert] Without assertion (*)
 //   - [avl_assert] With assertion
 // - Assignment:
-//   - [avl_mva] Multi-Valued Assignment (*)
-//   O [avl_sva] Single-Valued Assignment
-// - New node:
-//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
+//   O [avl_mva] Multi-Valued Assignment (*)
+//   - [avl_sva] Single-Valued Assignment
 
-// +build !avl_assert
-// +build avl_sva
 // +build avl_ptrn
+// +build !avl_assert
+// +build !avl_sva
 
 package avl
 
@@ -22,15 +22,11 @@ package avl
 func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 	p := n.childR
 	if p.balanceFactor == 0 {
-		n.balanceFactor = 1
-		p.balanceFactor = -1
+		n.balanceFactor, p.balanceFactor = 1, -1
 	} else {
-		n.balanceFactor = 0
-		p.balanceFactor = 0
+		n.balanceFactor, p.balanceFactor = 0, 0
 	}
-	n.childR = p.childL
-	p.childL = n
-	*ptrN = p
+	p.childL, *ptrN, n.childR = n, p, p.childL
 }
 
 //     N          P
@@ -41,15 +37,11 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 	p := n.childL
 	if p.balanceFactor == 0 {
-		n.balanceFactor = -1
-		p.balanceFactor = 1
+		n.balanceFactor, p.balanceFactor = -1, 1
 	} else {
-		n.balanceFactor = 0
-		p.balanceFactor = 0
+		n.balanceFactor, p.balanceFactor = 0, 0
 	}
-	n.childL = p.childR
-	p.childR = n
-	*ptrN = p
+	p.childR, *ptrN, n.childL = n, p, p.childR
 }
 
 //     N
@@ -63,21 +55,14 @@ func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 	p := n.childL
 	q := p.childR
 	if q.balanceFactor < 0 {
-		n.balanceFactor = 1
-		p.balanceFactor = 0
+		n.balanceFactor, p.balanceFactor = 1, 0
 	} else if q.balanceFactor > 0 {
-		n.balanceFactor = 0
-		p.balanceFactor = -1
+		n.balanceFactor, p.balanceFactor = 0, -1
 	} else {
-		n.balanceFactor = 0
-		p.balanceFactor = 0
+		n.balanceFactor, p.balanceFactor = 0, 0
 	}
 	q.balanceFactor = 0
-	p.childR = q.childL
-	n.childL = q.childR
-	q.childL = p
-	q.childR = n
-	*ptrN = q
+	q.childR, q.childL, *ptrN, n.childL, p.childR = n, p, q, q.childR, q.childL
 }
 
 //   N
@@ -91,19 +76,12 @@ func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
 	p := n.childR
 	q := p.childL
 	if q.balanceFactor < 0 {
-		n.balanceFactor = 0
-		p.balanceFactor = 1
+		n.balanceFactor, p.balanceFactor = 0, 1
 	} else if q.balanceFactor > 0 {
-		n.balanceFactor = -1
-		p.balanceFactor = 0
+		n.balanceFactor, p.balanceFactor = -1, 0
 	} else {
-		n.balanceFactor = 0
-		p.balanceFactor = 0
+		n.balanceFactor, p.balanceFactor = 0, 0
 	}
 	q.balanceFactor = 0
-	p.childL = q.childR
-	n.childR = q.childL
-	q.childR = p
-	q.childL = n
-	*ptrN = q
+	q.childL, q.childR, *ptrN, n.childR, p.childL = n, p, q, q.childL, q.childR
 }

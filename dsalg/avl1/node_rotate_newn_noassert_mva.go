@@ -1,16 +1,16 @@
+// - New node:
+//   O [avl_newn] Return Value: newN *IntTreeSetNode (*)
+//   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 // - Assertion:
 //   O [avl_noassert] Without assertion (*)
 //   - [avl_assert] With assertion
 // - Assignment:
 //   O [avl_mva] Multi-Valued Assignment (*)
 //   - [avl_sva] Single-Valued Assignment
-// - New node:
-//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 
+// +build !avl_ptrn
 // +build !avl_assert
 // +build !avl_sva
-// +build avl_ptrn
 
 package avl
 
@@ -19,14 +19,15 @@ package avl
 // T1  P    =>    N  T4
 //    / \        / \
 //  T23 T4      T1 T23
-func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
+func (n *IntTreeSetNode) rotateLeft() *IntTreeSetNode {
 	p := n.childR
 	if p.balanceFactor == 0 {
 		n.balanceFactor, p.balanceFactor = 1, -1
 	} else {
 		n.balanceFactor, p.balanceFactor = 0, 0
 	}
-	p.childL, *ptrN, n.childR = n, p, p.childL
+	p.childL, n.childR = n, p.childL
+	return p
 }
 
 //     N          P
@@ -34,14 +35,15 @@ func (n *IntTreeSetNode) rotateLeft(ptrN **IntTreeSetNode) {
 //   P  T4  =>  T1  N
 //  / \            / \
 // T1 T23        T23 T4
-func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
+func (n *IntTreeSetNode) rotateRight() *IntTreeSetNode {
 	p := n.childL
 	if p.balanceFactor == 0 {
 		n.balanceFactor, p.balanceFactor = -1, 1
 	} else {
 		n.balanceFactor, p.balanceFactor = 0, 0
 	}
-	p.childR, *ptrN, n.childL = n, p, p.childR
+	p.childR, n.childL = n, p.childR
+	return p
 }
 
 //     N
@@ -51,7 +53,7 @@ func (n *IntTreeSetNode) rotateRight(ptrN **IntTreeSetNode) {
 // T1  Q         / \   / \
 //    / \       T1 T2 T3 T4
 //   T2 T3
-func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
+func (n *IntTreeSetNode) rotateLeftRight() *IntTreeSetNode {
 	p := n.childL
 	q := p.childR
 	if q.balanceFactor < 0 {
@@ -62,7 +64,8 @@ func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 		n.balanceFactor, p.balanceFactor = 0, 0
 	}
 	q.balanceFactor = 0
-	q.childR, q.childL, *ptrN, n.childL, p.childR = n, p, q, q.childR, q.childL
+	q.childR, q.childL, n.childL, p.childR = n, p, q.childR, q.childL
+	return q
 }
 
 //   N
@@ -72,7 +75,7 @@ func (n *IntTreeSetNode) rotateLeftRight(ptrN **IntTreeSetNode) {
 //   Q  T4       / \   / \
 //  / \         T1 T2 T3 T4
 // T2 T3
-func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
+func (n *IntTreeSetNode) rotateRightLeft() *IntTreeSetNode {
 	p := n.childR
 	q := p.childL
 	if q.balanceFactor < 0 {
@@ -83,5 +86,6 @@ func (n *IntTreeSetNode) rotateRightLeft(ptrN **IntTreeSetNode) {
 		n.balanceFactor, p.balanceFactor = 0, 0
 	}
 	q.balanceFactor = 0
-	q.childL, q.childR, *ptrN, n.childR, p.childL = n, p, q, q.childL, q.childR
+	q.childL, q.childR, n.childR, p.childL = n, p, q.childL, q.childR
+	return q
 }
