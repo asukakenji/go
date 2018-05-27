@@ -24,6 +24,13 @@ TAGS=(
     'avl_bools avl_ptrn avl_noassert avl_mva'
     'avl_bools avl_ptrn avl_noassert avl_sva'
     'avl_bools avl_ptrn avl_assert avl_sva'
+
+    'avl_int avl_newn avl_noassert avl_mva'
+    'avl_int avl_newn avl_noassert avl_sva'
+#    'avl_int avl_newn avl_assert avl_sva'
+    'avl_int avl_ptrn avl_noassert avl_mva'
+    'avl_int avl_ptrn avl_noassert avl_sva'
+    'avl_int avl_ptrn avl_assert avl_sva'
 )
 
 for tags in "${TAGS[@]}"
