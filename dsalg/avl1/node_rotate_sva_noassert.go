@@ -1,7 +1,16 @@
-// Single-Valued Assignment, without Assertion
+// - Assertion:
+//   O [avl_noassert] Without assertion (*)
+//   - [avl_assert] With assertion
+// - Assignment:
+//   - [avl_mva] Multi-Valued Assignment (*)
+//   O [avl_sva] Single-Valued Assignment
+// - New node:
+//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
+//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 
-// +build avl_rotate_sva
 // +build !avl_assert
+// +build avl_sva
+// +build avl_ptrn
 
 package avl
 
