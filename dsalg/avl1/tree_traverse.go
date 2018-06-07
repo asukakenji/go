@@ -1,139 +1,139 @@
 package avl
 
-// TraversePreOrder traverses the tree in pre-order (NLR).
-func (t *IntTreeSet) TraversePreOrder(consumer func(int)) {
-	t.root.TraversePreOrder(consumer)
+// VisitPreOrder traverses the tree in pre-order (NLR).
+func (t *IntTreeSet) VisitPreOrder(consumer func(int)) {
+	t.root.VisitPreOrder(consumer)
 }
 
-// TraverseInOrder traverses the tree in in-order (LNR).
-func (t *IntTreeSet) TraverseInOrder(consumer func(int)) {
-	t.root.TraverseInOrder(consumer)
+// VisitInOrder traverses the tree in in-order (LNR).
+func (t *IntTreeSet) VisitInOrder(consumer func(int)) {
+	t.root.VisitInOrder(consumer)
 }
 
-// TraversePostOrder traverses the tree in post-order (LRN).
-func (t *IntTreeSet) TraversePostOrder(consumer func(int)) {
-	t.root.TraversePostOrder(consumer)
+// VisitPostOrder traverses the tree in post-order (LRN).
+func (t *IntTreeSet) VisitPostOrder(consumer func(int)) {
+	t.root.VisitPostOrder(consumer)
 }
 
 // Fold TODO: Write this comment!
 func Fold(
-	traverseFunc func(func(int)),
+	visitFunc func(func(int)),
 	f func(int, interface{}) interface{},
 	acc0 interface{},
 ) interface{} {
 	acc := acc0
-	traverseFunc(func(v int) {
+	visitFunc(func(v int) {
 		acc = f(v, acc)
 	})
 	return acc
 }
 
-// ConditionalTraversePreOrder traverses the tree in pre-order (NLR).
+// ConditionalVisitPreOrder traverses the tree in pre-order (NLR).
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (t *IntTreeSet) ConditionalTraversePreOrder(predicate func(int) bool) bool {
-	return t.root.ConditionalTraversePreOrder(predicate)
+func (t *IntTreeSet) ConditionalVisitPreOrder(predicate func(int) bool) bool {
+	return t.root.ConditionalVisitPreOrder(predicate)
 }
 
-// ConditionalTraverseInOrder traverses the tree in in-order (LNR).
+// ConditionalVisitInOrder traverses the tree in in-order (LNR).
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (t *IntTreeSet) ConditionalTraverseInOrder(predicate func(int) bool) bool {
-	return t.root.ConditionalTraverseInOrder(predicate)
+func (t *IntTreeSet) ConditionalVisitInOrder(predicate func(int) bool) bool {
+	return t.root.ConditionalVisitInOrder(predicate)
 }
 
-// ConditionalTraversePostOrder traverses the tree in post-order (LRN).
+// ConditionalVisitPostOrder traverses the tree in post-order (LRN).
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (t *IntTreeSet) ConditionalTraversePostOrder(predicate func(int) bool) bool {
-	return t.root.ConditionalTraversePostOrder(predicate)
+func (t *IntTreeSet) ConditionalVisitPostOrder(predicate func(int) bool) bool {
+	return t.root.ConditionalVisitPostOrder(predicate)
 }
 
 // ConditionalFold TODO: Write this comment!
 func ConditionalFold(
-	conditionalTraverseFunc func(func(int) bool) bool,
+	conditionalVisitFunc func(func(int) bool) bool,
 	f func(int, interface{}) (bool, interface{}),
 	acc0 interface{},
 ) (bool, interface{}) {
 	var t bool
 	acc := acc0
-	conditionalTraverseFunc(func(v int) bool {
+	conditionalVisitFunc(func(v int) bool {
 		t, acc = f(v, acc)
 		return t
 	})
 	return t, acc
 }
 
-// TraverseNodePreOrder traverses the tree in pre-order (NLR).
+// VisitNodePreOrder traverses the tree in pre-order (NLR).
 // Any nil children of leaf nodes are also traversed.
-func (t *IntTreeSet) TraverseNodePreOrder(consumer func(*IntTreeSetNode)) {
-	t.root.TraverseNodePreOrder(consumer)
+func (t *IntTreeSet) VisitNodePreOrder(consumer func(*IntTreeSetNode)) {
+	t.root.VisitNodePreOrder(consumer)
 }
 
-// TraverseNodeInOrder traverses the tree in in-order (LNR).
+// VisitNodeInOrder traverses the tree in in-order (LNR).
 // Any nil children of leaf nodes are also traversed.
-func (t *IntTreeSet) TraverseNodeInOrder(consumer func(*IntTreeSetNode)) {
-	t.root.TraverseNodeInOrder(consumer)
+func (t *IntTreeSet) VisitNodeInOrder(consumer func(*IntTreeSetNode)) {
+	t.root.VisitNodeInOrder(consumer)
 }
 
-// TraverseNodePostOrder traverses the tree in post-order (LRN).
+// VisitNodePostOrder traverses the tree in post-order (LRN).
 // Any nil children of leaf nodes are also traversed.
-func (t *IntTreeSet) TraverseNodePostOrder(consumer func(*IntTreeSetNode)) {
-	t.root.TraverseNodePostOrder(consumer)
+func (t *IntTreeSet) VisitNodePostOrder(consumer func(*IntTreeSetNode)) {
+	t.root.VisitNodePostOrder(consumer)
 }
 
 // FoldNode TODO: Write this comment!
 func FoldNode(
-	traverseNodeFunc func(func(*IntTreeSetNode)),
+	visitNodeFunc func(func(*IntTreeSetNode)),
 	f func(*IntTreeSetNode, interface{}) interface{},
 	acc0 interface{},
 ) interface{} {
 	acc := acc0
-	traverseNodeFunc(func(n *IntTreeSetNode) {
+	visitNodeFunc(func(n *IntTreeSetNode) {
 		acc = f(n, acc)
 	})
 	return acc
 }
 
-// ConditionalTraverseNodePreOrder traverses the tree in pre-order (NLR).
+// ConditionalVisitNodePreOrder traverses the tree in pre-order (NLR).
 // Any nil children of leaf nodes are also traversed.
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (t *IntTreeSet) ConditionalTraverseNodePreOrder(predicate func(*IntTreeSetNode) bool) bool {
-	return t.root.ConditionalTraverseNodePreOrder(predicate)
+func (t *IntTreeSet) ConditionalVisitNodePreOrder(predicate func(*IntTreeSetNode) bool) bool {
+	return t.root.ConditionalVisitNodePreOrder(predicate)
 }
 
-// ConditionalTraverseNodeInOrder traverses the tree in in-order (LNR).
+// ConditionalVisitNodeInOrder traverses the tree in in-order (LNR).
 // Any nil children of leaf nodes are also traversed.
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (t *IntTreeSet) ConditionalTraverseNodeInOrder(predicate func(*IntTreeSetNode) bool) bool {
-	return t.root.ConditionalTraverseNodeInOrder(predicate)
+func (t *IntTreeSet) ConditionalVisitNodeInOrder(predicate func(*IntTreeSetNode) bool) bool {
+	return t.root.ConditionalVisitNodeInOrder(predicate)
 }
 
-// ConditionalTraverseNodePostOrder traverses the tree in post-order (LRN).
+// ConditionalVisitNodePostOrder traverses the tree in post-order (LRN).
 // Any nil children of leaf nodes are also traversed.
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (t *IntTreeSet) ConditionalTraverseNodePostOrder(predicate func(*IntTreeSetNode) bool) bool {
-	return t.root.ConditionalTraverseNodePostOrder(predicate)
+func (t *IntTreeSet) ConditionalVisitNodePostOrder(predicate func(*IntTreeSetNode) bool) bool {
+	return t.root.ConditionalVisitNodePostOrder(predicate)
 }
 
 // ConditionalFoldNode TODO: Write this comment!
 func ConditionalFoldNode(
-	conditionalTraverseNodeFunc func(func(*IntTreeSetNode) bool) bool,
+	conditionalVisitNodeFunc func(func(*IntTreeSetNode) bool) bool,
 	f func(*IntTreeSetNode, interface{}) (bool, interface{}),
 	acc0 interface{},
 ) (bool, interface{}) {
 	var t bool
 	acc := acc0
-	conditionalTraverseNodeFunc(func(n *IntTreeSetNode) bool {
+	conditionalVisitNodeFunc(func(n *IntTreeSetNode) bool {
 		t, acc = f(n, acc)
 		return t
 	})

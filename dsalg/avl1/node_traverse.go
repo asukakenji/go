@@ -1,87 +1,87 @@
 package avl
 
-// TraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
-func (n *IntTreeSetNode) TraversePreOrder(consumer func(int)) {
+// VisitPreOrder traverses the subtree rooted at n in pre-order (NLR).
+func (n *IntTreeSetNode) VisitPreOrder(consumer func(int)) {
 	if n == nil {
 		return
 	}
 	consumer(n.value)
-	n.childL.TraversePreOrder(consumer)
-	n.childR.TraversePreOrder(consumer)
+	n.childL.VisitPreOrder(consumer)
+	n.childR.VisitPreOrder(consumer)
 }
 
-// TraverseInOrder traverses the subtree rooted at n in in-order (LNR).
-func (n *IntTreeSetNode) TraverseInOrder(consumer func(int)) {
+// VisitInOrder traverses the subtree rooted at n in in-order (LNR).
+func (n *IntTreeSetNode) VisitInOrder(consumer func(int)) {
 	if n == nil {
 		return
 	}
-	n.childL.TraverseInOrder(consumer)
+	n.childL.VisitInOrder(consumer)
 	consumer(n.value)
-	n.childR.TraverseInOrder(consumer)
+	n.childR.VisitInOrder(consumer)
 }
 
-// TraversePostOrder traverses the subtree rooted at n in post-order (LRN).
-func (n *IntTreeSetNode) TraversePostOrder(consumer func(int)) {
+// VisitPostOrder traverses the subtree rooted at n in post-order (LRN).
+func (n *IntTreeSetNode) VisitPostOrder(consumer func(int)) {
 	if n == nil {
 		return
 	}
-	n.childL.TraversePostOrder(consumer)
-	n.childR.TraversePostOrder(consumer)
+	n.childL.VisitPostOrder(consumer)
+	n.childR.VisitPostOrder(consumer)
 	consumer(n.value)
 }
 
-// ConditionalTraversePreOrder traverses the subtree rooted at n in pre-order (NLR).
+// ConditionalVisitPreOrder traverses the subtree rooted at n in pre-order (NLR).
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (n *IntTreeSetNode) ConditionalTraversePreOrder(predicate func(int) bool) bool {
+func (n *IntTreeSetNode) ConditionalVisitPreOrder(predicate func(int) bool) bool {
 	if n == nil {
 		return true
 	}
 	if !predicate(n.value) {
 		return false
 	}
-	if !n.childL.ConditionalTraversePreOrder(predicate) {
+	if !n.childL.ConditionalVisitPreOrder(predicate) {
 		return false
 	}
-	if !n.childR.ConditionalTraversePreOrder(predicate) {
+	if !n.childR.ConditionalVisitPreOrder(predicate) {
 		return false
 	}
 	return true
 }
 
-// ConditionalTraverseInOrder traverses the subtree rooted at n in in-order (LNR).
+// ConditionalVisitInOrder traverses the subtree rooted at n in in-order (LNR).
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (n *IntTreeSetNode) ConditionalTraverseInOrder(predicate func(int) bool) bool {
+func (n *IntTreeSetNode) ConditionalVisitInOrder(predicate func(int) bool) bool {
 	if n == nil {
 		return true
 	}
-	if !n.childL.ConditionalTraverseInOrder(predicate) {
+	if !n.childL.ConditionalVisitInOrder(predicate) {
 		return false
 	}
 	if !predicate(n.value) {
 		return false
 	}
-	if !n.childR.ConditionalTraverseInOrder(predicate) {
+	if !n.childR.ConditionalVisitInOrder(predicate) {
 		return false
 	}
 	return true
 }
 
-// ConditionalTraversePostOrder traverses the subtree rooted at n in post-order (LRN).
+// ConditionalVisitPostOrder traverses the subtree rooted at n in post-order (LRN).
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (n *IntTreeSetNode) ConditionalTraversePostOrder(predicate func(int) bool) bool {
+func (n *IntTreeSetNode) ConditionalVisitPostOrder(predicate func(int) bool) bool {
 	if n == nil {
 		return true
 	}
-	if !n.childL.ConditionalTraversePostOrder(predicate) {
+	if !n.childL.ConditionalVisitPostOrder(predicate) {
 		return false
 	}
-	if !n.childR.ConditionalTraversePostOrder(predicate) {
+	if !n.childR.ConditionalVisitPostOrder(predicate) {
 		return false
 	}
 	if !predicate(n.value) {
@@ -90,97 +90,97 @@ func (n *IntTreeSetNode) ConditionalTraversePostOrder(predicate func(int) bool) 
 	return true
 }
 
-// TraverseNodePreOrder traverses the subtree rooted at n in pre-order (NLR).
+// VisitNodePreOrder traverses the subtree rooted at n in pre-order (NLR).
 // Any nil children of leaf nodes are also traversed.
-func (n *IntTreeSetNode) TraverseNodePreOrder(consumer func(*IntTreeSetNode)) {
+func (n *IntTreeSetNode) VisitNodePreOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
 		consumer(nil)
 		return
 	}
 	consumer(n)
-	n.childL.TraverseNodePreOrder(consumer)
-	n.childR.TraverseNodePreOrder(consumer)
+	n.childL.VisitNodePreOrder(consumer)
+	n.childR.VisitNodePreOrder(consumer)
 }
 
-// TraverseNodeInOrder traverses the subtree rooted at n in in-order (LNR).
+// VisitNodeInOrder traverses the subtree rooted at n in in-order (LNR).
 // Any nil children of leaf nodes are also traversed.
-func (n *IntTreeSetNode) TraverseNodeInOrder(consumer func(*IntTreeSetNode)) {
+func (n *IntTreeSetNode) VisitNodeInOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
 		consumer(nil)
 		return
 	}
-	n.childL.TraverseNodeInOrder(consumer)
+	n.childL.VisitNodeInOrder(consumer)
 	consumer(n)
-	n.childR.TraverseNodeInOrder(consumer)
+	n.childR.VisitNodeInOrder(consumer)
 }
 
-// TraverseNodePostOrder traverses the subtree rooted at n in post-order (LRN).
+// VisitNodePostOrder traverses the subtree rooted at n in post-order (LRN).
 // Any nil children of leaf nodes are also traversed.
-func (n *IntTreeSetNode) TraverseNodePostOrder(consumer func(*IntTreeSetNode)) {
+func (n *IntTreeSetNode) VisitNodePostOrder(consumer func(*IntTreeSetNode)) {
 	if n == nil {
 		consumer(nil)
 		return
 	}
-	n.childL.TraverseNodePostOrder(consumer)
-	n.childR.TraverseNodePostOrder(consumer)
+	n.childL.VisitNodePostOrder(consumer)
+	n.childR.VisitNodePostOrder(consumer)
 	consumer(n)
 }
 
-// ConditionalTraverseNodePreOrder traverses the subtree rooted at n in pre-order (NLR).
+// ConditionalVisitNodePreOrder traverses the subtree rooted at n in pre-order (NLR).
 // Any nil children of leaf nodes are also traversed.
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (n *IntTreeSetNode) ConditionalTraverseNodePreOrder(predicate func(*IntTreeSetNode) bool) bool {
+func (n *IntTreeSetNode) ConditionalVisitNodePreOrder(predicate func(*IntTreeSetNode) bool) bool {
 	if n == nil {
 		return predicate(nil)
 	}
 	if !predicate(n) {
 		return false
 	}
-	if !n.childL.ConditionalTraverseNodePreOrder(predicate) {
+	if !n.childL.ConditionalVisitNodePreOrder(predicate) {
 		return false
 	}
-	if !n.childR.ConditionalTraverseNodePreOrder(predicate) {
+	if !n.childR.ConditionalVisitNodePreOrder(predicate) {
 		return false
 	}
 	return true
 }
 
-// ConditionalTraverseNodeInOrder traverses the subtree rooted at n in in-order (LNR).
+// ConditionalVisitNodeInOrder traverses the subtree rooted at n in in-order (LNR).
 // Any nil children of leaf nodes are also traversed.
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (n *IntTreeSetNode) ConditionalTraverseNodeInOrder(predicate func(*IntTreeSetNode) bool) bool {
+func (n *IntTreeSetNode) ConditionalVisitNodeInOrder(predicate func(*IntTreeSetNode) bool) bool {
 	if n == nil {
 		return predicate(nil)
 	}
-	if !n.childL.ConditionalTraverseNodeInOrder(predicate) {
+	if !n.childL.ConditionalVisitNodeInOrder(predicate) {
 		return false
 	}
 	if !predicate(n) {
 		return false
 	}
-	if !n.childR.ConditionalTraverseNodeInOrder(predicate) {
+	if !n.childR.ConditionalVisitNodeInOrder(predicate) {
 		return false
 	}
 	return true
 }
 
-// ConditionalTraverseNodePostOrder traverses the subtree rooted at n in post-order (LRN).
+// ConditionalVisitNodePostOrder traverses the subtree rooted at n in post-order (LRN).
 // Any nil children of leaf nodes are also traversed.
 // The traversal stops when predicate returns false.
 // It returns true if predicate returns true throughout the travesal;
 // it returns false otherwise.
-func (n *IntTreeSetNode) ConditionalTraverseNodePostOrder(predicate func(*IntTreeSetNode) bool) bool {
+func (n *IntTreeSetNode) ConditionalVisitNodePostOrder(predicate func(*IntTreeSetNode) bool) bool {
 	if n == nil {
 		return predicate(nil)
 	}
-	if !n.childL.ConditionalTraverseNodePostOrder(predicate) {
+	if !n.childL.ConditionalVisitNodePostOrder(predicate) {
 		return false
 	}
-	if !n.childR.ConditionalTraverseNodePostOrder(predicate) {
+	if !n.childR.ConditionalVisitNodePostOrder(predicate) {
 		return false
 	}
 	if !predicate(n) {

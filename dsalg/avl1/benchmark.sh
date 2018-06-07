@@ -15,6 +15,8 @@
 # assigned to a node-interface variable without a type assetion, or to a
 # pointer-to-node-struct with a type assertion.
 
+# See: $GOPATH/src/cmd/compile/internal/ssa/redblack32.go
+
 SEED=$((RANDOM * RANDOM + RANDOM))
 
 TAGS=(
