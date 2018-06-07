@@ -51,10 +51,3 @@ func (t *IntTreeSet) Print(indentString string) string {
 func (t *IntTreeSet) Contains(v int) bool {
 	return t.root.Contains(v)
 }
-
-// Remove removes v from the set.
-func (t *IntTreeSet) Remove(v int) {
-	if t.root.Remove(v, &t.root) {
-		t.len--
-	}
-}

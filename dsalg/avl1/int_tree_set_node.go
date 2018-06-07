@@ -98,8 +98,3 @@ func (n *IntTreeSetNode) Contains(v int) bool {
 	}
 	return true
 }
-
-func (n *IntTreeSetNode) Remove(v int, ptrN **IntTreeSetNode) bool {
-	// TODO: Write this!
-	panic("Not implemented!")
-}
