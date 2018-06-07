@@ -1,6 +1,6 @@
 // - New node:
-//   - [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   O [avl_ptrn] Parameter: ptrN **IntTreeSetNode
+//   - [avl_newn] Return Value: newN *Node (*)
+//   O [avl_ptrn] Parameter: ptrN **Node
 // - Flags:
 //   O [avl_flags_bools] Flags using bools (*)
 //   O [avl_flags_bools_2] Flags using bools
@@ -12,9 +12,9 @@
 
 package avl
 
-// Insert inserts v into the tree.
-func (t *IntTreeSet) Insert(v int) {
-	if isInserted, _ := t.root.insert(v, &t.root); isInserted {
+// Insert inserts v into t.
+func (t *Tree) Insert(v interface{}) {
+	if isInserted, _ := t.root.insert(v, &t.root, t.lessFunc); isInserted {
 		t.len++
 	}
 }

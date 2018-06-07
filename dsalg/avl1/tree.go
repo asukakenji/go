@@ -4,57 +4,63 @@ import (
 	"bytes"
 )
 
-// IntTreeSet implements a tree set based on AVL tree.
-type IntTreeSet struct {
-	root *IntTreeSetNode
-	len  int
+// Tree implements an AVL tree.
+type Tree struct {
+	lessFunc func(interface{}, interface{}) bool
+	root     *Node
+	len      int
 }
 
-// Len returns the number of elements of tree t.
+func NewTree(lessFunc func(interface{}, interface{}) bool) *Tree {
+	return &Tree{lessFunc: lessFunc}
+}
+
+// Len returns the number of elements in t.
 // The time complexity is O(1).
-func (t *IntTreeSet) Len() int {
+func (t *Tree) Len() int {
 	return t.len
 }
 
-// Cap returns the capacity of tree t.
+// Cap returns the capacity of t.
 // It is always the same as t.Len().
-func (t *IntTreeSet) Cap() int {
+func (t *Tree) Cap() int {
 	return t.len
 }
 
-// IsEmpty returns whether tree t is empty.
-func (t *IntTreeSet) IsEmpty() bool {
+// IsEmpty returns whether t is empty.
+func (t *Tree) IsEmpty() bool {
 	return t.len == 0
 }
 
-// IsFull returns whether tree t is full.
+// IsFull returns whether t is full.
 // It always returns false.
-func (t *IntTreeSet) IsFull() bool {
+func (t *Tree) IsFull() bool {
 	return false
 }
 
 // String TODO: Write this comment!
-func (t *IntTreeSet) String() string {
+func (t *Tree) String() string {
 	return t.root.String()
 }
 
-// Print prints the set.
+// Print prints t.
 // TODO: Delete this in production
-func (t *IntTreeSet) Print(indentString string) string {
+func (t *Tree) Print(indentString string) string {
 	var buffer bytes.Buffer
 	buffer.WriteRune('\n')
 	t.root.Print(&buffer, indentString, 0)
 	return buffer.String()
 }
 
-// Contains returns whether the set contains v.
-func (t *IntTreeSet) Contains(v int) bool {
-	return t.root.Contains(v)
+// Contains returns whether t contains v.
+func (t *Tree) Contains(v interface{}) bool {
+	return t.root.Contains(v, t.lessFunc)
 }
 
-// Clone returns a copy of the tree.
-func (t *IntTreeSet) Clone() *IntTreeSet {
-	return &IntTreeSet{
+// Clone returns a copy of t.
+func (t *Tree) Clone() *Tree {
+	return &Tree{
+		t.lessFunc,
 		t.root.clone(),
 		t.len,
 	}

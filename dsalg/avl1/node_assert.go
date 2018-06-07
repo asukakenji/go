@@ -2,6 +2,6 @@
 
 package avl
 
-func (n *IntTreeSetNode) checkBalanceFactor() {
+func (n *Node) checkBalanceFactor() {
 	// TODO: Implement this!
 }

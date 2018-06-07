@@ -1,6 +1,6 @@
 // - New node:
-//   O [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
+//   O [avl_newn] Return Value: newN *Node (*)
+//   - [avl_ptrn] Parameter: ptrN **Node
 // - Flags:
 //   - [avl_flags_bools] Flags using bools (*)
 //   - [avl_flags_bools_2] Flags using bools
@@ -20,10 +20,10 @@ const (
 	FLAGS_IS_INSERTED       Flags = 0x10
 )
 
-// Insert inserts v into the tree.
-func (t *IntTreeSet) Insert(v int) {
+// Insert inserts v into t.
+func (t *Tree) Insert(v interface{}) {
 	var flags Flags
-	if t.root, flags = t.root.insert(v); flags&FLAGS_IS_INSERTED != FLAGS_NONE {
+	if t.root, flags = t.root.insert(v, t.lessFunc); flags&FLAGS_IS_INSERTED != FLAGS_NONE {
 		t.len++
 	}
 }

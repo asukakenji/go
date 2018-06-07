@@ -1,6 +1,6 @@
 package avl
 
-func (n *IntTreeSetNode) delete(v int, ptrN **IntTreeSetNode) bool {
+func (n *Node) delete(v interface{}, ptrN **Node) bool {
 	// TODO: Write this!
 	panic("Not implemented!")
 }

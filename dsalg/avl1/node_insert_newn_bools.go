@@ -1,6 +1,6 @@
 // - New node:
-//   O [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
+//   O [avl_newn] Return Value: newN *Node (*)
+//   - [avl_ptrn] Parameter: ptrN **Node
 // - Flags:
 //   O [avl_flags_bools] Flags using bools (*)
 //   - [avl_flags_bools_2] Flags using bools
@@ -13,14 +13,14 @@
 package avl
 
 // insert inserts v into the subtree rooted at n.
-func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
+func (n *Node) insert(v interface{}, lessFunc func(interface{}, interface{}) bool) (*Node, bool, bool) {
 	if n == nil {
-		return &IntTreeSetNode{value: v}, true, true
+		return &Node{value: v}, true, true
 	}
 	var isAdded bool
 	var needsPropagation bool
-	if v < n.value {
-		if n.childL, isAdded, needsPropagation = n.childL.insert(v); needsPropagation {
+	if lessFunc(v, n.value) {
+		if n.childL, isAdded, needsPropagation = n.childL.insert(v, lessFunc); needsPropagation {
 			if n.balanceFactor > 0 {
 				n.balanceFactor--
 				return n, true, false
@@ -29,7 +29,7 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
 				return n, true, true
 			} else {
 				// Rotate
-				if v > n.childL.value {
+				if lessFunc(n.childL.value, v) {
 					// LR Case
 					n = n.rotateLeftRight()
 				} else {
@@ -42,8 +42,8 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
 			return n, isAdded, false
 		}
 	}
-	if v > n.value {
-		if n.childR, isAdded, needsPropagation = n.childR.insert(v); needsPropagation {
+	if lessFunc(n.value, v) {
+		if n.childR, isAdded, needsPropagation = n.childR.insert(v, lessFunc); needsPropagation {
 			if n.balanceFactor < 0 {
 				n.balanceFactor++
 				return n, true, false
@@ -52,7 +52,7 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
 				return n, true, true
 			} else {
 				// Rotate
-				if v < n.childR.value {
+				if lessFunc(v, n.childR.value) {
 					// RL Case
 					n = n.rotateRightLeft()
 				} else {
@@ -66,5 +66,6 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
 		}
 	}
 	// v already existed, nothing to be done
+	// TODO: Assign again?
 	return n, false, false
 }

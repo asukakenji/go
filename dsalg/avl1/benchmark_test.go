@@ -17,7 +17,7 @@ func BenchmarkTreeInsert(b *testing.B) {
 	b.ResetTimer()
 
 	for i, count := 0, b.N; i < count; i++ {
-		tree := new(avl.IntTreeSet)
+		tree := avl.NewTree(avl.IntLess)
 		for _, v := range values {
 			tree.Insert(v)
 		}

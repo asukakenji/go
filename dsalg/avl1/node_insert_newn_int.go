@@ -1,6 +1,6 @@
 // - New node:
-//   O [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
+//   O [avl_newn] Return Value: newN *Node (*)
+//   - [avl_ptrn] Parameter: ptrN **Node
 // - Flags:
 //   - [avl_flags_bools] Flags using bools (*)
 //   - [avl_flags_bools_2] Flags using bools
@@ -13,13 +13,13 @@
 package avl
 
 // insert inserts v into the subtree rooted at n.
-func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, Flags) {
+func (n *Node) insert(v interface{}, lessFunc func(interface{}, interface{}) bool) (*Node, Flags) {
 	if n == nil {
-		return &IntTreeSetNode{value: v}, FLAGS_IS_INSERTED | FLAGS_NEEDS_PROPAGATION
+		return &Node{value: v}, FLAGS_IS_INSERTED | FLAGS_NEEDS_PROPAGATION
 	}
 	var flags Flags
-	if v < n.value {
-		if n.childL, flags = n.childL.insert(v); flags&FLAGS_NEEDS_PROPAGATION != FLAGS_NONE {
+	if lessFunc(v, n.value) {
+		if n.childL, flags = n.childL.insert(v, lessFunc); flags&FLAGS_NEEDS_PROPAGATION != FLAGS_NONE {
 			if n.balanceFactor > 0 {
 				n.balanceFactor--
 				return n, FLAGS_IS_INSERTED
@@ -28,7 +28,7 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, Flags) {
 				return n, FLAGS_IS_INSERTED | FLAGS_NEEDS_PROPAGATION
 			} else {
 				// Rotate
-				if v > n.childL.value {
+				if lessFunc(n.childL.value, v) {
 					// LR Case
 					n = n.rotateLeftRight()
 				} else {
@@ -41,8 +41,8 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, Flags) {
 			return n, flags & FLAGS_IS_INSERTED
 		}
 	}
-	if v > n.value {
-		if n.childR, flags = n.childR.insert(v); flags&FLAGS_NEEDS_PROPAGATION != FLAGS_NONE {
+	if lessFunc(n.value, v) {
+		if n.childR, flags = n.childR.insert(v, lessFunc); flags&FLAGS_NEEDS_PROPAGATION != FLAGS_NONE {
 			if n.balanceFactor < 0 {
 				n.balanceFactor++
 				return n, FLAGS_IS_INSERTED
@@ -51,7 +51,7 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, Flags) {
 				return n, FLAGS_IS_INSERTED | FLAGS_NEEDS_PROPAGATION
 			} else {
 				// Rotate
-				if v < n.childR.value {
+				if lessFunc(v, n.childR.value) {
 					// RL Case
 					n = n.rotateRightLeft()
 				} else {
@@ -65,5 +65,6 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, Flags) {
 		}
 	}
 	// v already existed, nothing to be done
+	// TODO: Assign again?
 	return n, FLAGS_NONE
 }

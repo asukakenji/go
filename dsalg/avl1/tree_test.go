@@ -11,7 +11,7 @@ func TestTreeLenCapIsEmptyIsFull(t *testing.T) {
 	values := rand.Perm(255)
 	length := 0
 
-	tree := new(avl.IntTreeSet)
+	tree := avl.NewTree(avl.IntLess)
 
 	check := func() {
 		expectedLen := length
@@ -63,7 +63,7 @@ func TestString(t *testing.T) {
 		{-1, "(4 (2 (0 (-1 / /) (1 / /)) (3 / /)) (7 (5 / (6 / /)) (8 / (9 / /))))"},
 	}
 
-	tree := new(avl.IntTreeSet)
+	tree := avl.NewTree(avl.IntLess)
 	for _, c := range cases {
 		tree.Insert(c.value)
 	}
@@ -71,7 +71,7 @@ func TestString(t *testing.T) {
 
 func TestTreePrint(t *testing.T) {
 	numbers := []int{7, 6, 4, 8, 9, 0, 1, 3, 5, 2}
-	tree := new(avl.IntTreeSet)
+	tree := avl.NewTree(avl.IntLess)
 	for _, number := range numbers {
 		tree.Insert(number)
 	}
@@ -82,7 +82,7 @@ func TestTreePrint(t *testing.T) {
 func TestTreeContains(t *testing.T) {
 	numbers := rand.Perm(255)
 
-	tree := new(avl.IntTreeSet)
+	tree := avl.NewTree(avl.IntLess)
 	for index1, number1 := range numbers {
 		// t.Logf("Inserting %d", number1)
 		tree.Insert(number1)
@@ -113,7 +113,7 @@ type CheckTreeParams struct {
 	index int
 }
 
-func CheckTree(n *avl.IntTreeSetNode, acc0 interface{}) (bool, interface{}) {
+func CheckTree(n *avl.Node, acc0 interface{}) (bool, interface{}) {
 	params := acc0.(*CheckTreeParams)
 	var (
 		expectedValue         interface{}
@@ -209,7 +209,7 @@ func TestTreeInsert_1(t *testing.T) {
 		},
 	}
 
-	tree := new(avl.IntTreeSet)
+	tree := avl.NewTree(avl.IntLess)
 	for cid, c := range cases {
 		tree.Insert(c.value)
 		expectedString := c.s
@@ -239,7 +239,7 @@ func TestTreeInsert_2(t *testing.T) {
 		{2, "(6 (3 (1 (0 / /) (2 / /)) (4 / (5 / /))) (8 (7 / /) (9 / /)))"},
 	}
 
-	tree := new(avl.IntTreeSet)
+	tree := avl.NewTree(avl.IntLess)
 	for cid, c := range cases {
 		tree.Insert(c.value)
 		expectedString := c.s

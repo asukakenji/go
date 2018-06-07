@@ -5,31 +5,57 @@ import (
 	"fmt"
 )
 
-// IntTreeSetNode is a node of IntTreeSet.
-type IntTreeSetNode struct {
-	value         int
-	childL        *IntTreeSetNode
-	childR        *IntTreeSetNode
+// Node represents a node in Tree.
+type Node struct {
+	value         interface{}
+	childL        *Node
+	childR        *Node
 	balanceFactor int
 }
 
-func (n *IntTreeSetNode) Value() interface{} {
+// Value TODO: Write this comment!
+func (n *Node) Value() interface{} {
 	return n.value
 }
 
-func (n *IntTreeSetNode) IntValue() int {
-	return n.value
+// IntValue TODO: Write this comment!
+func (n *Node) IntValue() int {
+	type inter interface {
+		Int() int
+	}
+	if v, ok := n.value.(int); ok {
+		return v
+	} else if v, ok := n.value.(inter); ok {
+		return v.Int()
+	}
+	panic("") // TODO: Write this!
 }
 
-func (n *IntTreeSetNode) Float64Value() float64 {
-	return float64(n.value)
+// Float64Value TODO: Write this comment!
+func (n *Node) Float64Value() float64 {
+	type floater64 interface {
+		Float64() float64
+	}
+	if v, ok := n.value.(float64); ok {
+		return v
+	} else if v, ok := n.value.(floater64); ok {
+		return v.Float64()
+	}
+	panic("") // TODO: Write this!
 }
 
-func (n *IntTreeSetNode) StringValue() string {
-	return fmt.Sprintf("%d", n.value)
+// StringValue TODO: Write this comment!
+func (n *Node) StringValue() string {
+	if v, ok := n.value.(string); ok {
+		return v
+	} else if v, ok := n.value.(fmt.Stringer); ok {
+		return v.String()
+	}
+	panic("") // TODO: Write this!
 }
 
-func (n *IntTreeSetNode) BalanceFactor() int {
+// BalanceFactor TODO: Write this comment!
+func (n *Node) BalanceFactor() int {
 	if n == nil {
 		return 0
 	}
@@ -37,7 +63,7 @@ func (n *IntTreeSetNode) BalanceFactor() int {
 }
 
 // Search TODO: Write this comment!
-func (n *IntTreeSetNode) Search(v int, consumer func(*IntTreeSetNode) (int, interface{})) interface{} {
+func (n *Node) Search(v int, consumer func(*Node) (int, interface{})) interface{} {
 	dir, result := consumer(n)
 	if dir < 0 {
 		return n.childL.Search(v, consumer)
@@ -48,7 +74,7 @@ func (n *IntTreeSetNode) Search(v int, consumer func(*IntTreeSetNode) (int, inte
 	return result
 }
 
-func (n *IntTreeSetNode) search(v int, ptrN **IntTreeSetNode, consumer func(*IntTreeSetNode, **IntTreeSetNode) (int, interface{})) interface{} {
+func (n *Node) search(v int, ptrN **Node, consumer func(*Node, **Node) (int, interface{})) interface{} {
 	dir, result := consumer(n, ptrN)
 	if dir < 0 {
 		return n.childL.search(v, &n.childL, consumer)
@@ -59,14 +85,14 @@ func (n *IntTreeSetNode) search(v int, ptrN **IntTreeSetNode, consumer func(*Int
 	return result
 }
 
-func (n *IntTreeSetNode) height() int {
+func (n *Node) height() int {
 	if n == nil {
 		return -1
 	}
 	return max(n.childL.height(), n.childR.height()) + 1
 }
 
-func (n *IntTreeSetNode) String() string {
+func (n *Node) String() string {
 	if n == nil {
 		return "/"
 	}
@@ -74,7 +100,7 @@ func (n *IntTreeSetNode) String() string {
 }
 
 // Print prints the subtree rooted at n.
-func (n *IntTreeSetNode) Print(buffer *bytes.Buffer, indentString string, indentLevel int) {
+func (n *Node) Print(buffer *bytes.Buffer, indentString string, indentLevel int) {
 	for i := 0; i < indentLevel; i++ {
 		buffer.WriteString(indentString)
 	}
@@ -88,25 +114,25 @@ func (n *IntTreeSetNode) Print(buffer *bytes.Buffer, indentString string, indent
 }
 
 // Contains returns whether the subtree rooted at n contains v.
-func (n *IntTreeSetNode) Contains(v int) bool {
+func (n *Node) Contains(v interface{}, lessFunc func(interface{}, interface{}) bool) bool {
 	if n == nil {
 		return false
 	}
-	if v < n.value {
-		return n.childL.Contains(v)
+	if lessFunc(v, n.value) {
+		return n.childL.Contains(v, lessFunc)
 	}
-	if v > n.value {
-		return n.childR.Contains(v)
+	if lessFunc(n.value, v) {
+		return n.childR.Contains(v, lessFunc)
 	}
 	return true
 }
 
 // Clone returns a copy of the subtree rooted at n.
-func (n *IntTreeSetNode) clone() *IntTreeSetNode {
+func (n *Node) clone() *Node {
 	if n == nil {
 		return nil
 	}
-	return &IntTreeSetNode{
+	return &Node{
 		n.value,
 		n.childL.clone(),
 		n.childR.clone(),

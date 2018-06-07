@@ -1,6 +1,6 @@
 // - New node:
-//   O [avl_newn] Return Value: newN *IntTreeSetNode (*)
-//   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
+//   O [avl_newn] Return Value: newN *Node (*)
+//   - [avl_ptrn] Parameter: ptrN **Node
 // - Assertion:
 //   O [avl_noassert] Without assertion (*)
 //   - [avl_assert] With assertion
@@ -19,7 +19,7 @@ package avl
 // T1  P    =>    N  T4
 //    / \        / \
 //  T23 T4      T1 T23
-func (n *IntTreeSetNode) rotateLeft() *IntTreeSetNode {
+func (n *Node) rotateLeft() *Node {
 	p := n.childR
 	if p.balanceFactor == 0 {
 		n.balanceFactor, p.balanceFactor = 1, -1
@@ -35,7 +35,7 @@ func (n *IntTreeSetNode) rotateLeft() *IntTreeSetNode {
 //   P  T4  =>  T1  N
 //  / \            / \
 // T1 T23        T23 T4
-func (n *IntTreeSetNode) rotateRight() *IntTreeSetNode {
+func (n *Node) rotateRight() *Node {
 	p := n.childL
 	if p.balanceFactor == 0 {
 		n.balanceFactor, p.balanceFactor = -1, 1
@@ -53,7 +53,7 @@ func (n *IntTreeSetNode) rotateRight() *IntTreeSetNode {
 // T1  Q         / \   / \
 //    / \       T1 T2 T3 T4
 //   T2 T3
-func (n *IntTreeSetNode) rotateLeftRight() *IntTreeSetNode {
+func (n *Node) rotateLeftRight() *Node {
 	p := n.childL
 	q := p.childR
 	if q.balanceFactor < 0 {
@@ -75,7 +75,7 @@ func (n *IntTreeSetNode) rotateLeftRight() *IntTreeSetNode {
 //   Q  T4       / \   / \
 //  / \         T1 T2 T3 T4
 // T2 T3
-func (n *IntTreeSetNode) rotateRightLeft() *IntTreeSetNode {
+func (n *Node) rotateRightLeft() *Node {
 	p := n.childR
 	q := p.childL
 	if q.balanceFactor < 0 {
