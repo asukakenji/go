@@ -51,3 +51,11 @@ func (t *IntTreeSet) Print(indentString string) string {
 func (t *IntTreeSet) Contains(v int) bool {
 	return t.root.Contains(v)
 }
+
+// Clone returns a copy of the tree.
+func (t *IntTreeSet) Clone() *IntTreeSet {
+	return &IntTreeSet{
+		t.root.clone(),
+		t.len,
+	}
+}

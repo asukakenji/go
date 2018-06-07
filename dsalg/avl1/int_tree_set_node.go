@@ -14,17 +14,19 @@ type IntTreeSetNode struct {
 }
 
 func (n *IntTreeSetNode) Value() interface{} {
-	if n == nil {
-		return nil
-	}
 	return n.value
 }
 
 func (n *IntTreeSetNode) IntValue() int {
-	if n == nil {
-		return 0
-	}
 	return n.value
+}
+
+func (n *IntTreeSetNode) Float64Value() float64 {
+	return float64(n.value)
+}
+
+func (n *IntTreeSetNode) StringValue() string {
+	return fmt.Sprintf("%d", n.value)
 }
 
 func (n *IntTreeSetNode) BalanceFactor() int {
@@ -97,4 +99,17 @@ func (n *IntTreeSetNode) Contains(v int) bool {
 		return n.childR.Contains(v)
 	}
 	return true
+}
+
+// Clone returns a copy of the subtree rooted at n.
+func (n *IntTreeSetNode) clone() *IntTreeSetNode {
+	if n == nil {
+		return nil
+	}
+	return &IntTreeSetNode{
+		n.value,
+		n.childL.clone(),
+		n.childR.clone(),
+		n.balanceFactor,
+	}
 }
