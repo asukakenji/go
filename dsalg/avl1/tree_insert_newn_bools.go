@@ -3,6 +3,7 @@
 //   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 // - Flags:
 //   O [avl_flags_bools] Flags using bools (*)
+//   O [avl_flags_bools_2] Flags using bools
 //   - [avl_flags_int] Flags using int
 //   - [avl_flags_char] Flags using char
 

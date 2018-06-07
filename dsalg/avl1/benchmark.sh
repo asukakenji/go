@@ -29,6 +29,13 @@ TAGS=(
     'avl_flags_bools avl_ptrn avl_noassert avl_sva'
     'avl_flags_bools avl_ptrn avl_assert avl_sva'
 
+    'avl_flags_bools_2 avl_newn avl_noassert avl_mva'
+    'avl_flags_bools_2 avl_newn avl_noassert avl_sva'
+    # 'avl_flags_bools_2 avl_newn avl_assert avl_sva'
+    'avl_flags_bools_2 avl_ptrn avl_noassert avl_mva'
+    'avl_flags_bools_2 avl_ptrn avl_noassert avl_sva'
+    'avl_flags_bools_2 avl_ptrn avl_assert avl_sva'
+
     'avl_flags_int avl_newn avl_noassert avl_mva'
     'avl_flags_int avl_newn avl_noassert avl_sva'
     # 'avl_flags_int avl_newn avl_assert avl_sva'

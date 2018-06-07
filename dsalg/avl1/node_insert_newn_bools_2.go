@@ -2,13 +2,13 @@
 //   O [avl_newn] Return Value: newN *IntTreeSetNode (*)
 //   - [avl_ptrn] Parameter: ptrN **IntTreeSetNode
 // - Flags:
-//   O [avl_flags_bools] Flags using bools (*)
-//   - [avl_flags_bools_2] Flags using bools
+//   - [avl_flags_bools] Flags using bools (*)
+//   O [avl_flags_bools_2] Flags using bools
 //   - [avl_flags_int] Flags using int
 //   - [avl_flags_char] Flags using char
 
 // +build !avl_ptrn
-// +build !avl_flags_bools_2,!avl_flags_int,!avl_flags_char
+// +build !avl_flags_bools,avl_flags_bools_2,!avl_flags_int,!avl_flags_char
 
 package avl
 
@@ -21,12 +21,9 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
 	var needsPropagation bool
 	if v < n.value {
 		if n.childL, isAdded, needsPropagation = n.childL.insert(v); needsPropagation {
-			if n.balanceFactor > 0 {
+			if n.balanceFactor >= 0 {
 				n.balanceFactor--
-				return n, true, false
-			} else if n.balanceFactor == 0 {
-				n.balanceFactor--
-				return n, true, true
+				return n, true, n.balanceFactor != 0
 			} else {
 				// Rotate
 				if v > n.childL.value {
@@ -44,12 +41,9 @@ func (n *IntTreeSetNode) insert(v int) (*IntTreeSetNode, bool, bool) {
 	}
 	if v > n.value {
 		if n.childR, isAdded, needsPropagation = n.childR.insert(v); needsPropagation {
-			if n.balanceFactor < 0 {
+			if n.balanceFactor <= 0 {
 				n.balanceFactor++
-				return n, true, false
-			} else if n.balanceFactor == 0 {
-				n.balanceFactor++
-				return n, true, true
+				return n, true, n.balanceFactor != 0
 			} else {
 				// Rotate
 				if v < n.childR.value {
