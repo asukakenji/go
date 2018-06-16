@@ -20,10 +20,10 @@ import "unsafe"
 type Device uintptr
 
 // OpenDevice opens a device by name.
-func OpenDevice(name string) Device {
-	cName := C.CString(name)
-	defer C.free(unsafe.Pointer(cName))
-	return GoDevice(C.alcOpenDevice(cName))
+func OpenDevice(deviceName string) Device {
+	cDeviceName := C.CString(deviceName)
+	defer C.free(unsafe.Pointer(cDeviceName))
+	return GoDevice(C.alcOpenDevice(cDeviceName))
 }
 
 // OpenDefaultDevice opens the default device.
