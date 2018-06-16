@@ -10,9 +10,6 @@ package alc
 // #include <AL/al.h>
 // #include <AL/alc.h>
 // #endif
-//
-// // free()
-// #include <stdlib.h>
 import "C"
 
 type Boolean int8
