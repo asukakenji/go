@@ -12,41 +12,78 @@ package alc
 // #endif
 import "C"
 
+// Boolean represents a 8-bit boolean value.
 type Boolean int8
+
+// Char represents a character.
 type Char int8
+
+// Byte represents a signed 8-bit 2's complement integer.
 type Byte int8
+
+// Ubyte represents an unsigned 8-bit integer.
 type Ubyte uint8
+
+// Short represents a signed 16-bit 2's complement integer.
 type Short int16
+
+// Ushort represents an unsigned 16-bit integer.
 type Ushort uint16
+
+// Int represents a signed 32-bit 2's complement integer.
 type Int int32
+
+// Uint represents an unsigned 32-bit integer.
 type Uint uint32
+
+// Sizei represents a non-negative 32-bit binary integer size.
 type Sizei int32
+
+// Enum represents an enumerated 32-bit value.
 type Enum int32
+
+// Float represents a 32-bit IEEE754 floating-point value.
 type Float float32
+
+// Double represents a 64-bit IEEE754 floating-point value.
 type Double float64
 
 const (
+	// False represents Boolean False.
 	False Boolean = 0
-	True  Boolean = 1
+	// True represents Boolean True.
+	True Boolean = 1
 )
 
 const (
-	Frequency     Int = C.ALC_FREQUENCY
-	Refresh       Int = C.ALC_REFRESH
-	Sync          Int = C.ALC_SYNC
-	MonoSources   Int = C.ALC_MONO_SOURCES
+	// Frequency represents output frequency. It is specified in <int> Hz.
+	Frequency Int = C.ALC_FREQUENCY
+	// Refresh represents update rate of context processing. It is specified in <int> Hz.
+	Refresh Int = C.ALC_REFRESH
+	// Sync is a flag indicating a synchronous context. It is specified using a bool value.
+	Sync Int = C.ALC_SYNC
+	// MonoSources represents the requested number of mono sources. It is specified by <int> number of requested mono (3D) sources.
+	MonoSources Int = C.ALC_MONO_SOURCES
+	// StereoSources represents the requested number of stereo sources. It is specified by <int> number of requested stereo sources.
 	StereoSources Int = C.ALC_STEREO_SOURCES
 )
 
 const (
-	NoError        Enum = C.ALC_NO_ERROR
-	InvalidDevice  Enum = C.ALC_INVALID_DEVICE
+	// NoError indicates there is not currently an error.
+	NoError Enum = C.ALC_NO_ERROR
+	// InvalidDevice indicates a bad device was passed to an OpenAL function.
+	InvalidDevice Enum = C.ALC_INVALID_DEVICE
+	// InvalidContext indicates a bad context was passed to an OpenAL function.
 	InvalidContext Enum = C.ALC_INVALID_CONTEXT
-	InvalidEnum    Enum = C.ALC_INVALID_ENUM
-	InvalidValue   Enum = C.ALC_INVALID_VALUE
-	OutOfMemory    Enum = C.ALC_OUT_OF_MEMORY
+	// InvalidEnum indicates an unknown enum value was passed to an OpenAL function.
+	InvalidEnum Enum = C.ALC_INVALID_ENUM
+	// InvalidValue indicate an invalid value was passed to an OpenAL function.
+	InvalidValue Enum = C.ALC_INVALID_VALUE
+	// OutOfMemory indicates the requested operation resulted in OpenAL running out of memory.
+	OutOfMemory Enum = C.ALC_OUT_OF_MEMORY
 )
 
+// GoBool : C bool to Go bool
 func GoBool(t C.ALCboolean) bool {
 	if t == C.ALC_FALSE {
 		return false
@@ -54,6 +91,7 @@ func GoBool(t C.ALCboolean) bool {
 	return true
 }
 
+// CBool : Go bool to C bool
 func CBool(t bool) C.ALCboolean {
 	if t {
 		return C.ALC_TRUE
@@ -61,10 +99,12 @@ func CBool(t bool) C.ALCboolean {
 	return C.ALC_FALSE
 }
 
+// GoEnum : C enum to Go enum
 func GoEnum(e C.ALCenum) Enum {
 	return Enum(e)
 }
 
+// CEnum : Go enum to C enum
 func CEnum(e Enum) C.ALCenum {
 	return C.ALCenum(e)
 }
