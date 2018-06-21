@@ -99,7 +99,11 @@ func NewStringBinarySearchTree() *BinarySearchTree {
 }
 
 func (tree *BinarySearchTree) Insert(v interface{}) *BinarySearchTreeNode {
+	needsAssignment := (tree.root == nil)
 	targetNode, isCreated := tree.root.insert(v, tree.less)
+	if needsAssignment {
+		tree.root = targetNode
+	}
 	tree.len++
 	if isCreated {
 		tree.cap++
