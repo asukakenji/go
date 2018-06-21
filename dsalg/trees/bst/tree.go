@@ -1,140 +1,99 @@
 package bst
 
-// BinarySearchTreeNode is a node of a binary search tree.
-type BinarySearchTreeNode struct {
-	// Left child and right child pointers in the binary search tree.
-	leftChild, rightChild *BinarySearchTreeNode
+import "github.com/asukakenji/go/dsalg/trees"
 
-	// The value stored with this node.
-	value interface{}
-}
-
-// LeftChild returns the left child of this node or nil.
-func (node *BinarySearchTreeNode) LeftChild() *BinarySearchTreeNode {
-	return node.leftChild
-}
-
-// RightChild returns the right child of this node or nil.
-func (node *BinarySearchTreeNode) RightChild() *BinarySearchTreeNode {
-	return node.rightChild
-}
-
-// Value returns the value stored with this node.
-func (node *BinarySearchTreeNode) Value() interface{} {
-	return node.value
-}
-
-// Returns whether a new node is allocated
-func (node *BinarySearchTreeNode) insert(v interface{}, less func(interface{}, interface{}) bool) (*BinarySearchTreeNode, bool) {
-	if node == nil {
-		return &BinarySearchTreeNode{value: v}, true
-	}
-	if less(v, node.value) {
-		needsAssignment := (node.leftChild == nil)
-		targetNode, isCreated := node.leftChild.insert(v, less)
-		if needsAssignment {
-			node.leftChild = targetNode
-		}
-		return targetNode, isCreated
-	} else if less(node.value, v) {
-		needsAssignment := (node.rightChild == nil)
-		targetNode, isCreated := node.rightChild.insert(v, less)
-		if needsAssignment {
-			node.rightChild = targetNode
-		}
-		return targetNode, isCreated
-	} else {
-		return node, false
-	}
-}
-
-func (node *BinarySearchTreeNode) TraversePreOrder(consumer func(interface{})) {
-	if node == nil {
-		return
-	}
-	consumer(node.value)
-	node.leftChild.TraversePreOrder(consumer)
-	node.rightChild.TraversePreOrder(consumer)
-}
-
-func (node *BinarySearchTreeNode) TraverseInOrder(consumer func(interface{})) {
-	if node == nil {
-		return
-	}
-	node.leftChild.TraverseInOrder(consumer)
-	consumer(node.value)
-	node.rightChild.TraverseInOrder(consumer)
-}
-
-func (node *BinarySearchTreeNode) TraversePostOrder(consumer func(interface{})) {
-	if node == nil {
-		return
-	}
-	node.leftChild.TraversePostOrder(consumer)
-	node.rightChild.TraversePostOrder(consumer)
-	consumer(node.value)
-}
-
-type BinarySearchTree struct {
+// Tree implements an unbalanced binary search tree.
+type Tree struct {
 	less func(interface{}, interface{}) bool
-	root *BinarySearchTreeNode
+	root *Node
 	len  int
-	cap  int
 }
 
-func NewBinarySearchTree(less func(interface{}, interface{}) bool) *BinarySearchTree {
-	return &BinarySearchTree{less: less}
+func New(less func(interface{}, interface{}) bool) *Tree {
+	return &Tree{less: less}
 }
 
-func NewIntBinarySearchTree() *BinarySearchTree {
-	return &BinarySearchTree{less: IntLess}
+// Len returns the number of elements in t.
+// The time complexity is O(1).
+func (t *Tree) Len() int {
+	return t.len
 }
 
-func NewFloat64BinarySearchTree() *BinarySearchTree {
-	return &BinarySearchTree{less: Float64Less}
+// Cap returns the capacity of t.
+// It is always the same as t.Len().
+func (t *Tree) Cap() int {
+	return t.len
 }
 
-func NewStringBinarySearchTree() *BinarySearchTree {
-	return &BinarySearchTree{less: StringLess}
+// IsEmpty returns whether t is empty.
+func (t *Tree) IsEmpty() bool {
+	return t.len == 0
 }
 
-func (tree *BinarySearchTree) Insert(v interface{}) *BinarySearchTreeNode {
-	needsAssignment := (tree.root == nil)
-	targetNode, isCreated := tree.root.insert(v, tree.less)
-	if needsAssignment {
-		tree.root = targetNode
-	}
-	tree.len++
-	if isCreated {
-		tree.cap++
+// IsFull returns whether t is full.
+// It always returns false.
+func (t *Tree) IsFull() bool {
+	return false
+}
+
+func (t *Tree) Find(x interface{}) trees.Node {
+	return t.root.Find(x, t.less)
+}
+
+func (t *Tree) Insert(x interface{}) trees.Node {
+	newRoot, targetNode, isNewNodeInserted := t.root.insert(x, t.less)
+	if isNewNodeInserted {
+		t.root = newRoot
+		t.len++
 	}
 	return targetNode
 }
 
-func (tree *BinarySearchTree) TraversePreOrder(consumer func(interface{})) {
-	tree.root.TraversePreOrder(consumer)
+func (t *Tree) Delete(x interface{}) trees.Node {
+	newRoot, targetNode, isExistingNodeDeleted := t.root.delete(x, t.less)
+	if isExistingNodeDeleted {
+		t.root = newRoot
+		t.len--
+	}
+	return targetNode
 }
 
-func (tree *BinarySearchTree) TraverseInOrder(consumer func(interface{})) {
-	tree.root.TraverseInOrder(consumer)
+func (t *Tree) Min() interface{} {
+	return t.root.Min()
 }
 
-func (tree *BinarySearchTree) TraversePostOrder(consumer func(interface{})) {
-	tree.root.TraversePostOrder(consumer)
+func (t *Tree) Max() interface{} {
+	return t.root.Max()
 }
 
-func (tree *BinarySearchTree) Len() int {
-	return tree.len
+func (t *Tree) Glb(x interface{}) trees.Node {
+	// TODO: Write this!
+	return nil
 }
 
-func (tree *BinarySearchTree) Cap() int {
-	return tree.cap
+func (t *Tree) GlbEq(x interface{}) trees.Node {
+	// TODO: Write this!
+	return nil
 }
 
-func (tree *BinarySearchTree) IsEmpty() bool {
-	return tree.len == 0
+func (t *Tree) Lub(x interface{}) trees.Node {
+	// TODO: Write this!
+	return nil
 }
 
-func (tree *BinarySearchTree) IsFull() bool {
-	return false
+func (t *Tree) LubEq(x interface{}) trees.Node {
+	// TODO: Write this!
+	return nil
+}
+
+func (t *Tree) VisitPreOrder(consumer func(interface{})) {
+	t.root.VisitPreOrder(consumer)
+}
+
+func (t *Tree) VisitInOrder(consumer func(interface{})) {
+	t.root.VisitInOrder(consumer)
+}
+
+func (t *Tree) VisitPostOrder(consumer func(interface{})) {
+	t.root.VisitPostOrder(consumer)
 }

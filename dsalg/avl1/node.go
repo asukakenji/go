@@ -7,13 +7,17 @@ import (
 
 // Node represents a node in Tree.
 type Node struct {
-	value         interface{}
-	childL        *Node
-	childR        *Node
+	// The value stored in this node.
+	value interface{}
+	// The left child of this node.
+	childL *Node
+	// The right child of this node.
+	childR *Node
+	// The balance factor of this node.
 	balanceFactor int
 }
 
-// Value TODO: Write this comment!
+// Value returns the value stored in n.
 func (n *Node) Value() interface{} {
 	return n.value
 }
