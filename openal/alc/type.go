@@ -83,6 +83,21 @@ const (
 	OutOfMemory Enum = C.ALC_OUT_OF_MEMORY
 )
 
+const (
+	DefaultDeviceSpecifier        Enum = C.ALC_DEFAULT_DEVICE_SPECIFIER
+	DeviceSpecifier               Enum = C.ALC_DEVICE_SPECIFIER
+	Extensions                    Enum = C.ALC_EXTENSIONS
+	CaptureDeviceSpecifier        Enum = C.ALC_CAPTURE_DEVICE_SPECIFIER
+	CaptureDefaultDeviceSpecifier Enum = C.ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER
+)
+
+const (
+	MajorVersion   Enum = C.ALC_MAJOR_VERSION
+	MinorVersion   Enum = C.ALC_MINOR_VERSION
+	AttributesSize Enum = C.ALC_ATTRIBUTES_SIZE
+	AllAttributes  Enum = C.ALC_ALL_ATTRIBUTES
+)
+
 // GoBool : C bool to Go bool
 func GoBool(t C.ALCboolean) bool {
 	if t == C.ALC_FALSE {
@@ -97,14 +112,4 @@ func CBool(t bool) C.ALCboolean {
 		return C.ALC_TRUE
 	}
 	return C.ALC_FALSE
-}
-
-// GoEnum : C enum to Go enum
-func GoEnum(e C.ALCenum) Enum {
-	return Enum(e)
-}
-
-// CEnum : Go enum to C enum
-func CEnum(e Enum) C.ALCenum {
-	return C.ALCenum(e)
 }

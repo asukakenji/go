@@ -14,5 +14,5 @@ import "C"
 
 // GetError retrieves the current context error state.
 func GetError(d Device) Enum {
-	return GoEnum(C.alcGetError(d.CDevice()))
+	return Enum(C.alcGetError(d.CDevice()))
 }

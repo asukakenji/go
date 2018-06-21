@@ -31,5 +31,5 @@ func (d Device) GetProcAddress(funcName string) unsafe.Pointer {
 func (d Device) GetEnumValue(device Device, enumName string) Enum {
 	cEnumName := C.CString(enumName)
 	defer C.free(unsafe.Pointer(cEnumName))
-	return GoEnum(C.alcGetEnumValue(d.CDevice(), cEnumName))
+	return Enum(C.alcGetEnumValue(d.CDevice(), cEnumName))
 }
