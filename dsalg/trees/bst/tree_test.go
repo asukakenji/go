@@ -1,4 +1,4 @@
-package dsalg
+package bst
 
 import (
 	"testing"

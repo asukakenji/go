@@ -1,4 +1,4 @@
-package dsalg
+package bst
 
 // BinarySearchTreeNode is a node of a binary search tree.
 type BinarySearchTreeNode struct {
